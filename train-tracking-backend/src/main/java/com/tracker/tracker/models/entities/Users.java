@@ -23,6 +23,7 @@ public class Users {
     private String email;
     private String username;
     private String password;
+    private Boolean deleted = false;
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
     @JoinTable(
             name = "user_role",

@@ -1,5 +1,6 @@
 package com.tracker.tracker.models.entities;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,4 +46,16 @@ public class Booking {
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "payment_id")
   private Payment payment;
+  private Boolean status = false;
+  private Boolean deleted =false;
+  @JsonIgnore
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private Users createdBy;
+  @JsonIgnore
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private Users modifiedBy;
+  @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = false)
+  private OffsetDateTime createdTime = OffsetDateTime.now();
+  @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = true)
+  private OffsetDateTime modifiedTime = OffsetDateTime.now();
 }
