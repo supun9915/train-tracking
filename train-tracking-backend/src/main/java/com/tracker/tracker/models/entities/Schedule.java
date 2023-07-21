@@ -1,5 +1,6 @@
 package com.tracker.tracker.models.entities;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,15 +33,25 @@ public class Schedule {
   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "arrival_station_id")
   private Station arrivalStation;
-  private LocalDateTime departureTime;
-  private LocalDateTime arrivalTime;
-  private LocalDateTime delay;
+  private OffsetDateTime departureTime;
+  private OffsetDateTime arrivalTime;
+  private OffsetDateTime delay;
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "station_id")
   private Station location;
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "train_id")
   private Train train;
-
+  private Boolean deleted =false;
+  @JsonIgnore
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private Users createdBy;
+  @JsonIgnore
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private Users modifiedBy;
+  @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = false)
+  private OffsetDateTime createdTime = OffsetDateTime.now();
+  @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = true)
+  private OffsetDateTime modifiedTime = OffsetDateTime.now();
 }
 
