@@ -1,6 +1,7 @@
 package com.tracker.tracker.models.entities;
+
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.UUID;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,22 +13,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Train {
+public class Payment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false)
   private UUID id;
-  private String name;
-  @ManyToOne(cascade = CascadeType.REFRESH)
-  @JoinColumn(name = "train_class_id")
-  private Class train_class;
+  private String method;
+  private String total;
   private Boolean deleted =false;
-  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
-  @JoinTable(name = "train_stations",
-          joinColumns = @JoinColumn(name = "train_id"),
-          inverseJoinColumns = @JoinColumn(name = "stations_id"))
-  private Set<Station> stations = new HashSet<>();
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;
@@ -38,5 +32,4 @@ public class Train {
   private OffsetDateTime createdTime = OffsetDateTime.now();
   @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = true)
   private OffsetDateTime modifiedTime = OffsetDateTime.now();
-
 }
