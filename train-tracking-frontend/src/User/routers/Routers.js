@@ -10,6 +10,8 @@ import NotFound from "../pages/NotFound";
 import Contact from "../pages/Contact";
 import Activities from "../pages/Activities";
 import ViewMap from "../pages/VIewMap";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
 
 const Routers = () => {
   return (
@@ -22,8 +24,10 @@ const Routers = () => {
       <Route path="/blogs" element={<Blog />} />
       <Route path="/blogs/:slug" element={<BlogDetails />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/activities" element={<Activities/>} />
-      <Route path="/viewMap" element={<ViewMap/>} />
+      <Route path="/activities" element={<Activities />} />
+      <Route path="/viewMap" element={<ViewMap />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

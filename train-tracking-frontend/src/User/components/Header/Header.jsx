@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-
+import Badge from "@mui/material/Badge";
+import MailIcon from "@mui/icons-material/Mail";
 import { Container, Col } from "reactstrap";
 import { Link, NavLink } from "react-router-dom";
 import "../../styles/header.css";
@@ -26,6 +27,14 @@ const navLinks = [
     path: "/contact",
     display: "Contact",
   },
+  {
+    path: "/login",
+    display: "Login",
+  },
+  {
+    path: "/register",
+    display: "Register",
+  },
 ];
 
 const Header = () => {
@@ -35,7 +44,6 @@ const Header = () => {
 
   return (
     <header className="header">
-  
       {/* ========== main navigation =========== */}
 
       <div className="main__navbar">
@@ -60,19 +68,10 @@ const Header = () => {
                 ))}
               </div>
             </div>
-
-            <div className="nav__right">
-                <Col lg="6" md="6" sm="6">
-              <div className="header__top__right d-flex align-items-center justify-content-end gap-3">
-                <Link to="#" className=" d-flex align-items-center gap-1">
-                  <i class="ri-login-circle-line"></i> Login
-                </Link>
-
-                <Link to="#" className=" d-flex align-items-center gap-1">
-                  <i class="ri-user-line"></i> Register
-                </Link>
-              </div>
-            </Col>
+            <div className="px-3 px-md-0">
+              <Badge color="primary" badgeContent={0} showZero>
+                <MailIcon sx={{ color: "white" }} />
+              </Badge>
             </div>
           </div>
         </Container>

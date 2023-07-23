@@ -94,4 +94,8 @@ section {
   .section__subtitle {
     font-size: 1.1rem;
   }
+
+  .mobile-hidden {
+    display: none;
+  } 
 }
