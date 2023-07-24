@@ -3,7 +3,7 @@ import "../styles/dashboard.css";
 import Singlecard from "../components/reuseable/SingleCard";
 
 import RevenueChart from "../charts/RevenueChart";
-import RevenueStatsChart from "../charts/TrainStatsChart";
+// import RevenueStatsChart from "../charts/TrainStatsChart";
 import TrainStatsChart from "../charts/TrainStatsChart";
 
 const trainObj = {
@@ -19,7 +19,6 @@ const revenueObj = {
 const ticketObj = {
   title: "All Ticket Sales",
   totalNumber: "85k",
-
 };
 
 const profitObj = {
