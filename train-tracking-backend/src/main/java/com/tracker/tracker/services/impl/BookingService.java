@@ -14,6 +14,8 @@ import com.tracker.tracker.models.response.BookingResponse;
 import com.tracker.tracker.repositories.*;
 import com.tracker.tracker.repositories.BookingRepository;
 import com.tracker.tracker.services.IBookingService;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,21 +39,23 @@ public class BookingService implements IBookingService {
         Users user = usersRepository.findById(userImpl.getId()).get();
 
         Booking newBooking =new Booking();
-//        for (ReservationRequest reservation : bookingRequest.getReservations()) {
-//            Reservation newReservation =new Reservation();
-//            newReservation.setSeatNumber(reservation.getSeatNumber());
-//            Class cla = classRepository.getById(reservation.getTrainClassId());
-//            newReservation.setTrain_class(cla);
-//            newReservation.setCreatedBy(user);
-//            newReservation.setCreatedTime(OffsetDateTime.now());
-//            newReservation.setModifiedTime(OffsetDateTime.now());
-//            Reservation saveRes = reservationRepository.save(newReservation);
-//        }
-//        newBooking.set(bookingRequest.getMethod());
-//        newBooking.setTotal(bookingRequest.getTotal());
-//        newBooking.setCreatedBy(user);
-//        newBooking.setCreatedTime(OffsetDateTime.now());
-//        newBooking.setModifiedTime(OffsetDateTime.now());
+
+        List<Reservation> reservations = new ArrayList<>();
+        for (ReservationRequest request: bookingRequest.getReservations()) {
+            Reservation reservation = new Reservation();
+            reservation.setSeatNumber(request.getSeatNumber());
+            Class trainClass = classRepository.getById(request.getTrainClassId());
+            reservation.setTrain_class(trainClass);
+            reservation.setCreatedBy(user);
+            reservation.setCreatedTime(OffsetDateTime.now());
+            reservations.add(reservation);
+        }
+
+
+        newBooking.setReservations(reservations);
+        newBooking.setCreatedBy(user);
+        newBooking.setCreatedTime(OffsetDateTime.now());
+        newBooking.setModifiedTime(OffsetDateTime.now());
         return BookingResponseConvertor(bookingRepository.save(newBooking));
     }
 

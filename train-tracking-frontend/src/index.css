@@ -1,6 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ======== google fonts ======== */
 @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap");
-
 /* ======= base style ====== */
 * {
   margin: 0;
@@ -94,4 +97,8 @@ section {
   .section__subtitle {
     font-size: 1.1rem;
   }
+
+  .mobile-hidden {
+    display: none;
+  } 
 }

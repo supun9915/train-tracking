@@ -54,6 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/tracker/login").permitAll()
 
                 .antMatchers(
+                        "/auth/login",
+                        "/auth/register",
                         "/v3/api-docs/**",
                         "/configuration/**",
                         "/swagger-ui/**",

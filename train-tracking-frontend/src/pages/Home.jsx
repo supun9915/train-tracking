@@ -7,8 +7,6 @@ import { Container, Row, Col } from "reactstrap";
 import FindTrainForm from "../components/UI/FindTrainForm";
 import AboutSection from "../components/UI/AboutSection";
 import ServicesList from "../components/UI/ServicesList";
-import trainData from "../assets/data/trainData";
-import TrainItem from "../components/UI/TrainItem";
 import Testimonial from "../components/UI/Testimonial";
 
 import BlogList from "../components/UI/BlogList";
