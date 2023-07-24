@@ -2,15 +2,12 @@ import React, { Fragment } from "react";
 
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import Routers from "../../routers/Routers";
 
-const Layout = () => {
+const Layout = ({ children }) => {
   return (
     <Fragment>
       <Header />
-      <div>
-        <Routers />
-      </div>
+      <div>{children}</div>
       <Footer />
     </Fragment>
   );

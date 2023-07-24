@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import Badge from "@mui/material/Badge";
 import MailIcon from "@mui/icons-material/Mail";
-import { Container, Col } from "reactstrap";
-import { Link, NavLink } from "react-router-dom";
+import { Container } from "reactstrap";
+import { NavLink } from "react-router-dom";
 import "../../styles/header.css";
 
 const navLinks = [
