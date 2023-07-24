@@ -3,7 +3,7 @@ import "../styles/train-revenue.css";
 import { useParams } from "react-router-dom";
 import TrackingChart from "../charts/TrackingChart";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import trainStaticsData from "../assets/dummy-data/trainStatics";
+// import trainStaticsData from "../assets/dummy-data/trainStatics";
 import bookingTrains from "../assets/dummy-data/booking-train";
 
 const TrainRevenue = () => {
@@ -15,7 +15,6 @@ const TrainRevenue = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [singleTrainItem]);
-
 
   return (
     <div className="sell__train">
