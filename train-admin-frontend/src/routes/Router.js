@@ -1,0 +1,27 @@
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+
+import Dashboard from "../pages/Dashboard";
+import Bookings from "../pages/Bookings";
+import Selltrain from "../pages/TrainRevenue";
+import Settings from "../pages/Settings";
+import TrainRevenue from "../pages/TrainRevenue";
+
+
+const Router = () => {
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={<Navigate to="/dashboard" element={<Dashboard />} />}
+      />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/bookings" element={<Bookings />} />
+      <Route path="/sell-train" element={<TrainRevenue/>} />
+      <Route path="/sell-train/:slug" element={<TrainRevenue/>} />
+      <Route path="/settings" element={<Settings />} />
+    </Routes>
+  );
+};
+
+export default Router;

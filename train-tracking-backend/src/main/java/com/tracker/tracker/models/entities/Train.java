@@ -1,15 +1,9 @@
 package com.tracker.tracker.models.entities;
+import java.time.OffsetDateTime;
+import java.util.*;
+import javax.persistence.*;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,12 +18,25 @@ public class Train {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false)
   private UUID id;
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "departure_location_id")
-  private Location departureLocation;
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "arrival_location_id")
-  private Location arrivalLocation;
-  private LocalDateTime departureTime;
-  private LocalDateTime arrivalTime;
+  private String name;
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  @JoinColumn(name = "train_class_id")
+  private Class train_class;
+  private Boolean deleted =false;
+  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+  @JoinTable(name = "train_stations",
+          joinColumns = @JoinColumn(name = "train_id"),
+          inverseJoinColumns = @JoinColumn(name = "stations_id"))
+  private Set<Station> stations = new HashSet<>();
+  @JsonIgnore
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private Users createdBy;
+  @JsonIgnore
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private Users modifiedBy;
+  @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = false)
+  private OffsetDateTime createdTime = OffsetDateTime.now();
+  @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = true)
+  private OffsetDateTime modifiedTime = OffsetDateTime.now();
+
 }
