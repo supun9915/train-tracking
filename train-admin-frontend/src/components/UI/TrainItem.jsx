@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from 'reactstrap';
+import { Button } from "reactstrap";
 
 const TrainItem = (props) => {
-  const { category, type, ticketPrice, imgUrl, trainName, groupSize } = props.item;
+  const { category, ticketPrice, imgUrl, trainName } = props.item;
   const navigate = useNavigate();
 
   const handleViewRevenue = () => {
@@ -26,11 +26,10 @@ const TrainItem = (props) => {
 
       <div className="train__item-bottom">
         <div className="train__bottom-left">
-        <Button onClick={handleViewRevenue}>View Revenue</Button>{' '}
+          <Button onClick={handleViewRevenue}>View Revenue</Button>{" "}
         </div>
 
         <p className="train__rent">${ticketPrice}/d</p>
-        
       </div>
     </div>
   );

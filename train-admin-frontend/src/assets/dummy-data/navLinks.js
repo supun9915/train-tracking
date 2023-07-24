@@ -20,6 +20,11 @@ const navLinks = [
     display: "Location Update",
   },
   {
+    path: "/station",
+    icon: "ri-settings-2-line",
+    display: "Station Management",
+  },
+  {
     path: "/abcd",
     icon: "ri-train-fill",
     display: "Train Management",
