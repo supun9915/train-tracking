@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import "remixicon/fonts/remixicon.css";
 import "react-circular-progressbar/dist/styles.css";
+import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
 import "./index.css";
 import store, { persistor } from "./redux/store";
