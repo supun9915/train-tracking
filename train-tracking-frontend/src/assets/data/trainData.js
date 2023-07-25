@@ -10,20 +10,19 @@ const trainData = [
     id: 1,
     trainName: "Rhunu Kumari",
     imgUrl: img01,
-    time:"11.30 p.m to 12.30 p.m",
+    time: "11.30 p.m to 12.30 p.m",
     price: 50,
     route:
-    " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
-  
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
   },
   {
     id: 2,
     trainName: "Galu Kumari",
     imgUrl: img02,
-    time:"11.30 p.m to 12.30 p.m",
+    time: "11.30 p.m to 12.30 p.m",
     price: 50,
     route:
-    " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
   },
 
   {
@@ -33,9 +32,8 @@ const trainData = [
     time: "11.30 p.m to 12.30 p.m",
     price: 65,
     route:
-    " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
-  
-    },
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
 
   {
     id: 4,
@@ -44,9 +42,8 @@ const trainData = [
     time: "11.30 p.m to 12.30 p.m",
     price: 70,
     route:
-    " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
-  
-    },
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
 
   {
     id: 5,
@@ -56,9 +53,78 @@ const trainData = [
     price: 45,
     speed: "20kmpl",
     route:
-    " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
-  
-    },
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
+  {
+    id: 5,
+    trainName: "Ella Devi",
+    imgUrl: img05,
+    time: "11.30 p.m to 12.30 p.m",
+    price: 45,
+    speed: "20kmpl",
+    route:
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
+  {
+    id: 5,
+    trainName: "Ella Devi",
+    imgUrl: img05,
+    time: "11.30 p.m to 12.30 p.m",
+    price: 45,
+    speed: "20kmpl",
+    route:
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
+  {
+    id: 5,
+    trainName: "Ella Devi",
+    imgUrl: img05,
+    time: "11.30 p.m to 12.30 p.m",
+    price: 45,
+    speed: "20kmpl",
+    route:
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
+  {
+    id: 5,
+    trainName: "Ella Devi",
+    imgUrl: img05,
+    time: "11.30 p.m to 12.30 p.m",
+    price: 45,
+    speed: "20kmpl",
+    route:
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
+  {
+    id: 5,
+    trainName: "Ella Devi",
+    imgUrl: img05,
+    time: "11.30 p.m to 12.30 p.m",
+    price: 45,
+    speed: "20kmpl",
+    route:
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
+  {
+    id: 5,
+    trainName: "Ella Devi",
+    imgUrl: img05,
+    time: "11.30 p.m to 12.30 p.m",
+    price: 45,
+    speed: "20kmpl",
+    route:
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
+  {
+    id: 5,
+    trainName: "Ella Devi",
+    imgUrl: img05,
+    time: "11.30 p.m to 12.30 p.m",
+    price: 45,
+    speed: "20kmpl",
+    route:
+      " Colombo - Kandy - Hatton - Nuwara Eliya - Elle - Badulla-Colombo - Galle - Matara-Colombo - Galoya - Polonnaruwa, Batticaloa, Trincomale -Colombo - Anuradhapura - Talaimannar/Vavuniya - Jaffna-Colombo- Negombo-Mt Laviniya - Kalutara-Puttalam-Avissawella",
+  },
 ];
 
 export default trainData;
