@@ -19,9 +19,7 @@ public class Passenger {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false)
   private UUID id;
-  private String name;
   private String nic;
-  private String dob;
   private String contact;
   private Boolean deleted =false;
   @JsonIgnore

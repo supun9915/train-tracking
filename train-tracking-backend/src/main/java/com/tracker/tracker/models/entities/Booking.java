@@ -30,9 +30,9 @@ public class Booking {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false)
   private UUID id;
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  @JoinColumn(name = "booking_id")
-  private List<Reservation> reservations = new ArrayList<>();
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "reservation_id")
+  private Reservation reservation;
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "passenger_id")
   private Passenger passenger;

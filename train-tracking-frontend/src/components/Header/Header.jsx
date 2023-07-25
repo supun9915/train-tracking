@@ -9,36 +9,34 @@ const navLinks = [
   {
     path: "/home",
     display: "Home",
+    safe: false,
   },
   {
     path: "/about",
     display: "About",
+    safe: false,
   },
   {
     path: "/activities",
     display: "You're Activities",
+    safe: true,
   },
 
   {
     path: "/blogs",
     display: "Blog",
+    safe: false,
   },
   {
     path: "/contact",
     display: "Contact",
-  },
-  {
-    path: "/login",
-    display: "Login",
-  },
-  {
-    path: "/register",
-    display: "Register",
+    safe: false,
   },
 ];
 
 const Header = () => {
   const menuRef = useRef(null);
+  const token = localStorage.getItem("token");
 
   const toggleMenu = () => menuRef.current.classList.toggle("menu__active");
 
@@ -55,23 +53,38 @@ const Header = () => {
 
             <div className="navigation" ref={menuRef} onClick={toggleMenu}>
               <div className="menu">
-                {navLinks.map((item, index) => (
-                  <NavLink
-                    to={item.path}
-                    className={(navClass) =>
-                      navClass.isActive ? "nav__active nav__item" : "nav__item"
-                    }
-                    key={index}
-                  >
-                    {item.display}
-                  </NavLink>
-                ))}
+                {navLinks
+                  .filter((item) => (token ? true : !item.safe))
+                  .map((item, index) => (
+                    <NavLink
+                      to={item.path}
+                      className={(navClass) =>
+                        navClass.isActive
+                          ? "nav__active nav__item"
+                          : "nav__item"
+                      }
+                      key={index}
+                    >
+                      {item.display}
+                    </NavLink>
+                  ))}
               </div>
             </div>
-            <div className="px-3 px-md-0">
-              <Badge color="primary" badgeContent={0} showZero>
-                <MailIcon sx={{ color: "white" }} />
-              </Badge>
+            <div className="px-3 px-md-0 flex gap-4">
+              {token ? (
+                <Badge color="primary" badgeContent={0} showZero>
+                  <MailIcon sx={{ color: "white" }} />
+                </Badge>
+              ) : (
+                <>
+                  <NavLink to="/login" className="nav__item">
+                    Login
+                  </NavLink>
+                  <NavLink to="/register" className="nav__item">
+                    Register
+                  </NavLink>
+                </>
+              )}
             </div>
           </div>
         </Container>

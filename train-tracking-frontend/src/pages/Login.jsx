@@ -10,7 +10,7 @@ const Login = () => {
         class="px-4 py-2 px-md-4 text-center text-lg-start min-vh-100 d-flex justify-content-center align-items-center find__trains-left"
         //style={{ background: "hsl(0, 0%, 96%)" }}
       >
-        <div class=" rounded-4 px-4">
+        <div class=" rounded-4 px-md-4">
           <div class="row gx-lg-5 align-items-center">
             <div class="col-lg-8 mb-8 mb-lg-0">
               <h1 class="my-5 display-3 fw-bold ls-tight text-red-400">
