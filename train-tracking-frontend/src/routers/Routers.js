@@ -18,6 +18,8 @@ import ViewMap from "../pages/VIewMap";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import PublicRoute from "./PublicRoute";
+import PrivateRoute from "./PrivateRoute";
+import Profile from "../pages/Profile";
 
 const Routers = () => {
   return (
@@ -27,16 +29,19 @@ const Routers = () => {
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/home" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/trains" element={<TrainListing />} />
-          <Route path="/trains/:slug" element={<TrainDetails />} />
           <Route path="/blogs" element={<Blog />} />
           <Route path="/blogs/:slug" element={<BlogDetails />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/activities" element={<Activities />} />
           <Route path="/viewMap" element={<ViewMap />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
+        </Route>
+        <Route element={<PrivateRoute />}>
+          <Route path="/trains" element={<TrainListing />} />
+          <Route path="/trains/:slug" element={<TrainDetails />} />
+          <Route path="/activities" element={<Activities />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>
     </Router>
