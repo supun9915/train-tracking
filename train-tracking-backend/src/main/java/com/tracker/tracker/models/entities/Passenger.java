@@ -22,6 +22,7 @@ public class Passenger {
   private String nic;
   private String contact;
   private Boolean deleted =false;
+
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;
@@ -32,4 +33,9 @@ public class Passenger {
   private OffsetDateTime createdTime = OffsetDateTime.now();
   @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = true)
   private OffsetDateTime modifiedTime = OffsetDateTime.now();
+
+  @OneToOne(orphanRemoval = true)
+  @JoinColumn(name = "user_id")
+  private Users user;
+
 }
