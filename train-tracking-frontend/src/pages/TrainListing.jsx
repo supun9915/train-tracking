@@ -4,29 +4,30 @@ import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 import TrainItem from "../components/UI/TrainItem";
 import trainData from "../assets/data/trainData";
+import FindTrainForm from "../components/UI/FindTrainForm";
 
 const TrainListing = () => {
   return (
     <Helmet title="Trains">
       <CommonSection title="Train Listing" />
-
-      <section>
+      <div>
         <Container>
-          <Row>
-            <Col lg="12">
-              <div className=" d-flex align-items-center gap-3 mb-5">
-                <span className=" d-flex align-items-center gap-2">
-                  <i class="ri-sort-asc"></i> Sort By
-                </span>
-
-                <select>
-                  <option>Select</option>
-                  <option value="low">Low to High</option>
-                  <option value="high">High to Low</option>
-                </select>
+          <Row className="form__row">
+            <Col lg="4" md="4">
+              <div className="find__trains-left">
+                <h2>Find your Train here</h2>
               </div>
             </Col>
 
+            <Col lg="8" md="8" sm="12">
+              <FindTrainForm />
+            </Col>
+          </Row>
+        </Container>
+      </div>
+      <section>
+        <Container>
+          <Row>
             {trainData.map((item) => (
               <TrainItem item={item} key={item.id} />
             ))}
