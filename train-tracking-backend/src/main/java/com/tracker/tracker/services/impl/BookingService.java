@@ -40,19 +40,14 @@ public class BookingService implements IBookingService {
 
         Booking newBooking =new Booking();
 
-        List<Reservation> reservations = new ArrayList<>();
-        for (ReservationRequest request: bookingRequest.getReservations()) {
-            Reservation reservation = new Reservation();
-            reservation.setSeatNumber(request.getSeatNumber());
-            Class trainClass = classRepository.getById(request.getTrainClassId());
-            reservation.setTrain_class(trainClass);
-            reservation.setCreatedBy(user);
-            reservation.setCreatedTime(OffsetDateTime.now());
-            reservations.add(reservation);
-        }
+        Reservation reservation = new Reservation();
+        reservation.setSeatNumber(bookingRequest.getReservation().getSeatNumber());
+        Class trainClass = classRepository.getById(bookingRequest.getReservation().getTrainClassId());
+        reservation.setTrain_class(trainClass);
+        reservation.setCreatedBy(user);
+        reservation.setCreatedTime(OffsetDateTime.now());
 
-
-        newBooking.setReservations(reservations);
+        newBooking.setReservation(reservation);
         newBooking.setCreatedBy(user);
         newBooking.setCreatedTime(OffsetDateTime.now());
         newBooking.setModifiedTime(OffsetDateTime.now());

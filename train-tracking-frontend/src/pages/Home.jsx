@@ -12,6 +12,8 @@ import Testimonial from "../components/UI/Testimonial";
 import BlogList from "../components/UI/BlogList";
 
 const Home = () => {
+  const token = localStorage.getItem("token");
+
   return (
     <Helmet title="Home">
       {/* ============= hero section =========== */}
