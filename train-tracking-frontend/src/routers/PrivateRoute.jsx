@@ -14,7 +14,7 @@ const PrivateRoute = () => {
       <Outlet />
     )
   ) : (
-    <Navigate to="/page/login" />
+    <Navigate to="/login" />
   );
 };
 

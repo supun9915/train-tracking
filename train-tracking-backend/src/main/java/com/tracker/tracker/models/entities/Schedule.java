@@ -43,6 +43,7 @@ public class Schedule {
   @JoinColumn(name = "train_id")
   private Train train;
   private Boolean deleted =false;
+  private int availableSeats;
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;

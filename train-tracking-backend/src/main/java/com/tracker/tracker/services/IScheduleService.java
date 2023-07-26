@@ -2,6 +2,7 @@ package com.tracker.tracker.services;
 
 import com.tracker.tracker.models.request.CreateSchedule;
 import com.tracker.tracker.models.request.DeleteRequest;
+import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.response.ScheduleGetResponse;
 import com.tracker.tracker.models.response.ScheduleResponse;
 
@@ -19,4 +20,6 @@ public interface IScheduleService {
     List<ScheduleGetResponse> getAllSchedule();
 
     ScheduleResponse deleteSchedule(DeleteRequest deleteRequest, Principal principal);
+
+  List<ScheduleResponse> findTrain(FindTrainRequest findTrainRequest, Principal principal);
 }

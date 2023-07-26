@@ -8,6 +8,7 @@ import com.tracker.tracker.models.entities.Train;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.CreateSchedule;
 import com.tracker.tracker.models.request.DeleteRequest;
+import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.response.ScheduleGetResponse;
 import com.tracker.tracker.models.response.ScheduleResponse;
 import com.tracker.tracker.repositories.*;
@@ -107,6 +108,13 @@ public class ScheduleService implements IScheduleService {
         DeleSchedule .setModifiedTime(OffsetDateTime.now());
 
         return ScheduleResponseConvertor(scheduleRepository.save(DeleSchedule));
+    }
+
+    @Override
+    public List<ScheduleResponse> findTrain(FindTrainRequest findTrainRequest,
+        Principal principal) {
+
+        return null;
     }
 
     private ScheduleGetResponse stationGetResponsesConverter(Schedule schedule) {
