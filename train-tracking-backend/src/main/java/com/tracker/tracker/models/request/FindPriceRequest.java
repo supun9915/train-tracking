@@ -9,4 +9,5 @@ public class FindPriceRequest {
   private UUID schedule;
   private UUID fromStation;
   private UUID toStation;
+  private int passengerCount;
 }
