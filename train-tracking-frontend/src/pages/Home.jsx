@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 
 import HeroSlider from "../components/UI/HeroSlider";
 import Helmet from "../components/Helmet/Helmet";
-import { request, GET } from "../api/ApiAdapter";
+
 import { Container, Row, Col } from "reactstrap";
 import FindTrainForm from "../components/UI/FindTrainForm";
 import AboutSection from "../components/UI/AboutSection";
@@ -12,20 +12,6 @@ import Testimonial from "../components/UI/Testimonial";
 import BlogList from "../components/UI/BlogList";
 
 const Home = () => {
-  const [stations, setStations] = useState([]);
-  const token = localStorage.getItem("token");
-
-  const getAllStations = async (row) => {
-    const res = await request(`/tracker/stations/getustation`, GET);
-    if (!res.error) {
-      const newStation = [];
-      res.forEach((item) => {
-        newStation.push({ label: item.name, value: item });
-      });
-      setStations(newStation);
-    }
-  };
-
   return (
     <Helmet title="Home">
       {/* ============= hero section =========== */}

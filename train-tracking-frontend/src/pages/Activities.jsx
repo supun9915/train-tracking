@@ -1,7 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { request, GET } from "../api/ApiAdapter";
 
 const Activities = () => {
   const [status, setStatus] = useState(false);
+  const [activities, setActivities] = useState([]);
+
+  const getAllActivities = async () => {
+    const res = await request(`/activities/getall`, GET);
+    if (!res.error) {
+      setActivities(res);
+    } else {
+      console.log(res);
+      // toast.error('Unable to load shuttle data..!');
+    }
+  };
+
+  // useEffect(() => {
+  //   getAllActivities();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const setPending = () => {
     if (status === true) {
@@ -38,57 +55,63 @@ const Activities = () => {
         </button>
       </div>
       <div className="  w-full">
-        <div className=" border-3 rounded-md mt-2 mb-2 border-slate-400 ml-4 w-3/4 flex">
-          <div className=" w-1/6">
-            <img
-              src="https://adaderanaenglish.s3.amazonaws.com/1659868127-train-services.jpg"
-              alt=""
-              style={{ maxWidth: "200px" }}
-              className="p-2"
-            />
-          </div>
-          <div className=" w-2/6">
-            <div className=" text-2xl font-bold">Train Name</div>
-            <div className=" text-sm text-slate-700 -mt-2 font-bold">Date</div>
-            <div className="flex">
-              <div className={status === false ? "visible" : "hidden"}>
-                Jurney will Start at 2023/03/25 08:45:54
+        {activities
+          .filter((t) => t.status.toLowerCase().include(status))
+          .map((activity) => (
+            <div className=" border-3 rounded-md mt-2 mb-2 border-slate-400 ml-4 w-3/4 flex">
+              <div className=" w-1/6">
+                <img
+                  src="https://adaderanaenglish.s3.amazonaws.com/1659868127-train-services.jpg"
+                  alt=""
+                  style={{ maxWidth: "200px" }}
+                  className="p-2"
+                />
               </div>
-              <div className={status === false ? "visible" : "hidden"}>
-                Jurney will Stop at 2023/03/25 08:45:54
+              <div className=" w-2/6">
+                <div className=" text-2xl font-bold">Train Name</div>
+                <div className=" text-sm text-slate-700 -mt-2 font-bold">
+                  Date
+                </div>
+                <div className="flex">
+                  <div className={status === false ? "visible" : "hidden"}>
+                    Jurney will Start at 2023/03/25 08:45:54
+                  </div>
+                  <div className={status === false ? "visible" : "hidden"}>
+                    Jurney will Stop at 2023/03/25 08:45:54
+                  </div>
+                  <div className={status === true ? "visible" : "hidden"}>
+                    Jurney Started at 2023/03/25 08:45:54
+                  </div>
+                  <div className={status === true ? "visible" : "hidden"}>
+                    Jurney Stoped at 2023/03/25 08:45:54
+                  </div>
+                </div>
               </div>
-              <div className={status === true ? "visible" : "hidden"}>
-                Jurney Started at 2023/03/25 08:45:54
+              <div className="w-1/6 justify-center flex items-center">
+                <div className=" text-2xl font-bold pr-2">Price =</div>
+                <div className=" text-2xl font-bold">Rs: 500/=</div>
               </div>
-              <div className={status === true ? "visible" : "hidden"}>
-                Jurney Stoped at 2023/03/25 08:45:54
+              <div className="w-2/6">
+                <div className=" ml-4 mt-4 text-xl font-bold">
+                  Current Location - Galle Station
+                </div>
+                <div
+                  className={`text-red-400 ml-4 mt-2 text-xl font-bold ${
+                    status === false ? "visible" : "hidden"
+                  }`}
+                >
+                  Train will Delay - 15min
+                </div>
+                <div
+                  className={`text-red-400 ml-4 mt-2 text-xl font-bold ${
+                    status === true ? "visible" : "hidden"
+                  }`}
+                >
+                  Train was Delayed - 15min
+                </div>
               </div>
             </div>
-          </div>
-          <div className="w-1/6 justify-center flex items-center">
-            <div className=" text-2xl font-bold pr-2">Price =</div>
-            <div className=" text-2xl font-bold">Rs: 500/=</div>
-          </div>
-          <div className="w-2/6">
-            <div className=" ml-4 mt-4 text-xl font-bold">
-              Current Location - Galle Station
-            </div>
-            <div
-              className={`text-red-400 ml-4 mt-2 text-xl font-bold ${
-                status === false ? "visible" : "hidden"
-              }`}
-            >
-              Train will Delay - 15min
-            </div>
-            <div
-              className={`text-red-400 ml-4 mt-2 text-xl font-bold ${
-                status === true ? "visible" : "hidden"
-              }`}
-            >
-              Train was Delayed - 15min
-            </div>
-          </div>
-        </div>
+          ))}
       </div>
     </div>
   );
