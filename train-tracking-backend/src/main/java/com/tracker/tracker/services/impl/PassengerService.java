@@ -41,19 +41,22 @@ public class PassengerService implements IPassengerService {
     Set<Role> roles = new HashSet<>();
     roles.add(role);
 
-    Users userCreateRequest = new Users();
-    userCreateRequest.setName(passengerRequest.getName());
-    userCreateRequest.setUsername(passengerRequest.getUsername());
-    userCreateRequest.setPassword(passwordEncoder.encode(passengerRequest.getPassword()));
-    userCreateRequest.setEmail(passengerRequest.getEmail());
-    userCreateRequest.setRoles(roles);
-    Users newUser = usersRepository.save(userCreateRequest);
+    Users newUser = new Users();
+    newUser.setName(passengerRequest.getName());
+    newUser.setUsername(passengerRequest.getUsername());
+    newUser.setPassword(passwordEncoder.encode(passengerRequest.getPassword()));
+    newUser.setEmail(passengerRequest.getEmail());
+    newUser.setRoles(roles);
+    newUser.setCreatedTime(OffsetDateTime.now());
+    newUser.setModifiedTime(OffsetDateTime.now());
+    Users user = usersRepository.save(newUser);
 
     Passenger newPassenger =new Passenger();
     newPassenger.setCreatedTime(OffsetDateTime.now());
     newPassenger.setContact(passengerRequest.getContact());
     newPassenger.setNic(passengerRequest.getNic());
-    newPassenger.setCreatedBy(newUser);
+    newPassenger.setCreatedBy(user);
+    newPassenger.setUser(user);
     return PassengerResponseConvertor(passengerRepository.save(newPassenger));
   }
 
@@ -77,16 +80,18 @@ public class PassengerService implements IPassengerService {
     passenger.setContact(passengerRequest.getContact());
     passenger.setNic(passengerRequest.getNic());
     passenger.setCreatedBy(newUser);
+    passenger.setUser(newUser);
     return PassengerResponseConvertor(passengerRepository.save(passenger));
   }
 
   @Override
-  public PassengerGetResponse getPayment(UUID passengerId) {
-    Passenger passenger = passengerRepository.getById(passengerId);
+  public PassengerGetResponse getPassenger(UUID userId) {
+    Passenger passenger = passengerRepository.findByUser_Id(userId);
     PassengerGetResponse passengerGetResponse = new PassengerGetResponse();
+    passengerGetResponse.setId(passenger.getId());
     passengerGetResponse.setName(passenger.getUser().getName());
-    passengerGetResponse.setUsername(passengerGetResponse.getUsername());
-    passengerGetResponse.setEmail(passengerGetResponse.getEmail());
+    passengerGetResponse.setUsername(passenger.getUser().getUsername());
+    passengerGetResponse.setEmail(passenger.getUser().getEmail());
     passengerGetResponse.setContact(passenger.getContact());
     passengerGetResponse.setContact(passenger.getContact());
     passengerGetResponse.setNic(passenger.getNic());
@@ -94,19 +99,19 @@ public class PassengerService implements IPassengerService {
   }
 
   @Override
-  public List<PassengerGetResponse> getAllPayment() {
+  public List<PassengerGetResponse> getAllPassenger() {
     List<PassengerGetResponse> passengerGetResponses = new ArrayList<>();
     List<Passenger> passengers = passengerRepository.findAll();
 
     for (Passenger passenger:passengers) {
       PassengerGetResponse passengerGetResponse = new PassengerGetResponse();
+      passengerGetResponse.setId(passenger.getId());
       passengerGetResponse.setName(passenger.getUser().getName());
-      passengerGetResponse.setUsername(passengerGetResponse.getUsername());
-      passengerGetResponse.setEmail(passengerGetResponse.getEmail());
-      passengerGetResponse.setContact(passenger.getContact());
+      passengerGetResponse.setUsername(passenger.getUser().getUsername());
+      passengerGetResponse.setEmail(passenger.getUser().getEmail());
       passengerGetResponse.setContact(passenger.getContact());
       passengerGetResponse.setNic(passenger.getNic());
-      passengers.add(passenger);
+      passengerGetResponses.add(passengerGetResponse);
     }
 
     return passengerGetResponses;

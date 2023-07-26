@@ -7,6 +7,6 @@ import java.util.UUID;
 @Data
 public class ReservationGetResponse {
     private UUID id;
-    private UUID trainClassId;
+    private String trainClass;
     private int seatNumber;
 }

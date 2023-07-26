@@ -10,6 +10,8 @@ import java.util.UUID;
 public class TrainGetResponse {
     private UUID id;
     private String name;
-    private String trainClass;
+    private int firstClassCount;
+    private int secondClassCount;
+    private int thirdClassCount;
     private Set<IdWithName> stations;
 }

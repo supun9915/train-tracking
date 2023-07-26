@@ -2,15 +2,12 @@ package com.tracker.tracker.services.impl;
 
 import com.tracker.tracker.auth.UserDetailServiceImpl;
 import com.tracker.tracker.auth.UserDetailsImpl;
-import com.tracker.tracker.models.entities.Class;
 import com.tracker.tracker.models.entities.Payment;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.PaymentCreate;
 import com.tracker.tracker.models.response.PaymentGetResponse;
 import com.tracker.tracker.models.response.PaymentResponse;
-import com.tracker.tracker.repositories.ClassRepository;
-import com.tracker.tracker.repositories.PaymentRepository;
 import com.tracker.tracker.repositories.PaymentRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.IPaymentService;
@@ -29,7 +26,7 @@ public class PaymentService implements IPaymentService {
     private final UserRepository usersRepository;
     private final PaymentRepository paymentRepository;
     private final UserDetailServiceImpl userDetailsService;
-    private final ClassRepository classRepository;
+
     @Override
     public PaymentResponse paymentCreate(PaymentCreate paymentRequest, Principal principal) {
         UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());

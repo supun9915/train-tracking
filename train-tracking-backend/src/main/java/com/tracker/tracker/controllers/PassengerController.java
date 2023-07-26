@@ -1,7 +1,7 @@
 package com.tracker.tracker.controllers;
 
 import com.tracker.tracker.models.entities.Passenger;
-import com.tracker.tracker.models.request.CreateStation;
+import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.PassengerCreate;
 import com.tracker.tracker.repositories.PassengerRepository;
 import com.tracker.tracker.repositories.UserRepository;
@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PassengerController {
   private final UserRepository userRepository;
   private final IPassengerService passengerService;
+  private final PassengerRepository passengerRepository;
 
   @PostMapping("/create")
   public ResponseEntity<?> createPassenger(@Valid @RequestBody PassengerCreate createPassenger) {
@@ -42,12 +42,12 @@ public class PassengerController {
   }
 
   @PreAuthorize("hasAnyAuthority('Super Admin','Passenger')")
-  @GetMapping("/getupayment")
+  @GetMapping("/get")
   public ResponseEntity<?> getAllPassenger(@RequestParam(value = "passengerId", required = false)UUID passengerId){
     if (passengerId != null) {
-      return ResponseEntity.ok(passengerService.getPayment(passengerId));
+      return ResponseEntity.ok(passengerService.getPassenger(passengerId));
     } else {
-      return ResponseEntity.ok(passengerService.getAllPayment());
+      return ResponseEntity.ok(passengerService.getAllPassenger());
     }
   }
 
@@ -56,7 +56,10 @@ public class PassengerController {
   public ResponseEntity<?> updatePassenger(@PathVariable UUID id,
       @Valid @RequestBody PassengerCreate createPassenger,
       Principal principal) {
-    if (userRepository.findByUsername(createPassenger.getUsername()).isPresent()) {
+    Passenger passenger = passengerRepository.getById(id);
+    Users user = userRepository.getById(passenger.getUser().getId());
+
+    if (!user.getUsername().equals(createPassenger.getUsername()) && userRepository.findByUsername(createPassenger.getUsername()).isPresent()) {
       return new ResponseEntity<>("Username already exits.", HttpStatus.BAD_REQUEST);
     } else {
       return ResponseEntity.ok(passengerService.passengerUpdate(id, createPassenger, principal));

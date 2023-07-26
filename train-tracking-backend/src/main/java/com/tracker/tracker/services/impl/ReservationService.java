@@ -2,18 +2,13 @@ package com.tracker.tracker.services.impl;
 
 import com.tracker.tracker.auth.UserDetailServiceImpl;
 import com.tracker.tracker.auth.UserDetailsImpl;
-import com.tracker.tracker.models.entities.Class;
 import com.tracker.tracker.models.entities.Reservation;
-import com.tracker.tracker.models.entities.Train;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.ReservationRequest;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.response.ReservationResponse;
 import com.tracker.tracker.models.response.ReservationGetResponse;
-import com.tracker.tracker.models.response.ReservationResponse;
-import com.tracker.tracker.repositories.ClassRepository;
 import com.tracker.tracker.repositories.ReservationRepository;
-import com.tracker.tracker.repositories.TrainRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.IReservationService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +26,6 @@ public class ReservationService implements IReservationService {
     private final UserRepository usersRepository;
     private final ReservationRepository reservationRepository;
     private final UserDetailServiceImpl userDetailsService;
-    private final ClassRepository classRepository;
     @Override
     public ReservationResponse reservationRequest(ReservationRequest reservationRequest, Principal principal) {
         UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
@@ -39,8 +33,7 @@ public class ReservationService implements IReservationService {
 
         Reservation newReservation =new Reservation();
         newReservation.setSeatNumber(reservationRequest.getSeatNumber());
-        Class cla = classRepository.getById(reservationRequest.getTrainClassId());
-        newReservation.setTrain_class(cla);
+        newReservation.setTrainClass(reservationRequest.getTrainClass());
         newReservation.setCreatedBy(user);
         newReservation.setCreatedTime(OffsetDateTime.now());
         newReservation.setModifiedTime(OffsetDateTime.now());
@@ -53,8 +46,7 @@ public class ReservationService implements IReservationService {
         Users user = usersRepository.findById(userImpl.getId()).get();
         Reservation updateReservation = reservationRepository.findById(id).get();
         updateReservation.setSeatNumber(createReservation.getSeatNumber());
-        Class cla = classRepository.getById(createReservation.getTrainClassId());
-        updateReservation.setTrain_class(cla);
+        updateReservation.setTrainClass(createReservation.getTrainClass());
         updateReservation.setModifiedBy(user);
         updateReservation.setModifiedTime(OffsetDateTime.now());
         return ReservationResponseConvertor(reservationRepository.save(updateReservation));
@@ -99,7 +91,7 @@ public class ReservationService implements IReservationService {
         ReservationGetResponse stationGetResponse = new ReservationGetResponse();
         stationGetResponse.setId(reservation.getId());
         stationGetResponse.setSeatNumber(reservation.getSeatNumber());
-        stationGetResponse.setTrainClassId(reservation.getTrain_class().getId());
+        stationGetResponse.setTrainClass(reservation.getTrainClass());
 
         return stationGetResponse;
     }

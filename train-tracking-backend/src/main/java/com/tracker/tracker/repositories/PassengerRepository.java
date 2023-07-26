@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PassengerRepository extends JpaRepository<Passenger, UUID> {
 
+  Passenger findByUser_Id(UUID id);
+
 }

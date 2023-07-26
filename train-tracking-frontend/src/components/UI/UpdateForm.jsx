@@ -36,9 +36,10 @@ const UpdateForm = () => {
 
   const getAllShuttles = async (e) => {
     console.log(e);
-    const res = await request(`user/get/${e}`, GET);
+    const res = await request(`/passenger/get?passengerId=${e}`, GET);
     if (!res.error) {
       setUser({
+        id: res?.id,
         name: res?.name,
         email: res?.email,
         nic: res?.nic,
@@ -53,7 +54,7 @@ const UpdateForm = () => {
   };
 
   const updateAccount = async () => {
-    const res = await request(`v1/user/update/${user.id}`, PUT, {
+    const res = await request(`/passenger/update/${user.id}`, PUT, {
       name: user.name,
       email: user.email,
       nic: user.nic,
@@ -87,10 +88,10 @@ const UpdateForm = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // useEffect(() => {
-  //   getAllShuttles(authUser.id);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  useEffect(() => {
+    getAllShuttles(authUser.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div class="mb-4 mb-lg-0 w-100">

@@ -32,7 +32,7 @@ const Register = () => {
 
   const createAccount = async () => {
     if (errors.length === 0) {
-      const res = await request("v1/user/create", POST, {
+      const res = await request("/passenger/create", POST, {
         ...user,
       });
       if (!res.error) {

@@ -34,7 +34,7 @@ public class Passenger {
   @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", insertable = true, updatable = true)
   private OffsetDateTime modifiedTime = OffsetDateTime.now();
 
-  @OneToOne(orphanRemoval = true)
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id")
   private Users user;
 

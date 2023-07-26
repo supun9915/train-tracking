@@ -1,8 +1,6 @@
 package com.tracker.tracker.services;
 
-import com.tracker.tracker.models.request.BookingCreate;
 import com.tracker.tracker.models.request.PassengerCreate;
-import com.tracker.tracker.models.response.BookingResponse;
 import com.tracker.tracker.models.response.PassengerGetResponse;
 import com.tracker.tracker.models.response.PassengerResponse;
 import java.security.Principal;
@@ -14,7 +12,7 @@ public interface IPassengerService {
 
   PassengerResponse passengerUpdate(UUID id, PassengerCreate passengerRequest, Principal principal);
 
-  PassengerGetResponse getPayment(UUID passengerId);
+  PassengerGetResponse getPassenger(UUID passengerId);
 
-  List<PassengerGetResponse> getAllPayment();
+  List<PassengerGetResponse> getAllPassenger();
 }
