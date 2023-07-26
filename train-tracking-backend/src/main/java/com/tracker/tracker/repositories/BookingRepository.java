@@ -11,4 +11,7 @@ import java.util.UUID;
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
     List<Booking> findByDeletedOrderByCreatedTimeDesc(Boolean deleted);
 
+    List<Booking> findByCreatedBy_Id(UUID id);
+
+
 }

@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Row, Col } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 import TrainItem from "../components/UI/TrainItem";
 import trainData from "../assets/data/trainData";
 import FindTrainForm from "../components/UI/FindTrainForm";
+import { useParams } from "react-router-dom";
 
 const TrainListing = () => {
+  const { trainClass } = useParams();
+
+  useEffect(() => {
+    console.log(trainClass);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Helmet title="Trains">
       <CommonSection title="Train Listing" />

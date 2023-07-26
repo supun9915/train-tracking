@@ -1,12 +1,17 @@
 package com.tracker.tracker.controllers;
 
+import com.tracker.tracker.models.entities.Booking;
 import com.tracker.tracker.models.entities.Passenger;
+import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.entities.Users;
+import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.request.PassengerCreate;
 import com.tracker.tracker.repositories.PassengerRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.IPassengerService;
 import java.security.Principal;
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -64,5 +70,19 @@ public class PassengerController {
     } else {
       return ResponseEntity.ok(passengerService.passengerUpdate(id, createPassenger, principal));
     }
+  }
+
+  @PreAuthorize("hasAnyAuthority('Passenger')")
+  @GetMapping("/activity/ongoing")
+  public ResponseEntity<?> onGoingActivities(Principal principal) {
+    List<Booking> scheduleResponses = passengerService.onGoingActivities(principal);
+    return ResponseEntity.ok(scheduleResponses);
+  }
+
+  @PreAuthorize("hasAnyAuthority('Passenger')")
+  @GetMapping("/activity/completed/{fromDate}/{toDate}")
+  public ResponseEntity<?> completedActivities(Principal principal) {
+    List<Booking> scheduleResponses = passengerService.completedActivities(principal);
+    return ResponseEntity.ok(scheduleResponses);
   }
 }

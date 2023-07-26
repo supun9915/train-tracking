@@ -1,8 +1,12 @@
 package com.tracker.tracker.services.impl;
 
 import com.tracker.tracker.auth.UserDetailServiceImpl;
+import com.tracker.tracker.auth.UserDetailsImpl;
+import com.tracker.tracker.models.entities.Booking;
 import com.tracker.tracker.models.entities.Passenger;
+import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.response.PassengerGetResponse;
+import com.tracker.tracker.repositories.BookingRepository;
 import com.tracker.tracker.repositories.PassengerRepository;
 import com.tracker.tracker.models.entities.Role;
 import com.tracker.tracker.models.entities.Users;
@@ -11,6 +15,7 @@ import com.tracker.tracker.models.response.PassengerResponse;
 import com.tracker.tracker.repositories.RoleRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.IPassengerService;
+import java.awt.print.Book;
 import java.security.Principal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -31,6 +36,7 @@ public class PassengerService implements IPassengerService {
   private final RoleRepository roleRepository;
   private final UserService userService;
   private final PassengerRepository passengerRepository;
+  private final BookingRepository bookingRepository;
 
   @Autowired
   PasswordEncoder passwordEncoder;
@@ -115,6 +121,21 @@ public class PassengerService implements IPassengerService {
     }
 
     return passengerGetResponses;
+  }
+
+  @Override
+  public List<Booking> onGoingActivities(Principal principal) {
+    UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
+    Users user = usersRepository.findById(userImpl.getId()).get();
+    return null;
+  }
+
+  @Override
+  public List<Booking> completedActivities(Principal principal) {
+    UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
+    Users user = usersRepository.findById(userImpl.getId()).get();
+    List<Booking> bookings = bookingRepository.findByCreatedBy_Id(user.getId());
+    return bookings;
   }
 
   private PassengerResponse PassengerResponseConvertor(Passenger passenger) {

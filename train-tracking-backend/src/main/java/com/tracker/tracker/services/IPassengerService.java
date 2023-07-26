@@ -1,5 +1,8 @@
 package com.tracker.tracker.services;
 
+import com.tracker.tracker.models.entities.Booking;
+import com.tracker.tracker.models.entities.Schedule;
+import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.request.PassengerCreate;
 import com.tracker.tracker.models.response.PassengerGetResponse;
 import com.tracker.tracker.models.response.PassengerResponse;
@@ -15,4 +18,8 @@ public interface IPassengerService {
   PassengerGetResponse getPassenger(UUID passengerId);
 
   List<PassengerGetResponse> getAllPassenger();
+
+  List<Booking> onGoingActivities(Principal principal);
+
+  List<Booking> completedActivities(Principal principal);
 }
