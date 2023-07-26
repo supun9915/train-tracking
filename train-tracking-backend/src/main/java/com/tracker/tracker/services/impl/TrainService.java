@@ -5,6 +5,7 @@ import com.tracker.tracker.auth.UserDetailsImpl;
 import com.tracker.tracker.models.entities.Role;
 import com.tracker.tracker.models.entities.Station;
 import com.tracker.tracker.models.entities.Train;
+import com.tracker.tracker.models.entities.TrainStation;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.json.IdWithName;
 import com.tracker.tracker.models.request.CreateTrain;
@@ -16,6 +17,7 @@ import com.tracker.tracker.models.response.UserGetResponse;
 import com.tracker.tracker.models.response.UserResponse;
 import com.tracker.tracker.repositories.StationRepository;
 import com.tracker.tracker.repositories.TrainRepository;
+import com.tracker.tracker.repositories.TranStationRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.ITrainService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class TrainService implements ITrainService {
     private final UserRepository usersRepository;
     private final StationRepository stationRepository;
     private final UserDetailServiceImpl userDetailsService;
+    private final TranStationRepository trainStationRepository;
     @Override
     public TrainResponse createTrain(CreateTrain createTrain, Principal principal) {
         UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
@@ -44,13 +47,18 @@ public class TrainService implements ITrainService {
         newTrain.setSecondClassCount(createTrain.getSecondClassCount());
         newTrain.setThirdClassCount(createTrain.getThirdClassCount());
 
-        Set<Station> stations = new HashSet<>();
+        Set<TrainStation> trainStations = new HashSet<>();
         if (createTrain.getStation().size() > 0) {
+            int count = 0;
             for (UUID uuid: createTrain.getStation()) {
-                stations.add(stationRepository.findById(uuid).get());
+                TrainStation trainStation = new TrainStation();
+                Station station = stationRepository.findById(uuid).get();
+                trainStation.setStation(station);
+                trainStation.setStationOrder(count);
+                trainStations.add(trainStationRepository.save(trainStation));
             }
         }
-        newTrain.setStations(stations);
+        newTrain.setTrainStations(trainStations);
         newTrain.setCreatedBy(user);
         newTrain.setCreatedTime(OffsetDateTime.now());
         newTrain.setModifiedTime(OffsetDateTime.now());
@@ -114,10 +122,10 @@ public class TrainService implements ITrainService {
         trainGetResponse.setSecondClassCount(train.getSecondClassCount());
         trainGetResponse.setThirdClassCount(train.getThirdClassCount());
         trainGetResponse.setName(train.getName());
-        for (Station station: train.getStations()) {
+        for (TrainStation trainStation: train.getTrainStations()) {
             IdWithName idWithName =new IdWithName();
-            idWithName.setId(String.valueOf(station.getId()));
-            idWithName.setName(station.getName());
+            idWithName.setId(String.valueOf(trainStation.getStation().getId()));
+            idWithName.setName(trainStation.getStation().getName());
             stations.add(idWithName);
         }
         trainGetResponse.setStations(stations);

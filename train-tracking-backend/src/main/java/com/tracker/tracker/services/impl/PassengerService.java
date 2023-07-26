@@ -127,14 +127,17 @@ public class PassengerService implements IPassengerService {
   public List<Booking> onGoingActivities(Principal principal) {
     UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
     Users user = usersRepository.findById(userImpl.getId()).get();
-    return null;
+    List<Booking> bookings =
+        bookingRepository.findByCreatedBy_IdAndSchedule_ArrivalTimeLessThan(user.getId(), OffsetDateTime.now());
+    return bookings;
   }
 
   @Override
   public List<Booking> completedActivities(Principal principal) {
     UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
     Users user = usersRepository.findById(userImpl.getId()).get();
-    List<Booking> bookings = bookingRepository.findByCreatedBy_Id(user.getId());
+    List<Booking> bookings =
+        bookingRepository.findByCreatedBy_IdAndSchedule_ArrivalTimeGreaterThan(user.getId(), OffsetDateTime.now());
     return bookings;
   }
 

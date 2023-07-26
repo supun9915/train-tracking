@@ -23,11 +23,10 @@ public class Train {
   private int secondClassCount;
   private int thirdClassCount;
   private Boolean deleted =false;
-  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
-  @JoinTable(name = "train_stations",
-          joinColumns = @JoinColumn(name = "train_id"),
-          inverseJoinColumns = @JoinColumn(name = "stations_id"))
-  private Set<Station> stations = new HashSet<>();
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinColumn(name = "train_id")
+  @OrderBy("stationOrder ASC")
+  private Set<TrainStation> trainStations = new HashSet<>();
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;

@@ -1,6 +1,7 @@
 package com.tracker.tracker.repositories;
 
 import com.tracker.tracker.models.entities.Booking;
+import java.time.OffsetDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,14 @@ import java.util.UUID;
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
     List<Booking> findByDeletedOrderByCreatedTimeDesc(Boolean deleted);
 
-    List<Booking> findByCreatedBy_Id(UUID id);
+    List<Booking> findByCreatedBy_IdAndSchedule_ArrivalTimeGreaterThan(UUID id,
+        OffsetDateTime arrivalTime);
+
+
+
+    List<Booking> findByCreatedBy_IdAndSchedule_ArrivalTimeLessThan(UUID id,
+        OffsetDateTime arrivalTime);
+
 
 
 }
