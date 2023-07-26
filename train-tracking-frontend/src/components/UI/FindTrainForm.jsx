@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/find-train-form.css";
 import Select from "react-select";
 import { Form, FormGroup } from "reactstrap";
@@ -8,11 +8,19 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
+import { request, GET } from "../../api/ApiAdapter";
 import { useNavigate } from "react-router-dom";
+import { date } from "yup";
 
 const FindTrainForm = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [startSt, setStartSt] = useState();
+  const [endDt, setEndSt] = useState();
+  const [find, setFind] = useState({
+    date: "",
+    count: "",
+  });
 
   const toggleDropdown = () => {
     setDropdownOpen((prevState) => !prevState);
@@ -21,9 +29,38 @@ const FindTrainForm = () => {
   const handleClassSelect = (event) => {
     setSelectedClass(event.target.value);
   };
+
   const navigate = useNavigate();
   const handleFindTrain = () => {
-    navigate(`/trains/${selectedClass}`);
+    navigate(
+      `/Trains/${selectedClass}/${startSt.value.id}/${endDt.value.id}/${find.count}/${find.date}`
+    );
+  };
+  // console.log(selectedClass);
+  const [stations, setStations] = useState([]);
+
+  const getAllStations = async (row) => {
+    const res = await request(`/station/getustation`, GET);
+    if (!res.error) {
+      const newStation = [];
+      res.forEach((item) => {
+        newStation.push({ label: item.name, value: item });
+      });
+      setStations(newStation);
+    }
+  };
+
+  useEffect(() => {
+    getAllStations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onFindChange = (e) => {
+    // console.log(e);
+    setFind((state) => ({
+      ...state,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
@@ -31,16 +68,38 @@ const FindTrainForm = () => {
       <div className="d-flex align-items-center justify-content-between flex-wrap">
         <FormGroup className="form__group">
           {/* <input type="text" placeholder="From Station" required /> */}
-          <Select placeholder="From Station" />
+          <Select
+            options={stations}
+            onChange={(e) => {
+              setStartSt(e);
+            }}
+            value={startSt}
+            placeholder="From Station"
+          />
         </FormGroup>
 
         <FormGroup className="form__group">
           {/* <input type="text" placeholder="To Station" required /> */}
-          <Select placeholder="To Station" />
+          <Select
+            options={stations}
+            onChange={(e) => {
+              setEndSt(e);
+            }}
+            value={endDt}
+            placeholder="To Station"
+          />
         </FormGroup>
 
         <FormGroup className="form__group">
-          <input type="date" placeholder="Journey date" required />
+          <input
+            type="date"
+            name="date"
+            id="date"
+            value={find.date}
+            onChange={(e) => onFindChange(e)}
+            placeholder="Journey date"
+            required
+          />
         </FormGroup>
 
         <FormGroup className="form__group">
@@ -79,11 +138,29 @@ const FindTrainForm = () => {
         </FormGroup>
 
         <FormGroup className="form__group">
-          <input type="text" placeholder="No of Passengers" required />
+          <input
+            type="text"
+            id="count"
+            name="count"
+            onChange={(e) => onFindChange(e)}
+            value={find.count}
+            placeholder="No of Passengers"
+            required
+          />
         </FormGroup>
 
         <FormGroup className="form__group">
-          <button className="btn find__train-btn" onClick={handleFindTrain}>
+          <button
+            className="btn find__train-btn"
+            disabled={
+              startSt === undefined ||
+              endDt === undefined ||
+              find.date === "" ||
+              selectedClass === null ||
+              find.count === ""
+            }
+            onClick={handleFindTrain}
+          >
             Find Train
           </button>
         </FormGroup>

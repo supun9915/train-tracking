@@ -34,9 +34,7 @@ const TrainDetails = () => {
                   </h6>
                 </div>
 
-                <p className="section__description">
-                  {singleTrainItem.route}
-                </p>
+                <p className="section__description">{singleTrainItem.route}</p>
               </div>
             </Col>
 
