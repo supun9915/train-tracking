@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { request, POST } from "../../api/ApiAdapter";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const [errors, setErrors] = useState([]);
+  const navigate = useNavigate();
+  const phoneValidation = /^([\s\(\)\-]*\d[\s\(\)\-]*){8}$/;
+  const userSchema = Yup.object({
+    name: Yup.string().required(),
+    email: Yup.string().required().email(),
+    nic: Yup.string().required(),
+    contact: Yup.string().required(),
+    username: Yup.string().required(),
+    password: Yup.string().required(),
+  });
+
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -13,7 +26,7 @@ const Register = () => {
   });
 
   const handleCloseModal = () => {
-    setUser({
+    setValues({
       name: "",
       email: "",
       nic: "",
@@ -23,50 +36,54 @@ const Register = () => {
     });
   };
 
-  const onChange = (e) => {
-    setUser((state) => ({
-      ...state,
-      [e.target.name]: e.target.value.trim(),
-    }));
-  };
-
   const createAccount = async () => {
-    if (errors.length === 0) {
-      const res = await request("/passenger/create", POST, {
-        ...user,
-      });
-      if (!res.error) {
-        // toast.success("Created");
-        handleCloseModal();
-      } else {
-        // toast.error(res.error.response.data);
-      }
+    const res = await request("/passenger/create", POST, {
+      ...values,
+    });
+    if (!res.error) {
+      // toast.success("Created");
+      navigate("/login");
     } else {
-      // toast.error("Required field cannot be empty");
+      // toast.error(res.error.response.data);
     }
   };
 
-  useEffect(() => {
-    // handleCloseModal();
-    const newErrors = [];
-    if (user.name === "") {
-      newErrors.push({ label: "user.name", value: "Required" });
-    }
-    if (user.email === "") {
-      newErrors.push({ label: "user.email", value: "Required" });
-    }
-    if (user.contact === "") {
-      newErrors.push({ label: "user.contact", value: "Required" });
-    }
-    if (user.password === "") {
-      newErrors.push({ label: "user.password", value: "Required" });
-    }
-    if (user.username === "") {
-      newErrors.push({ label: "user.username", value: "Required" });
-    }
-    setErrors([...newErrors]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  const {
+    setValues,
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+  } = useFormik({
+    initialValues: user,
+    validationSchema: userSchema,
+    onSubmit: createAccount,
+  });
+
+  // useEffect(() => {
+  //   // handleCloseModal();
+  //   const newErrors = [];
+  //   if (user.name === "") {
+  //     newErrors.push({ label: "user.name", value: "Required" });
+  //   }
+  //   if (user.email === "") {
+  //     newErrors.push({ label: "user.email", value: "Required" });
+  //   }
+  //   if (user.contact === "") {
+  //     newErrors.push({ label: "user.contact", value: "Required" });
+  //   }
+  //   if (user.password === "") {
+  //     newErrors.push({ label: "user.password", value: "Required" });
+  //   }
+  //   if (user.username === "") {
+  //     newErrors.push({ label: "user.username", value: "Required" });
+  //   }
+  //   setErrors([...newErrors]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [user]);
 
   return (
     <div class="mb-4 mb-lg-0 w-100">
@@ -85,9 +102,13 @@ const Register = () => {
                   id="name"
                   name="name"
                   aria-describedby="emailHelp"
-                  value={user.name}
-                  onChange={(e) => onChange(e)}
+                  value={values.name}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
+                <div className="text-red-500">
+                  {errors.name && touched.name && errors.name}
+                </div>
               </div>
               <div class="mb-3 w-full">
                 <label for="exampleInputEmail1" class="form-label">
@@ -99,9 +120,13 @@ const Register = () => {
                   id="email"
                   name="email"
                   aria-describedby="emailHelp"
-                  value={user.email}
-                  onChange={(e) => onChange(e)}
+                  value={values.email}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
+                <div className="text-red-500">
+                  {errors.email && touched.email && errors.email}
+                </div>
               </div>
             </div>
             <div className="md:flex md:justify-between md:gap-4">
@@ -118,9 +143,13 @@ const Register = () => {
                   id="nic"
                   name="nic"
                   aria-describedby="emailHelp"
-                  value={user.nic}
-                  onChange={(e) => onChange(e)}
+                  value={values.nic}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
+                <div className="text-red-500">
+                  {errors.nic && touched.nic && errors.nic}
+                </div>
               </div>
               <div class="mb-3 w-full">
                 <label
@@ -135,9 +164,13 @@ const Register = () => {
                   id="contact"
                   name="contact"
                   aria-describedby="emailHelp"
-                  value={user.contact}
-                  onChange={(e) => onChange(e)}
+                  value={values.contact}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
+                <div className="text-red-500">
+                  {errors.contact && touched.contact && errors.contact}
+                </div>
               </div>
             </div>
             <div className="md:flex md:justify-between md:gap-4">
@@ -151,9 +184,13 @@ const Register = () => {
                   id="username"
                   name="username"
                   aria-describedby="emailHelp"
-                  value={user.username}
-                  onChange={(e) => onChange(e)}
+                  value={values.username}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
+                <div className="text-red-500">
+                  {errors.username && touched.username && errors.username}
+                </div>
               </div>
               <div class="mb-3 w-full">
                 <label for="exampleInputEmail1" class="form-label">
@@ -165,20 +202,21 @@ const Register = () => {
                   id="password"
                   name="password"
                   aria-describedby="emailHelp"
-                  value={user.password}
-                  onChange={(e) => onChange(e)}
+                  value={values.password}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
+                <div className="text-red-500">
+                  {errors.password && touched.password && errors.password}
+                </div>
               </div>
             </div>
             <button
-              onClick={createAccount}
+              onClick={handleSubmit}
               type="button"
               className={
-                errors.length !== 0
-                  ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
-                  : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
+                "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
               }
-              disabled={errors.length !== 0}
             >
               Submit
             </button>
