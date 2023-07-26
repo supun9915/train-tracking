@@ -1,5 +1,6 @@
 package com.tracker.tracker.services;
 
+import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.request.CreateSchedule;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.FindTrainRequest;
@@ -21,5 +22,5 @@ public interface IScheduleService {
 
     ScheduleResponse deleteSchedule(DeleteRequest deleteRequest, Principal principal);
 
-  List<ScheduleResponse> findTrain(FindTrainRequest findTrainRequest, Principal principal);
+  List<Schedule> findTrain(FindTrainRequest findTrainRequest, Principal principal);
 }

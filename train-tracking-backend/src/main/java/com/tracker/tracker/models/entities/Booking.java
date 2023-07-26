@@ -43,11 +43,14 @@ public class Booking {
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "travel_to_id")
   private Station travel_to;
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "payment_id")
   private Payment payment;
   private Boolean status = false;
   private Boolean deleted =false;
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "schedule_id")
+  private Schedule schedule;
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;

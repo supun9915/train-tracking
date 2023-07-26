@@ -8,6 +8,7 @@ import java.util.UUID;
 @Data
 public class BookingCreate {
     private UUID id;
+    private UUID scheduleId;
     private ReservationRequest reservation;
     private UUID passengerId;
     private String ticketNumber;

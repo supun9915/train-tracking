@@ -23,7 +23,7 @@ const FindTrainForm = () => {
   };
   const navigate = useNavigate();
   const handleFindTrain = () => {
-    navigate("/Trains");
+    navigate(`/trains/${selectedClass}`);
   };
 
   return (

@@ -4,6 +4,7 @@ import com.tracker.tracker.auth.UserDetailServiceImpl;
 import com.tracker.tracker.auth.UserDetailsImpl;
 import com.tracker.tracker.models.entities.Booking;
 import com.tracker.tracker.models.entities.Reservation;
+import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.BookingCreate;
@@ -27,21 +28,25 @@ public class BookingService implements IBookingService {
     private final UserRepository usersRepository;
     private final BookingRepository bookingRepository;
     private final UserDetailServiceImpl userDetailsService;
+    private final ScheduleRepository scheduleRepository;
     private final ReservationRepository reservationRepository;
     @Override
     public BookingResponse bookingCreate(BookingCreate bookingRequest, Principal principal) {
         UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
         Users user = usersRepository.findById(userImpl.getId()).get();
 
-        Booking newBooking =new Booking();
+        Booking newBooking = new Booking();
+        Schedule schedule = scheduleRepository.findById(bookingRequest.getScheduleId()).get();
 
         Reservation reservation = new Reservation();
         reservation.setSeatNumber(bookingRequest.getReservation().getSeatNumber());
         reservation.setTrainClass(bookingRequest.getReservation().getTrainClass());
         reservation.setCreatedBy(user);
         reservation.setCreatedTime(OffsetDateTime.now());
+        Reservation newReservation = reservationRepository.save(reservation);
 
-        newBooking.setReservation(reservation);
+        newBooking.setSchedule(schedule);
+        newBooking.setReservation(newReservation);
         newBooking.setCreatedBy(user);
         newBooking.setCreatedTime(OffsetDateTime.now());
         newBooking.setModifiedTime(OffsetDateTime.now());

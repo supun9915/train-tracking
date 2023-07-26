@@ -14,6 +14,7 @@ import com.tracker.tracker.models.response.ScheduleResponse;
 import com.tracker.tracker.repositories.*;
 import com.tracker.tracker.repositories.ScheduleRepository;
 import com.tracker.tracker.services.IScheduleService;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -111,10 +112,33 @@ public class ScheduleService implements IScheduleService {
     }
 
     @Override
-    public List<ScheduleResponse> findTrain(FindTrainRequest findTrainRequest,
+    public List<Schedule> findTrain(FindTrainRequest findTrainRequest,
         Principal principal) {
+        List<Schedule> schedules = scheduleRepository
+            .findByTrain_Stations_IdAndTrain_Stations_IdAndDepartureTimeBetween(
+                findTrainRequest.getFromStation(),
+                findTrainRequest.getToStation(),
+                findTrainRequest.getFromDate(),
+                findTrainRequest.getToDate());
 
-        return null;
+        List<Schedule> validSchedules = new ArrayList<>();
+
+        switch (findTrainRequest.getTrain_class()){
+            case "First":
+                schedules.stream().filter(
+                    schedule -> schedule.getFirstClassAvailable() >= findTrainRequest.getPassengerCount()).collect(
+                    Collectors.toList()).addAll(validSchedules);
+            case "Second":
+                schedules.stream().filter(
+                    schedule -> schedule.getSecondClassAvailable() >= findTrainRequest.getPassengerCount()).collect(
+                    Collectors.toList()).addAll(validSchedules);
+            case "Third":
+                schedules.stream().filter(
+                    schedule -> schedule.getThirdClassAvailable() >= findTrainRequest.getPassengerCount()).collect(
+                    Collectors.toList()).addAll(validSchedules);
+        }
+
+        return validSchedules;
     }
 
     private ScheduleGetResponse stationGetResponsesConverter(Schedule schedule) {

@@ -38,7 +38,7 @@ const Routers = () => {
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route element={<PrivateRoute />}>
-          <Route path="/trains" element={<TrainListing />} />
+          <Route path="/trains/:trainClass" element={<TrainListing />} />
           <Route path="/trains/:slug" element={<TrainDetails />} />
           <Route path="/activities" element={<Activities />} />
           <Route path="/profile" element={<Profile />} />
