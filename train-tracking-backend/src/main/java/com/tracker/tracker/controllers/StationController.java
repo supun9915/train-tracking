@@ -59,7 +59,7 @@ public class StationController {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @PreAuthorize("hasAnyAuthority('Super Admin','Passenger')")
     @GetMapping("/getustation")
     public ResponseEntity<?> getAllStation(@RequestParam(value = "stationId", required = false)UUID stationId){
         if (stationId != null) {

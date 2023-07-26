@@ -40,7 +40,9 @@ public class TrainService implements ITrainService {
 
         Train newTrain =new Train();
         newTrain.setName(createTrain.getName());
-        newTrain.setTrain_class(createTrain.getTrain_class());
+        newTrain.setFirstClassCount(createTrain.getFirstClassCount());
+        newTrain.setSecondClassCount(createTrain.getSecondClassCount());
+        newTrain.setThirdClassCount(createTrain.getThirdClassCount());
 
         Set<Station> stations = new HashSet<>();
         if (createTrain.getStation().size() > 0) {
@@ -61,7 +63,9 @@ public class TrainService implements ITrainService {
         Users user = usersRepository.findById(userImpl.getId()).get();
         Train updateTrain = trainRepository.findById(id).get();
         updateTrain.setName(createTrain.getName());
-        updateTrain.setTrain_class(createTrain.getTrain_class());
+        updateTrain.setFirstClassCount(createTrain.getFirstClassCount());
+        updateTrain.setSecondClassCount(createTrain.getSecondClassCount());
+        updateTrain.setThirdClassCount(createTrain.getThirdClassCount());
         updateTrain.setModifiedBy(user);
         updateTrain.setModifiedTime(OffsetDateTime.now());
         return TrainResponseConvertor(trainRepository.save(updateTrain));
@@ -106,7 +110,9 @@ public class TrainService implements ITrainService {
         Set<IdWithName> stations = new HashSet<>();
         TrainGetResponse trainGetResponse = new TrainGetResponse();
         trainGetResponse.setId(train.getId());
-        trainGetResponse.setTrainClass(String.valueOf(train.getTrain_class()));
+        trainGetResponse.setFirstClassCount(train.getFirstClassCount());
+        trainGetResponse.setSecondClassCount(train.getSecondClassCount());
+        trainGetResponse.setThirdClassCount(train.getThirdClassCount());
         trainGetResponse.setName(train.getName());
         for (Station station: train.getStations()) {
             IdWithName idWithName =new IdWithName();

@@ -1,6 +1,5 @@
 package com.tracker.tracker.models.request;
 
-import com.tracker.tracker.models.entities.Class;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,7 +16,11 @@ public class CreateTrain {
     @NotEmpty
     private String name;
     @NotBlank @NotNull @NotEmpty
-    private Class train_class;
+    private int firstClassCount;
+    @NotBlank @NotNull @NotEmpty
+    private int secondClassCount;
+    @NotBlank @NotNull @NotEmpty
+    private int thirdClassCount;
     @NotBlank @NotNull @NotEmpty
     private Set<UUID> station;
 

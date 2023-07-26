@@ -1,10 +1,9 @@
 package com.tracker.tracker.models.response;
 
+import java.util.UUID;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
-public class ReservationResponse {
-    private UUID id;
+public class PassengerResponse {
+  private UUID id;
 }

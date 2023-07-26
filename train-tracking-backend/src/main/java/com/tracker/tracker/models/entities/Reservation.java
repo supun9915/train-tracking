@@ -25,9 +25,7 @@ public class Reservation {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false)
   private UUID id;
-  @ManyToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "train_class_id")
-  private Class train_class;
+  private String trainClass;
   private int seatNumber;
   private Boolean deleted =false;
   @JsonIgnore

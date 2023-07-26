@@ -27,10 +27,10 @@ public class Schedule {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false)
   private UUID id;
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "departure_station_id")
   private Station departureStation;
-  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "arrival_station_id")
   private Station arrivalStation;
   private OffsetDateTime departureTime;
@@ -43,6 +43,9 @@ public class Schedule {
   @JoinColumn(name = "train_id")
   private Train train;
   private Boolean deleted =false;
+  private int firstClassAvailable;
+  private int secondClassAvailable;
+  private int thirdClassAvailable;
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;

@@ -3,9 +3,11 @@ package com.tracker.tracker.controllers;
 import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.request.CreateSchedule;
 import com.tracker.tracker.models.request.DeleteRequest;
+import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.response.ScheduleResponse;
 import com.tracker.tracker.repositories.ScheduleRepository;
 import com.tracker.tracker.services.IScheduleService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +56,14 @@ public class ScheduleController {
     public ResponseEntity<?> deleteSchedule(@RequestBody DeleteRequest deleteRequest, Principal principal) {
         ScheduleResponse scheduleResponse = scheduleService.deleteSchedule(deleteRequest, principal);
         return ResponseEntity.ok(scheduleResponse);
+    }
+
+    @PreAuthorize("hasAnyAuthority('Passenger')")
+    @PatchMapping("/find/train")
+    public ResponseEntity<?> findTrain(@RequestBody FindTrainRequest findTrainRequest,
+        Principal principal) {
+        List<ScheduleResponse> scheduleResponses = scheduleService.findTrain(findTrainRequest,
+            principal);
+        return ResponseEntity.ok(scheduleResponses);
     }
 }

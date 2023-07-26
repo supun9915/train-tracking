@@ -3,19 +3,15 @@ package com.tracker.tracker.services.impl;
 import com.tracker.tracker.auth.UserDetailServiceImpl;
 import com.tracker.tracker.auth.UserDetailsImpl;
 import com.tracker.tracker.models.entities.Booking;
-import com.tracker.tracker.models.entities.Class;
 import com.tracker.tracker.models.entities.Reservation;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.BookingCreate;
-import com.tracker.tracker.models.request.ReservationRequest;
 import com.tracker.tracker.models.response.BookingGetResponse;
 import com.tracker.tracker.models.response.BookingResponse;
 import com.tracker.tracker.repositories.*;
 import com.tracker.tracker.repositories.BookingRepository;
 import com.tracker.tracker.services.IBookingService;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +28,6 @@ public class BookingService implements IBookingService {
     private final BookingRepository bookingRepository;
     private final UserDetailServiceImpl userDetailsService;
     private final ReservationRepository reservationRepository;
-    private final ClassRepository classRepository;
     @Override
     public BookingResponse bookingCreate(BookingCreate bookingRequest, Principal principal) {
         UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
@@ -42,8 +37,7 @@ public class BookingService implements IBookingService {
 
         Reservation reservation = new Reservation();
         reservation.setSeatNumber(bookingRequest.getReservation().getSeatNumber());
-        Class trainClass = classRepository.getById(bookingRequest.getReservation().getTrainClassId());
-        reservation.setTrain_class(trainClass);
+        reservation.setTrainClass(bookingRequest.getReservation().getTrainClass());
         reservation.setCreatedBy(user);
         reservation.setCreatedTime(OffsetDateTime.now());
 

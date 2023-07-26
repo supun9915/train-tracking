@@ -19,9 +19,9 @@ public class Train {
   @Column(name = "id", nullable = false)
   private UUID id;
   private String name;
-  @ManyToOne(cascade = CascadeType.REFRESH)
-  @JoinColumn(name = "train_class_id")
-  private Class train_class;
+  private int firstClassCount;
+  private int secondClassCount;
+  private int thirdClassCount;
   private Boolean deleted =false;
   @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
   @JoinTable(name = "train_stations",
