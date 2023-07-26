@@ -115,7 +115,7 @@ public class ScheduleService implements IScheduleService {
     public List<Schedule> findTrain(FindTrainRequest findTrainRequest,
         Principal principal) {
         List<Schedule> schedules = scheduleRepository
-            .findByTrain_Stations_IdAndTrain_Stations_IdAndDepartureTimeBetween(
+            .findByTrain_TrainStations_IdAndTrain_TrainStations_IdAndDepartureTimeBetween(
                 findTrainRequest.getFromStation(),
                 findTrainRequest.getToStation(),
                 findTrainRequest.getFromDate(),

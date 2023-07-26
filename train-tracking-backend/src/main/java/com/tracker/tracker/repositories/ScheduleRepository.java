@@ -15,9 +15,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
 
     List<Schedule> findByDeletedOrderByCreatedTimeDesc(Boolean deleted);
 
-    List<Schedule> findByTrain_Stations_IdAndTrain_Stations_IdAndDepartureTimeBetween(
-        UUID fromStationId, UUID toStationId, OffsetDateTime departureTimeStart,
-        OffsetDateTime departureTimeEnd);
+    List<Schedule> findByTrain_TrainStations_IdAndTrain_TrainStations_IdAndDepartureTimeBetween(
+        UUID id, UUID id1, OffsetDateTime departureTimeStart, OffsetDateTime departureTimeEnd);
 
 
 
