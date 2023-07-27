@@ -12,7 +12,5 @@ public class CreateSchedule {
     private UUID arrStationId;
     private OffsetDateTime departureTime;
     private OffsetDateTime arrivalTime;
-    private OffsetDateTime delay;
-    private UUID locationId;
     private UUID trainId;
 }

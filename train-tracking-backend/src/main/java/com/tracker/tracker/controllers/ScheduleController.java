@@ -58,8 +58,8 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleResponse);
     }
 
-    @PreAuthorize("hasAnyAuthority('Passenger')")
-    @GetMapping("/find/train")
+    @PreAuthorize("hasAnyAuthority('Passenger', 'Super Admin')")
+    @PostMapping("/find/train")
     public ResponseEntity<?> findTrain(@RequestBody FindTrainRequest findTrainRequest,
         Principal principal) {
         List<Schedule> scheduleResponses = scheduleService.findTrain(findTrainRequest,

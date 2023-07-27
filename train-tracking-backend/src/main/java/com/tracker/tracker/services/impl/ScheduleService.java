@@ -44,11 +44,8 @@ public class ScheduleService implements IScheduleService {
         newSchedule.setArrivalStation(arvSt);
         newSchedule.setDepartureTime(createSchedule.getDepartureTime());
         newSchedule.setArrivalTime(createSchedule.getArrivalTime());
-        newSchedule.setDelay(createSchedule.getDelay());
         Train train = trainRepository.getById(createSchedule.getTrainId());
         newSchedule.setTrain(train);
-        Station location = stationRepository.getById(createSchedule.getLocationId());
-        newSchedule.setLocation(location);
         newSchedule.setCreatedBy(user);
         newSchedule.setCreatedTime(OffsetDateTime.now());
         newSchedule.setModifiedTime(OffsetDateTime.now());
@@ -66,11 +63,8 @@ public class ScheduleService implements IScheduleService {
         updateSchedule.setArrivalStation(arvSt);
         updateSchedule.setDepartureTime(createSchedule.getDepartureTime());
         updateSchedule.setArrivalTime(createSchedule.getArrivalTime());
-        updateSchedule.setDelay(createSchedule.getDelay());
         Train train = trainRepository.getById(createSchedule.getTrainId());
         updateSchedule.setTrain(train);
-        Station location = stationRepository.getById(createSchedule.getLocationId());
-        updateSchedule.setLocation(location);
         updateSchedule.setModifiedBy(user);
         updateSchedule.setModifiedTime(OffsetDateTime.now());
         return ScheduleResponseConvertor(scheduleRepository.save(updateSchedule));
@@ -114,28 +108,35 @@ public class ScheduleService implements IScheduleService {
     @Override
     public List<Schedule> findTrain(FindTrainRequest findTrainRequest,
         Principal principal) {
+        List<UUID> stations = new ArrayList<>();
+        stations.add(findTrainRequest.getFromStation());
+        stations.add(findTrainRequest.getToStation());
         List<Schedule> schedules = scheduleRepository
-            .findByTrain_TrainStations_IdAndTrain_TrainStations_IdAndDepartureTimeBetween(
-                findTrainRequest.getFromStation(),
-                findTrainRequest.getToStation(),
+            .findByTrain_TrainStations_Station_IdInAndDepartureTimeBetween(
+                stations,
                 findTrainRequest.getFromDate(),
                 findTrainRequest.getToDate());
 
         List<Schedule> validSchedules = new ArrayList<>();
 
-        switch (findTrainRequest.getTrain_class()){
-            case "First":
-                schedules.stream().filter(
-                    schedule -> schedule.getFirstClassAvailable() >= findTrainRequest.getPassengerCount()).collect(
-                    Collectors.toList()).addAll(validSchedules);
-            case "Second":
-                schedules.stream().filter(
-                    schedule -> schedule.getSecondClassAvailable() >= findTrainRequest.getPassengerCount()).collect(
-                    Collectors.toList()).addAll(validSchedules);
-            case "Third":
-                schedules.stream().filter(
-                    schedule -> schedule.getThirdClassAvailable() >= findTrainRequest.getPassengerCount()).collect(
-                    Collectors.toList()).addAll(validSchedules);
+        if(findTrainRequest.getTrain_class().equals("First")) {
+            for (Schedule schedule: schedules) {
+                if(schedule.getFirstClassAvailable() >= findTrainRequest.getPassengerCount()){
+                    validSchedules.add(schedule);
+                }
+            }
+        } else if (findTrainRequest.getTrain_class().equals("Second")) {
+            for (Schedule schedule: schedules) {
+                if(schedule.getSecondClassAvailable() >= findTrainRequest.getPassengerCount()){
+                    validSchedules.add(schedule);
+                }
+            }
+        } else if (findTrainRequest.getTrain_class().equals("Third")){
+            for (Schedule schedule: schedules) {
+                if(schedule.getThirdClassAvailable() >= findTrainRequest.getPassengerCount()){
+                    validSchedules.add(schedule);
+                }
+            }
         }
 
         return validSchedules;

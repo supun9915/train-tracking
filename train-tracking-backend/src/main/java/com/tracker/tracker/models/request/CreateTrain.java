@@ -15,13 +15,13 @@ public class CreateTrain {
     @NotNull
     @NotEmpty
     private String name;
-    @NotBlank @NotNull @NotEmpty
+    @NotNull
     private int firstClassCount;
-    @NotBlank @NotNull @NotEmpty
+    @NotNull
     private int secondClassCount;
-    @NotBlank @NotNull @NotEmpty
+    @NotNull
     private int thirdClassCount;
-    @NotBlank @NotNull @NotEmpty
+    @NotNull
     private Set<UUID> station;
 
 }

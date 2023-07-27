@@ -23,7 +23,7 @@ public class PriceService implements IPriceService {
   public double findPrice(FindPriceRequest findPriceRequest) {
     double totalPrice = 0;
     Schedule schedule = scheduleRepository.findById(findPriceRequest.getSchedule()).get();
-    Price price = priceRepository.findByTrain_class(findPriceRequest.getTrainClass());
+    Price price = priceRepository.findByTrainClass(findPriceRequest.getTrainClass());
     List<TrainStation> fromStation =
         schedule.getTrain()
             .getTrainStations()
