@@ -68,7 +68,7 @@ public class ScheduleController {
     }
 
     @PreAuthorize("hasAnyAuthority('Passenger', 'Super Admin')")
-    @PostMapping("/route")
+    @PostMapping("/route/{id}")
     public ResponseEntity<?> getStations(@PathVariable UUID id,
         Principal principal) {
         List<String> scheduleStations = scheduleService.getScheduleStations(id,

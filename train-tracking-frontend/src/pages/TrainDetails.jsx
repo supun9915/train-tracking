@@ -3,14 +3,20 @@ import { Container, Row, Col } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import { useParams } from "react-router-dom";
 // import BookingForm from "../components/UI/BookingForm";
-import PaymentMethod from "../components/UI/PaymentMethod";
+// import PaymentMethod from "../components/UI/PaymentMethod";
+import masterCard from "../assets/all-images/master-card.jpg";
+import paypal from "../assets/all-images/paypal.jpg";
 import "../styles/booking-form.css";
+import "../styles/payment-method.css";
+import { useNavigate } from "react-router-dom";
+
 // import Select from "react-select";
 import { Form, FormGroup } from "reactstrap";
 import { request, GET, POST } from "../api/ApiAdapter";
 
 const TrainDetails = () => {
   const { slug, cla, star, ende, per, cou, shed } = useParams();
+  const navigate = useNavigate();
 
   const [startSt, setStartSt] = useState({
     label: "",
@@ -21,6 +27,8 @@ const TrainDetails = () => {
     value: "",
   });
   const [price, setPrice] = useState();
+  const [path, setPath] = useState([]);
+  const [method, setMethod] = useState();
 
   const getStStations = async (e) => {
     const res = await request(`/station/getustation/?stationId=${e}`, GET, {
@@ -36,7 +44,7 @@ const TrainDetails = () => {
   const getEndStations = async (b) => {
     const res = await request(`/station/getustation/?stationId=${b}`, GET);
     if (!res.error) {
-      console.log(res);
+      // console.log(res);
       setEndSt({ label: res[0].name, value: res[0] });
       // console.log(startSt);
     }
@@ -56,12 +64,59 @@ const TrainDetails = () => {
     }
   };
 
+  const getpath = async (shed) => {
+    const res = await request(`/schedule/route/${shed}`, POST);
+    if (!res.error) {
+      setPath(res);
+      // console.log(res);
+    }
+  };
+
   useEffect(() => {
+    getpath(shed);
     getStStations(star);
     getEndStations(ende);
     getPrice(cla, shed, star, ende, per);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleReserveButtonClick = (event) => {
+    event.preventDefault();
+
+    const paymentForm = document.getElementById("paymentForm");
+    const selectedPaymentMethod = paymentForm.querySelector(
+      'input[name="paymentMethod"]:checked'
+    );
+
+    if (selectedPaymentMethod) {
+      const selectedValue = selectedPaymentMethod.value;
+      console.log("Selected Payment Method:", selectedValue);
+      setMethod(selectedValue);
+      // Do further processing with the selectedValue
+    } else {
+      console.log("Please select a payment method.");
+      // Handle the case where no payment method is selected
+    }
+  };
+
+  const reservation = async () => {
+    const res = await request(`/booking/create`, POST, {
+      method: method,
+      total: price,
+      scheduleId: shed,
+      reservation: {
+        trainClass: cla,
+        seatNumber: per,
+      },
+      passengerId: "4c38a0db-9c57-40ba-878c-3652a769444a",
+      travelFromID: star,
+      travelToId: ende,
+    });
+    if (!res.error) {
+      navigate(`/home`);
+      // console.log(res);
+    }
+  };
 
   return (
     <Helmet title={slug}>
@@ -86,7 +141,7 @@ const TrainDetails = () => {
                   <h6 className="rent__price fw-bold fs-4">LKR{price}.00/=</h6>
                 </div>
 
-                {/* <p className="section__description">{singleTrainItem.route}</p> */}
+                <p className="section__description">{path.join(",")}</p>
               </div>
             </Col>
 
@@ -133,8 +188,67 @@ const TrainDetails = () => {
 
             <Col lg="5" className="mt-5">
               <div className="payment__info mt-5">
-                <h5 className="mb-4 fw-bold ">Payment Information</h5>
-                <PaymentMethod />
+                <h5 className="mb-4 fw-bold">Payment Information</h5>
+                <form id="paymentForm">
+                  <div className="payment">
+                    <label
+                      htmlFor="visaCard"
+                      className="d-flex align-items-center gap-2"
+                    >
+                      <input
+                        type="radio"
+                        id="visaCard"
+                        name="paymentMethod"
+                        onClick={handleReserveButtonClick}
+                        value="visa"
+                      />
+                      Visa Card
+                    </label>
+                  </div>
+
+                  <div className="payment mt-3 d-flex align-items-center justify-content-between">
+                    <label
+                      htmlFor="masterCard"
+                      className="d-flex align-items-center gap-2"
+                    >
+                      <input
+                        type="radio"
+                        id="masterCard"
+                        onClick={handleReserveButtonClick}
+                        name="paymentMethod"
+                        value="master"
+                      />
+                      Master Card
+                    </label>
+                    <img src={masterCard} alt="" />
+                  </div>
+
+                  <div className="payment mt-3 d-flex align-items-center justify-content-between">
+                    <label
+                      htmlFor="paypal"
+                      className="d-flex align-items-center gap-2"
+                    >
+                      <input
+                        type="radio"
+                        id="paypal"
+                        onClick={handleReserveButtonClick}
+                        name="paymentMethod"
+                        value="paypal"
+                      />
+                      Paypal
+                    </label>
+                    <img src={paypal} alt="" />
+                  </div>
+                  <div className="payment text-end mt-5">
+                    <button
+                      id="reserveButton"
+                      type="button"
+                      onClick={reservation}
+                    >
+                      Reserve Now
+                    </button>
+                  </div>
+                </form>
               </div>
             </Col>
           </Row>
