@@ -74,7 +74,11 @@ const Activities = () => {
                   Current Location - {activity?.schedule?.location?.name}{" "}
                   Station
                 </div>
-                <div className={`text-red-400 ml-4 mt-2 text-xl font-bold`}>
+                <div
+                  className={`text-red-400 ml-4 mt-2 text-xl font-bold ${
+                    activity?.schedule?.delay ? "visible" : "hidden"
+                  }`}
+                >
                   Train Delay - {activity?.schedule?.delay}
                 </div>
               </div>
@@ -115,7 +119,11 @@ const Activities = () => {
                   Current Location - {activity?.schedule?.location?.name}{" "}
                   Station
                 </div>
-                <div className={`text-red-400 ml-4 mt-2 text-xl font-bold`}>
+                <div
+                  className={`text-red-400 ml-4 mt-2 text-xl font-bold ${
+                    activity?.schedule?.delay ? "visible" : "hidden"
+                  }`}
+                >
                   Train Delay - {activity?.schedule?.delay}
                 </div>
               </div>
