@@ -43,7 +43,7 @@ const Routers = () => {
             element={<TrainListing />}
           />
           <Route
-            path="/trains/:slug/:cla/:star/:ende/:per/:cou"
+            path="/trains/:slug/:cla/:star/:ende/:per/:cou/:shed"
             element={<TrainDetails />}
           />
           <Route path="/activities" element={<Activities />} />

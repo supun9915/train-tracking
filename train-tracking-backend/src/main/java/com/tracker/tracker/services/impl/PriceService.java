@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class PriceService implements IPriceService {
-  private ScheduleRepository scheduleRepository;
-  private PriceRepository priceRepository;
+  private final ScheduleRepository scheduleRepository;
+  private final PriceRepository priceRepository;
 
   @Override
   public double findPrice(FindPriceRequest findPriceRequest) {

@@ -10,7 +10,6 @@ import {
 } from "reactstrap";
 import { request, GET } from "../../api/ApiAdapter";
 import { useNavigate } from "react-router-dom";
-import { date } from "yup";
 
 const FindTrainForm = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -29,7 +28,7 @@ const FindTrainForm = () => {
   const handleClassSelect = (event) => {
     setSelectedClass(event.target.value);
   };
-
+  // console.log(endDt.label);
   const navigate = useNavigate();
   const handleFindTrain = () => {
     // console.log(selectedClass);
@@ -39,7 +38,7 @@ const FindTrainForm = () => {
   };
   const [stations, setStations] = useState([]);
 
-  const getAllStations = async (row) => {
+  const getAllStations = async () => {
     const res = await request(`/station/getustation`, GET);
     if (!res.error) {
       const newStation = [];

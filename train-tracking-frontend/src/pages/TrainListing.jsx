@@ -3,7 +3,7 @@ import { Container, Row, Col } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import CommonSection from "../components/UI/CommonSection";
 import TrainItem from "../components/UI/TrainItem";
-import trainData from "../assets/data/trainData";
+// import trainData from "../assets/data/trainData";
 import { request, POST } from "../api/ApiAdapter";
 import { useParams } from "react-router-dom";
 import "../styles/find-train-form.css";
@@ -14,10 +14,8 @@ const TrainListing = () => {
   const [trains, setTrains] = useState([]);
 
   const getFindTrains = async () => {
-    // console.log(clas);
     let fromD = date + "T00:00:00Z";
     let toD = date + "T23:59:59Z";
-    // console.log(fromD, toD);
     const res = await request(`/schedule/find/train`, POST, {
       fromStation: st,
       toStation: end,
@@ -162,7 +160,7 @@ const TrainListing = () => {
       <section>
         <Container>
           <Row>
-            {trainData.map((item) => (
+            {trains.map((item) => (
               <TrainItem
                 item={item}
                 key={item.id}
