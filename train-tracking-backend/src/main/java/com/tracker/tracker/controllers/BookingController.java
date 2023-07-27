@@ -21,7 +21,7 @@ import java.util.UUID;
 public class BookingController {
     private final IBookingService bookingService;
 
-    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @PreAuthorize("hasAnyAuthority('Super Admin', 'Passenger')")
     @PostMapping("/create")
     public ResponseEntity<?> createBooking(@Valid @RequestBody BookingCreate bookingRequest,
                                            Principal principal) {
