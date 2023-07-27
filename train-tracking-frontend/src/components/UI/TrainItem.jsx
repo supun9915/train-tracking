@@ -5,11 +5,16 @@ import { Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 
 const TrainItem = (props) => {
-  const { imgUrl, time, trainName, price } = props.item;
+  const { imgUrl, time, trainName } = props.item;
+  const cla = props.clas;
+  const st = props.start;
+  const en = props.end;
+  const coun = props.count;
+  const dat = props.date;
   const navigate = useNavigate();
-
+  // console.log(cla);
   const handleFindTrainDetails = () => {
-    navigate(`/trains/${trainName}`);
+    navigate(`/trains/${trainName}/${cla}/${st}/${en}/${coun}/${dat}`);
   };
 
   return (
@@ -21,7 +26,7 @@ const TrainItem = (props) => {
         <div className="siDesc">
           <h1 className="siTitle">{trainName}</h1>
           <span className="siSubtitle">{time}</span>
-          <span className="siPrice">LKR {price}</span>
+          {/* <span className="siPrice">LKR {price}</span> */}
         </div>
         <div>
           <Button color="primary" onClick={handleFindTrainDetails}>

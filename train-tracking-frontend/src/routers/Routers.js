@@ -39,10 +39,13 @@ const Routers = () => {
         </Route>
         <Route element={<PrivateRoute />}>
           <Route
-            path="/trains/:clas/:st/:end/:count/:date"
+            path="/trains/list/:clas/:st/:end/:count/:date"
             element={<TrainListing />}
           />
-          <Route path="/trains/:slug" element={<TrainDetails />} />
+          <Route
+            path="/trains/:slug/:cla/:star/:ende/:per/:cou"
+            element={<TrainDetails />}
+          />
           <Route path="/activities" element={<Activities />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
