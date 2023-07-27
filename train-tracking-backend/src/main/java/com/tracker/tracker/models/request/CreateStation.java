@@ -14,9 +14,9 @@ public class CreateStation {
     @NotNull
     @NotEmpty
     private String name;
-    @NotBlank @NotNull @NotEmpty
+    @NotNull
     private double lat;
-    @NotBlank @NotNull @NotEmpty
+    @NotNull
     private double lng;
     @NotBlank @NotNull @NotEmpty
     private String contact;

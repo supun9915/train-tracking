@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Data
 public class DeleteRequest {
     String id;
-    @NotBlank @NotNull @NotEmpty
+    @NotNull
     Boolean delete;
     OffsetDateTime deleteDate;
 }

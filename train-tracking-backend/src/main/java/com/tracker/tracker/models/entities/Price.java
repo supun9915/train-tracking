@@ -22,7 +22,7 @@ public class Price {
   @Column(name = "id", nullable = false)
   private UUID id;
   private double price;
-  private String train_class;
+  private String trainClass;
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;
