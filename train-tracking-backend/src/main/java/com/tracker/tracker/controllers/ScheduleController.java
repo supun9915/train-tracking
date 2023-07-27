@@ -5,15 +5,12 @@ import com.tracker.tracker.models.request.CreateSchedule;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.response.ScheduleResponse;
-import com.tracker.tracker.repositories.ScheduleRepository;
 import com.tracker.tracker.services.IScheduleService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.UUID;

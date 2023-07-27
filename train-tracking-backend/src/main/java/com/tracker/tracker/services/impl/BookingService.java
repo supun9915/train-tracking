@@ -3,9 +3,11 @@ package com.tracker.tracker.services.impl;
 import com.tracker.tracker.auth.UserDetailServiceImpl;
 import com.tracker.tracker.auth.UserDetailsImpl;
 import com.tracker.tracker.models.entities.Booking;
+import com.tracker.tracker.models.entities.Passenger;
 import com.tracker.tracker.models.entities.Payment;
 import com.tracker.tracker.models.entities.Reservation;
 import com.tracker.tracker.models.entities.Schedule;
+import com.tracker.tracker.models.entities.Station;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.BookingCreate;
@@ -32,6 +34,8 @@ public class BookingService implements IBookingService {
     private final ScheduleRepository scheduleRepository;
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
+    private final PassengerRepository passengerRepository;
+    private final StationRepository stationRepository;
 
     @Override
     public BookingResponse bookingCreate(BookingCreate bookingRequest, Principal principal) {
@@ -40,6 +44,9 @@ public class BookingService implements IBookingService {
 
         Booking newBooking = new Booking();
         Schedule schedule = scheduleRepository.findById(bookingRequest.getScheduleId()).get();
+        Passenger passenger = passengerRepository.findByUser_Id(user.getId());
+        Station fromStation = stationRepository.findById(bookingRequest.getTravelFromID()).get();
+        Station toStation = stationRepository.findById(bookingRequest.getTravelFromID()).get();
 
         Payment payment = new Payment();
         payment.setMethod(bookingRequest.getMethod());
@@ -59,6 +66,9 @@ public class BookingService implements IBookingService {
         newBooking.setReservation(newReservation);
         newBooking.setPayment(newPayment);
         newBooking.setCreatedBy(user);
+        newBooking.setTravel_from(fromStation);
+        newBooking.setTravel_to(toStation);
+        newBooking.setPassenger(passenger);
         newBooking.setCreatedTime(OffsetDateTime.now());
         newBooking.setModifiedTime(OffsetDateTime.now());
 

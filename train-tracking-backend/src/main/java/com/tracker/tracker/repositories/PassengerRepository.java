@@ -8,4 +8,5 @@ public interface PassengerRepository extends JpaRepository<Passenger, UUID> {
 
   Passenger findByUser_Id(UUID id);
 
+
 }
