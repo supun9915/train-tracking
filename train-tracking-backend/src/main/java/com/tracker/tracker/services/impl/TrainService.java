@@ -56,6 +56,7 @@ public class TrainService implements ITrainService {
                 trainStation.setStation(station);
                 trainStation.setStationOrder(count);
                 trainStations.add(trainStationRepository.save(trainStation));
+                count += 1;
             }
         }
         newTrain.setTrainStations(trainStations);
