@@ -72,15 +72,15 @@ public class PassengerController {
     }
   }
 
-  @PreAuthorize("hasAnyAuthority('Passenger')")
+  @PreAuthorize("hasAnyAuthority('Passenger', 'Super Admin')")
   @GetMapping("/activity/ongoing")
   public ResponseEntity<?> onGoingActivities(Principal principal) {
     List<Booking> scheduleResponses = passengerService.onGoingActivities(principal);
     return ResponseEntity.ok(scheduleResponses);
   }
 
-  @PreAuthorize("hasAnyAuthority('Passenger')")
-  @GetMapping("/activity/completed/{fromDate}/{toDate}")
+  @PreAuthorize("hasAnyAuthority('Passenger', 'Super Admin')")
+  @GetMapping("/activity/completed")
   public ResponseEntity<?> completedActivities(Principal principal) {
     List<Booking> scheduleResponses = passengerService.completedActivities(principal);
     return ResponseEntity.ok(scheduleResponses);

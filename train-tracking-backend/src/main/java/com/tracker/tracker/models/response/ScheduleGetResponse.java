@@ -1,5 +1,6 @@
 package com.tracker.tracker.models.response;
 
+import java.sql.Time;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
@@ -12,7 +13,7 @@ public class ScheduleGetResponse {
     private UUID arrStationId;
     private OffsetDateTime departureTime;
     private OffsetDateTime arrivalTime;
-    private OffsetDateTime delay;
+    private Time delay;
     private UUID locationId;
     private UUID trainId;
 }

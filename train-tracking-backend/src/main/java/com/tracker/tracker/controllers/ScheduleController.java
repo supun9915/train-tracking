@@ -41,7 +41,7 @@ public class ScheduleController {
                 return ResponseEntity.ok(savedSchedule);
     }
 
-    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @PreAuthorize("hasAnyAuthority('Super Admin', 'Passenger')")
     @GetMapping("/getschedule")
     public ResponseEntity<?> getAllSchedule(@RequestParam(value = "scheduleId", required = false)UUID scheduleId){
         if (scheduleId != null) {
@@ -65,5 +65,14 @@ public class ScheduleController {
         List<Schedule> scheduleResponses = scheduleService.findTrain(findTrainRequest,
             principal);
         return ResponseEntity.ok(scheduleResponses);
+    }
+
+    @PreAuthorize("hasAnyAuthority('Passenger', 'Super Admin')")
+    @PostMapping("/route")
+    public ResponseEntity<?> getStations(@PathVariable UUID id,
+        Principal principal) {
+        List<String> scheduleStations = scheduleService.getScheduleStations(id,
+            principal);
+        return ResponseEntity.ok(scheduleStations);
     }
 }

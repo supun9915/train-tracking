@@ -5,6 +5,7 @@ import com.tracker.tracker.auth.UserDetailsImpl;
 import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.entities.Station;
 import com.tracker.tracker.models.entities.Train;
+import com.tracker.tracker.models.entities.TrainStation;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.CreateSchedule;
 import com.tracker.tracker.models.request.DeleteRequest;
@@ -46,6 +47,9 @@ public class ScheduleService implements IScheduleService {
         newSchedule.setArrivalTime(createSchedule.getArrivalTime());
         Train train = trainRepository.getById(createSchedule.getTrainId());
         newSchedule.setTrain(train);
+        newSchedule.setFirstClassAvailable(train.getFirstClassCount());
+        newSchedule.setSecondClassAvailable(train.getSecondClassCount());
+        newSchedule.setThirdClassAvailable(train.getThirdClassCount());
         newSchedule.setCreatedBy(user);
         newSchedule.setCreatedTime(OffsetDateTime.now());
         newSchedule.setModifiedTime(OffsetDateTime.now());
@@ -112,10 +116,8 @@ public class ScheduleService implements IScheduleService {
         stations.add(findTrainRequest.getFromStation());
         stations.add(findTrainRequest.getToStation());
         List<Schedule> schedules = scheduleRepository
-            .findByTrain_TrainStations_Station_IdInAndDepartureTimeBetween(
-                stations,
-                findTrainRequest.getFromDate(),
-                findTrainRequest.getToDate());
+            .findDistinctByTrain_TrainStations_Station_IdInAndDepartureTimeBetween(
+                stations, findTrainRequest.getFromDate(), findTrainRequest.getToDate());
 
         List<Schedule> validSchedules = new ArrayList<>();
 
@@ -140,6 +142,17 @@ public class ScheduleService implements IScheduleService {
         }
 
         return validSchedules;
+    }
+
+    @Override
+    public List<String> getScheduleStations(UUID id, Principal principal) {
+        Schedule schedule = scheduleRepository.getById(id);
+        List<String> stations = new ArrayList<>();
+
+        for (TrainStation trainStation: schedule.getTrain().getTrainStations()) {
+            stations.add(trainStation.getStation().getName());
+        }
+        return stations;
     }
 
     private ScheduleGetResponse stationGetResponsesConverter(Schedule schedule) {
