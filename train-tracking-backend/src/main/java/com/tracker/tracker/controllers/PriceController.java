@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/price")
 public class PriceController {
-  private IPriceService priceService;
+  private final IPriceService priceService;
 
   @PreAuthorize("hasAnyAuthority('Super Admin','Passenger')")
   @PostMapping("/findPrice")
