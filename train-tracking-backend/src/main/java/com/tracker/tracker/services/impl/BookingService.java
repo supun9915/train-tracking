@@ -3,6 +3,7 @@ package com.tracker.tracker.services.impl;
 import com.tracker.tracker.auth.UserDetailServiceImpl;
 import com.tracker.tracker.auth.UserDetailsImpl;
 import com.tracker.tracker.models.entities.Booking;
+import com.tracker.tracker.models.entities.Payment;
 import com.tracker.tracker.models.entities.Reservation;
 import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.entities.Users;
@@ -30,6 +31,8 @@ public class BookingService implements IBookingService {
     private final UserDetailServiceImpl userDetailsService;
     private final ScheduleRepository scheduleRepository;
     private final ReservationRepository reservationRepository;
+    private final PaymentRepository paymentRepository;
+
     @Override
     public BookingResponse bookingCreate(BookingCreate bookingRequest, Principal principal) {
         UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
@@ -37,6 +40,13 @@ public class BookingService implements IBookingService {
 
         Booking newBooking = new Booking();
         Schedule schedule = scheduleRepository.findById(bookingRequest.getScheduleId()).get();
+
+        Payment payment = new Payment();
+        payment.setMethod(bookingRequest.getMethod());
+        payment.setTotal(bookingRequest.getTotal());
+        payment.setCreatedBy(user);
+        payment.setCreatedTime(OffsetDateTime.now());
+        Payment newPayment = paymentRepository.save(payment);
 
         Reservation reservation = new Reservation();
         reservation.setSeatNumber(bookingRequest.getReservation().getSeatNumber());
@@ -47,9 +57,21 @@ public class BookingService implements IBookingService {
 
         newBooking.setSchedule(schedule);
         newBooking.setReservation(newReservation);
+        newBooking.setPayment(newPayment);
         newBooking.setCreatedBy(user);
         newBooking.setCreatedTime(OffsetDateTime.now());
         newBooking.setModifiedTime(OffsetDateTime.now());
+
+        if(reservation.getTrainClass().equals("First")){
+            schedule.setFirstClassAvailable(schedule.getFirstClassAvailable() - reservation.getSeatNumber());
+        } else if(reservation.getTrainClass().equals("Second")){
+            schedule.setSecondClassAvailable(schedule.getSecondClassAvailable() - reservation.getSeatNumber());
+        } else if(reservation.getTrainClass().equals("Third")){
+            schedule.setThirdClassAvailable(schedule.getThirdClassAvailable() - reservation.getSeatNumber());
+        }
+
+        scheduleRepository.save(schedule);
+
         return BookingResponseConvertor(bookingRepository.save(newBooking));
     }
 
