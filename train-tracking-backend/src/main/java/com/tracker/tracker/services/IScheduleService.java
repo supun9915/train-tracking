@@ -23,4 +23,6 @@ public interface IScheduleService {
     ScheduleResponse deleteSchedule(DeleteRequest deleteRequest, Principal principal);
 
   List<Schedule> findTrain(FindTrainRequest findTrainRequest, Principal principal);
+
+    List<String> getScheduleStations(UUID id, Principal principal);
 }

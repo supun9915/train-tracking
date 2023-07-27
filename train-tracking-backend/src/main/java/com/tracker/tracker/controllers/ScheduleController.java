@@ -66,4 +66,13 @@ public class ScheduleController {
             principal);
         return ResponseEntity.ok(scheduleResponses);
     }
+
+    @PreAuthorize("hasAnyAuthority('Passenger', 'Super Admin')")
+    @PostMapping("/route")
+    public ResponseEntity<?> getStations(@PathVariable UUID id,
+        Principal principal) {
+        List<String> scheduleStations = scheduleService.getScheduleStations(id,
+            principal);
+        return ResponseEntity.ok(scheduleStations);
+    }
 }
