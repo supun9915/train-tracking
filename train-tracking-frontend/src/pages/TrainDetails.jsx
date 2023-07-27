@@ -7,7 +7,8 @@ import PaymentMethod from "../components/UI/PaymentMethod";
 import trainData from "../assets/data/trainData";
 
 const TrainDetails = () => {
-  const { slug } = useParams();
+  const { slug, cla, star, ende, per, cou } = useParams();
+  // console.log(cla, star, ende, per, cou);
 
   const singleTrainItem = trainData.find((item) => item.trainName === slug);
 

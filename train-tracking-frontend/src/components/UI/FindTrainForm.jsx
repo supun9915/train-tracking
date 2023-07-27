@@ -32,11 +32,11 @@ const FindTrainForm = () => {
 
   const navigate = useNavigate();
   const handleFindTrain = () => {
+    // console.log(selectedClass);
     navigate(
-      `/Trains/${selectedClass}/${startSt.value.id}/${endDt.value.id}/${find.count}/${find.date}`
+      `/trains/list/${selectedClass}/${startSt.value.id}/${endDt.value.id}/${find.count}/${find.date}`
     );
   };
-  // console.log(selectedClass);
   const [stations, setStations] = useState([]);
 
   const getAllStations = async (row) => {
@@ -124,14 +124,14 @@ const FindTrainForm = () => {
                 width: "100%",
               }}
             >
-              <DropdownItem value="Economy" onClick={handleClassSelect}>
-                Economy
-              </DropdownItem>
-              <DropdownItem value="Business" onClick={handleClassSelect}>
-                Business
-              </DropdownItem>
-              <DropdownItem value="First Class" onClick={handleClassSelect}>
+              <DropdownItem value="First" onClick={handleClassSelect}>
                 First Class
+              </DropdownItem>
+              <DropdownItem value="Second" onClick={handleClassSelect}>
+                Second Class
+              </DropdownItem>
+              <DropdownItem value="Third" onClick={handleClassSelect}>
+                Economy
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
