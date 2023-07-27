@@ -41,7 +41,7 @@ public class ScheduleController {
                 return ResponseEntity.ok(savedSchedule);
     }
 
-    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @PreAuthorize("hasAnyAuthority('Super Admin', 'Passenger')")
     @GetMapping("/getschedule")
     public ResponseEntity<?> getAllSchedule(@RequestParam(value = "scheduleId", required = false)UUID scheduleId){
         if (scheduleId != null) {

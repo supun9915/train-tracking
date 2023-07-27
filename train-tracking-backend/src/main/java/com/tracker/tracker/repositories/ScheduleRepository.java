@@ -19,11 +19,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
     List<Schedule> findByTrain_TrainStations_Station_IdInAndDepartureTimeBetween(
         Collection<UUID> ids, OffsetDateTime departureTimeStart, OffsetDateTime departureTimeEnd);
 
-    List<Schedule> findByTrain_TrainStations_IdAndTrain_TrainStations_Id(UUID id, UUID id1);
+    List<Schedule> findByTrain_TrainStations_Station_IdAndTrain_TrainStations_Station_Id(UUID id,
+        UUID id1);
+
 
     List<Schedule> findByTrain_TrainStations_Station_Id(UUID id);
 
-    List<Schedule> findByTrain_TrainStations_Station_IdIn(Collection<UUID> ids);
+    List<Schedule> findDistinctByTrain_TrainStations_Station_IdInAndDepartureTimeBetween(Collection<UUID> ids, OffsetDateTime departureTimeStart, OffsetDateTime departureTimeEnd);
+
+
 
 
     

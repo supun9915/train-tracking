@@ -46,6 +46,9 @@ public class ScheduleService implements IScheduleService {
         newSchedule.setArrivalTime(createSchedule.getArrivalTime());
         Train train = trainRepository.getById(createSchedule.getTrainId());
         newSchedule.setTrain(train);
+        newSchedule.setFirstClassAvailable(train.getFirstClassCount());
+        newSchedule.setSecondClassAvailable(train.getSecondClassCount());
+        newSchedule.setThirdClassAvailable(train.getThirdClassCount());
         newSchedule.setCreatedBy(user);
         newSchedule.setCreatedTime(OffsetDateTime.now());
         newSchedule.setModifiedTime(OffsetDateTime.now());
@@ -112,10 +115,8 @@ public class ScheduleService implements IScheduleService {
         stations.add(findTrainRequest.getFromStation());
         stations.add(findTrainRequest.getToStation());
         List<Schedule> schedules = scheduleRepository
-            .findByTrain_TrainStations_Station_IdInAndDepartureTimeBetween(
-                stations,
-                findTrainRequest.getFromDate(),
-                findTrainRequest.getToDate());
+            .findDistinctByTrain_TrainStations_Station_IdInAndDepartureTimeBetween(
+                stations, findTrainRequest.getFromDate(), findTrainRequest.getToDate());
 
         List<Schedule> validSchedules = new ArrayList<>();
 

@@ -1,4 +1,5 @@
 package com.tracker.tracker.models.entities;
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public class Schedule {
   private Station arrivalStation;
   private OffsetDateTime departureTime;
   private OffsetDateTime arrivalTime;
-  private OffsetDateTime delay;
+  private Time delay;
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "station_id")
   private Station location;

@@ -16,5 +16,4 @@ public class BookingCreate {
     private String ticketNumber;
     private UUID travelFromID;
     private UUID travelToId;
-    private UUID paymentId;
 }
