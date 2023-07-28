@@ -172,7 +172,7 @@ const Station = () => {
           address: autocomplete?.getPlace()?.formatted_address,
         }));
       } else {
-        // console.log('Autocomplete is not loaded yet!');
+        console.log("Autocomplete is not loaded yet!");
       }
     }
   };
