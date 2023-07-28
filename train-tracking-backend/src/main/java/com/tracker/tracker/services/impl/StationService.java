@@ -35,6 +35,7 @@ public class StationService implements IStationService {
         
         Station newStation =new Station();
         newStation.setName(createStation.getName());
+        newStation.setAddress(createStation.getAddress());
         newStation.setLng(createStation.getLng());
         newStation.setLat(createStation.getLat());
         newStation.setContact(createStation.getContact());
@@ -50,6 +51,7 @@ public class StationService implements IStationService {
         Users user = usersRepository.findById(userImpl.getId()).get();
         Station updateStation = stationRepository.findById(id).get();
         updateStation.setName(createStation.getName());
+        updateStation.setAddress(createStation.getAddress());
         updateStation.setLng(createStation.getLng());
         updateStation.setLat(createStation.getLat());
         updateStation.setContact(createStation.getContact());
@@ -97,6 +99,7 @@ public class StationService implements IStationService {
         StationGetResponse stationGetResponse = new StationGetResponse();
         stationGetResponse.setId(train.getId());
         stationGetResponse.setName(train.getName());
+        stationGetResponse.setAddress(train.getAddress());
         stationGetResponse.setLng(train.getLng());
         stationGetResponse.setLat(train.getLat());
         stationGetResponse.setContact(train.getContact());

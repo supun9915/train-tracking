@@ -7,6 +7,7 @@ import java.util.UUID;
 public class StationGetResponse {
     private UUID id;
     private String name;
+    private String address;
     private double lat;
     private double lng;
     private String contact;
