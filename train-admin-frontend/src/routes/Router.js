@@ -11,6 +11,8 @@ import TrainRevenue from "../pages/TrainRevenue";
 import Passengers from "../pages/Passengers";
 import Users from "../pages/Users";
 import Train from "../pages/Train";
+import Delay from "../pages/Delay";
+import Locate from "../pages/Locate";
 // import TClass from "../pages/TClass";
 import Schedule from "../pages/Schedule";
 
@@ -26,6 +28,8 @@ const Routers = () => {
           <Route path="/train" element={<Train />} />
           {/* <Route path="/class" element={<TClass />} /> */}
           <Route path="/schedule" element={<Schedule />} />
+          <Route path="/delay" element={<Delay />} />
+          <Route path="/locate" element={<Locate />} />
 
           <Route path="/passengers" element={<Passengers />} />
           <Route path="/users" element={<Users />} />

@@ -18,7 +18,7 @@ import { AiOutlineReload } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { request, GET, POST, PATCH, PUT } from "../api/ApiAdapter";
 
-const Schedule = () => {
+const Delay = () => {
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -258,7 +258,7 @@ const Schedule = () => {
   return (
     <div className="settings">
       <div className="settings__wrapper">
-        <h2 className="settings__title">Schedule</h2>
+        <h2 className="settings__title">Delay</h2>
         <div>
           <div className="w-full mb-2 flex justify-end space-x-2">
             <button
@@ -292,51 +292,41 @@ const Schedule = () => {
                       paddingY: ".5em",
                     }}
                   >
-                    Depurthure Station
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                  >
-                    Arival Station
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                    align="center"
-                  >
-                    Depurthure Time
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                    align="center"
-                  >
-                    Arival time
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                    align="center"
-                  >
                     Train
                   </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "#D1F1F9",
+                      fontSize: ".8em",
+                      fontWeight: 800,
+                      paddingY: ".5em",
+                    }}
+                  >
+                    Delayed Time
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "#D1F1F9",
+                      fontSize: ".8em",
+                      fontWeight: 800,
+                      paddingY: ".5em",
+                    }}
+                    align="center"
+                  >
+                    Schedule
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "#D1F1F9",
+                      fontSize: ".8em",
+                      fontWeight: 800,
+                      paddingY: ".5em",
+                    }}
+                    align="center"
+                  >
+                    Date
+                  </TableCell>
+
                   <TableCell
                     sx={{
                       color: "#D1F1F9",
@@ -478,19 +468,18 @@ const Schedule = () => {
                 <div className="  text-xs">
                   {/* <h3></h3> */}
                   <div className="flex mt-4 space-x-4 w-full">
-                    <div className="flex flex-col w-full">
-                      <label htmlFor="depStationId" className="text-gray-500">
+                    <div className="flex-col w-full">
+                      <label htmlFor="trainId" className="text-gray-500">
                         <div className="flex">
-                          Depurcher Station Name{" "}
-                          <span className="text-red-500">*</span>
+                          Trains <span className="text-red-500">*</span>
                         </div>
                       </label>
                       <Select
-                        options={deps}
-                        // value={dep}
+                        options={tras}
+                        // value={tra}
                         // isMulti
                         // onChange={(e) => {
-                        //   setDep(e);
+                        //   setTra(e);
                         // }}
                         styles={customStyles}
                       />
@@ -498,8 +487,7 @@ const Schedule = () => {
                     <div className="flex flex-col w-full">
                       <label htmlFor="arrStationId" className="text-gray-500">
                         <div className="flex">
-                          Arrived Station Name{" "}
-                          <span className="text-red-500">*</span>
+                          Schedule <span className="text-red-500">*</span>
                         </div>
                       </label>
                       <Select
@@ -530,11 +518,11 @@ const Schedule = () => {
                         </label>
                       </div> */}
 
-                  <div className="flex mt-4 space-x-4 w-full ">
+                  <div className="flex mt-4 space-x-4 w-1/2 ">
                     <div className="flex-col w-full">
                       <label htmlFor="departureTime" className="text-gray-500">
                         <div className="flex">
-                          Deaparthure Time{" "}
+                          Delay Time(minutes){" "}
                           <span className="text-red-500">*</span>
                         </div>
                       </label>
@@ -542,30 +530,14 @@ const Schedule = () => {
                         id="departureTime"
                         onChange={(e) => onChange(e)}
                         name="departureTime"
-                        type="datetime-local"
+                        type="number"
                         placeholder="Enter Tracker Account Contact"
                         className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
                         value={schedule.departureTime}
                       />
                     </div>
-                    <div className="flex-col w-full">
-                      <label htmlFor="arrivalTime" className="text-gray-500">
-                        <div className="flex">
-                          Arival Time <span className="text-red-500">*</span>
-                        </div>
-                      </label>
-                      <input
-                        id="arrivalTime"
-                        onChange={(e) => onChange(e)}
-                        name="arrivalTime"
-                        type="datetime-local"
-                        placeholder="Enter Tracker Account Contact"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={schedule.arrivalTime}
-                      />
-                    </div>
                   </div>
-                  <div className="flex mt-4 space-x-4 w-full ">
+                  {/* <div className="flex mt-4 space-x-4 w-full ">
                     <div className="flex-col w-full">
                       <label htmlFor="trainId" className="text-gray-500">
                         <div className="flex">
@@ -582,7 +554,7 @@ const Schedule = () => {
                         styles={customStyles}
                       />
                     </div>
-                  </div>
+                  </div> */}
                   {/* ttt */}
                   {/* <div
                         className={`flex mt-4 space-x-4 w-full ${
@@ -706,4 +678,4 @@ const Schedule = () => {
     </div>
   );
 };
-export default Schedule;
+export default Delay;
