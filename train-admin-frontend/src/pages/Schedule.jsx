@@ -8,6 +8,8 @@ import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import { Modal, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import * as Md from "react-icons/md";
 import * as Bi from "react-icons/bi";
 import Select from "react-select";
@@ -27,21 +29,29 @@ const Schedule = () => {
   const [idDelete, setDeleteId] = useState();
   const [editMode, setEditMode] = useState("edit");
   const [openModal, setOpenModal] = useState(false);
-  const [schedule, setSchedule] = useState({
+  const schedule = {
     depStationId: "",
     arrStationId: "",
     departureTime: "",
     arrivalTime: "",
     trainId: "",
+  };
+
+  const schema = Yup.object({
+    depStationId: Yup.object().required(),
+    arrStationId: Yup.object().required(),
+    departureTime: Yup.string().required(),
+    arrivalTime: Yup.string().required(),
+    trainId: Yup.object().required(),
   });
+
   const [loading, setLoading] = useState();
-  const [errors, setErrors] = useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const [deps, setDeps] = useState([]);
+  const [stations, setStations] = useState([]);
   const [dep, setDep] = useState();
   const [arrs, setArrs] = useState([]);
   const [arr, setArr] = useState();
@@ -91,32 +101,14 @@ const Schedule = () => {
   };
 
   useEffect(() => {
-    const newErrors = [];
-    if (schedule.name === "") {
-      newErrors.push({ label: "schedule.name", value: "Required" });
-    }
-    if (schedule.address === "") {
-      newErrors.push({ label: "schedule.address", value: "Required" });
-    }
-    if (schedule.contact === "") {
-      newErrors.push({ label: "schedule.contact", value: "Required" });
-    }
-    setErrors([...newErrors]);
     loadAllScheduleData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseModal = () => {
     setOpenModal(false);
     // setEnabledEdit(false);
     setLoading(false);
-    setSchedule({
-      depStationId: "",
-      arrStationId: "",
-      departureTime: "",
-      arrivalTime: "",
-      trainId: "",
-    });
+    resetForm();
     reload();
     setOpenModalDeleteConfirm(false);
   };
@@ -153,7 +145,7 @@ const Schedule = () => {
       res.forEach((item) => {
         newDep.push({ label: item.name, value: item });
       });
-      setDeps(newDep);
+      setStations(newDep);
       // console.log(res);
     }
   };
@@ -187,15 +179,8 @@ const Schedule = () => {
     loadAllStationArr();
     loadAllTrainData();
     e.stopPropagation();
-    setSchedule(row);
+    setValues(row);
     setOpenModal(true);
-  };
-
-  const onChange = (e) => {
-    setSchedule((state) => ({
-      ...state,
-      [e.target.name]: e.target.value.trim(),
-    }));
   };
 
   const createStation = async () => {
@@ -254,6 +239,29 @@ const Schedule = () => {
       },
     }),
   };
+
+  const submit = () => {
+    if (editMode === "edit") {
+      updateStation();
+    } else {
+      createStation();
+    }
+  };
+
+  const {
+    setTouched,
+    resetForm,
+    setValues,
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+  } = useFormik({
+    initialValues: schedule,
+    validationSchema: schema,
+    onSubmit: submit,
+  });
 
   return (
     <div className="settings">
@@ -481,19 +489,36 @@ const Schedule = () => {
                     <div className="flex flex-col w-full">
                       <label htmlFor="depStationId" className="text-gray-500">
                         <div className="flex">
-                          Depurcher Station Name{" "}
+                          Departure Station Name{" "}
                           <span className="text-red-500">*</span>
                         </div>
                       </label>
                       <Select
-                        options={deps}
-                        // value={dep}
+                        options={stations}
+                        onBlur={handleBlur}
+                        value={values.depStationId}
+                        onMenuOpen={() => {
+                          setTouched({
+                            ...touched,
+                            depStationId: true,
+                          });
+                        }}
+                        className={
+                          errors.depStationId && touched.depStationId
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
                         // isMulti
-                        // onChange={(e) => {
-                        //   setDep(e);
-                        // }}
+                        onChange={(e) => {
+                          setValues({ ...values, e });
+                        }}
                         styles={customStyles}
                       />
+                      <div className="text-red-500">
+                        {errors.depStationId &&
+                          touched.depStationId &&
+                          errors.depStationId}
+                      </div>
                     </div>
                     <div className="flex flex-col w-full">
                       <label htmlFor="arrStationId" className="text-gray-500">
@@ -504,13 +529,27 @@ const Schedule = () => {
                       </label>
                       <Select
                         options={arrs}
+                        className={
+                          errors.arrStationId && touched.arrStationId
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
+                        value={values.arrStationId}
+                        onMenuOpen={() => {
+                          setTouched({ ...touched, arrStationId: true });
+                        }}
                         // value={arr}
                         // isMulti
-                        // onChange={(e) => {
-                        //   setArr(e);
-                        // }}
+                        onChange={(e) => {
+                          setValues({ ...values, arrStationId: e });
+                        }}
                         styles={customStyles}
                       />
+                      <div className="text-red-500">
+                        {errors.arrStationId &&
+                          touched.arrStationId &&
+                          errors.arrStationId}
+                      </div>
                     </div>
                   </div>
                   {/* <div className="text-sm flex mt-4 font-bold ml-0">
@@ -534,19 +573,29 @@ const Schedule = () => {
                     <div className="flex-col w-full">
                       <label htmlFor="departureTime" className="text-gray-500">
                         <div className="flex">
-                          Deaparthure Time{" "}
-                          <span className="text-red-500">*</span>
+                          Departure Time <span className="text-red-500">*</span>
                         </div>
                       </label>
                       <input
                         id="departureTime"
-                        onChange={(e) => onChange(e)}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                         name="departureTime"
                         type="datetime-local"
                         placeholder="Enter Tracker Account Contact"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={schedule.departureTime}
+                        className={
+                          "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                          (errors.departureTime && touched.departureTime
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.departureTime}
                       />
+                      <div className="text-red-500">
+                        {errors.departureTime &&
+                          touched.departureTime &&
+                          errors.departureTime}
+                      </div>
                     </div>
                     <div className="flex-col w-full">
                       <label htmlFor="arrivalTime" className="text-gray-500">
@@ -556,13 +605,24 @@ const Schedule = () => {
                       </label>
                       <input
                         id="arrivalTime"
-                        onChange={(e) => onChange(e)}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                         name="arrivalTime"
                         type="datetime-local"
                         placeholder="Enter Tracker Account Contact"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={schedule.arrivalTime}
+                        className={
+                          "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                          (errors.arrivalTime && touched.arrivalTime
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.arrivalTime}
                       />
+                      <div className="text-red-500">
+                        {errors.arrivalTime &&
+                          touched.arrivalTime &&
+                          errors.arrivalTime}
+                      </div>
                     </div>
                   </div>
                   <div className="flex mt-4 space-x-4 w-full ">
@@ -574,13 +634,24 @@ const Schedule = () => {
                       </label>
                       <Select
                         options={tras}
-                        // value={tra}
+                        value={values.trainId}
                         // isMulti
-                        // onChange={(e) => {
-                        //   setTra(e);
-                        // }}
+                        onMenuOpen={() => {
+                          setTouched({ ...touched, trainId: true });
+                        }}
+                        onChange={(e) => {
+                          setValues({ ...values, trainId: e });
+                        }}
                         styles={customStyles}
+                        className={
+                          errors.trainId && touched.trainId
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
                       />
+                      <div className="text-red-500">
+                        {errors.trainId && touched.trainId && errors.trainId}
+                      </div>
                     </div>
                   </div>
                   {/* ttt */}
