@@ -8,6 +8,8 @@ import {
   FormControlLabel,
   FormGroup,
 } from "@mui/material";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import Select from "react-select";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
@@ -33,16 +35,24 @@ const Train = () => {
   const [idDelete, setDeleteId] = useState();
   const [editMode, setEditMode] = useState("edit");
   const [openModal, setOpenModal] = useState(false);
-  const [train, setTrain] = useState({
+  const train = {
     name: "",
     firstClassCount: "",
-    secondClassCount: 0,
-    thirdClassCount: 0,
+    secondClassCount: "",
+    thirdClassCount: "",
     station: [],
+  };
+
+  const schema = Yup.object({
+    name: Yup.string().required(),
+    firstClassCount: Yup.number().min(1).max(50).required(),
+    secondClassCount: Yup.number().min(1).max(50).required(),
+    thirdClassCount: Yup.number().min(1).max(50).required(),
+    station: Yup.array().min(1).required(),
   });
+
   const [loading, setLoading] = useState();
-  const [errors, setErrors] = useState([]);
-  const [getustation, setGetStations] = useState([]);
+  const [stations, setStations] = useState([]);
   const [selectedStations, setSelectedStations] = useState([]);
 
   const handleChangePage = (event, newPage) => {
@@ -90,18 +100,20 @@ const Train = () => {
     const res = await request(`station/getustation`, GET);
     if (!res.error) {
       const newStations = [];
+      const options = [];
       res.forEach((item) => {
-        // console.log(item.name);
+        console.log(item.name);
+        options.push({ label: item.name, value: item });
         newStations.push({ id: item.id, value: item.name });
       });
+      setStations(options);
       const newSelectedStation = [];
-      row.stations.forEach((item) => {
-        // console.log(newStations.find((e) => e.id === item.id).id);
-        newSelectedStation.push(newStations.find((e) => e.id === item.id).id);
-      });
-      setGetStations(newStations);
+      if (row !== undefined) {
+        row.stations.forEach((item) => {
+          newSelectedStation.push({ label: item.name, value: item });
+        });
+      }
       setSelectedStations(newSelectedStation);
-      // console.log(newSelectedStation);
     }
   };
 
@@ -111,17 +123,6 @@ const Train = () => {
   };
 
   useEffect(() => {
-    const newErrors = [];
-    if (train.name === "") {
-      newErrors.push({ label: "train.name", value: "Required" });
-    }
-    if (train.address === "") {
-      newErrors.push({ label: "train.address", value: "Required" });
-    }
-    if (train.contact === "") {
-      newErrors.push({ label: "train.contact", value: "Required" });
-    }
-    setErrors([...newErrors]);
     loadAllTrainData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -131,13 +132,7 @@ const Train = () => {
     setSelectedStations([]);
     // setEnabledEdit(false);
     setLoading(false);
-    setTrain({
-      name: "",
-      firstClassCount: "",
-      secondClassCount: 0,
-      thirdClassCount: 0,
-      station: [],
-    });
+    resetForm();
     reload();
     setOpenModalDeleteConfirm(false);
   };
@@ -170,15 +165,8 @@ const Train = () => {
   const handleOpenModal = (e, row) => {
     loadAllStationData(row);
     e.stopPropagation();
-    setTrain(row);
+    setValues(row);
     setOpenModal(true);
-  };
-
-  const onChange = (e) => {
-    setTrain((state) => ({
-      ...state,
-      [e.target.name]: e.target.value.trim(),
-    }));
   };
 
   const createStation = async () => {
@@ -216,14 +204,47 @@ const Train = () => {
     }
   };
 
-  const handleStationChange = (event, stationId) => {
-    const { checked } = event.target;
-    setSelectedStations((prevSelected) =>
-      checked
-        ? [...prevSelected, stationId]
-        : prevSelected.filter((id) => id !== stationId)
-    );
+  const handleStationChange = (stations) => {
+    console.log("stations", stations);
+    setTouched({ ...touched, station: true });
+    setSelectedStations(stations);
+    if (stations.length === 0) {
+      setValues({ ...values, station: [] });
+    } else {
+      const newStations = [];
+      stations.forEach((item) => {
+        newStations.push(item.id);
+      });
+      setValues({ ...values, station: newStations });
+    }
   };
+
+  const submit = () => {
+    if (editMode === "edit") {
+      updateStation();
+    } else {
+      createStation();
+    }
+  };
+
+  const {
+    setTouched,
+    resetForm,
+    setValues,
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+  } = useFormik({
+    initialValues: train,
+    validationSchema: schema,
+    onSubmit: submit,
+  });
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   return (
     <div className="settings">
@@ -445,13 +466,22 @@ const Train = () => {
                       </label>
                       <input
                         id="name"
-                        onChange={(e) => onChange(e)}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
                         name="name"
                         type="text"
                         placeholder="Enter Name"
-                        className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                        value={train.name}
+                        className={
+                          "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
+                          (errors.name && touched.name
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.name}
                       />
+                      <div className="text-red-500">
+                        {errors.name && touched.name && errors.name}
+                      </div>
                     </div>
                     <div className="flex flex-col w-full">
                       <label
@@ -465,13 +495,24 @@ const Train = () => {
                       </label>
                       <input
                         id="firstClassCount"
-                        onChange={(e) => onChange(e)}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                         name="firstClassCount"
                         type="text"
                         placeholder="Enter First Class Seat Count"
-                        className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                        value={train.firstClassCount}
+                        className={
+                          "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
+                          (errors.firstClassCount && touched.firstClassCount
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.firstClassCount}
                       />
+                      <div className="text-red-500">
+                        {errors.firstClassCount &&
+                          touched.firstClassCount &&
+                          errors.firstClassCount}
+                      </div>
                     </div>
                   </div>
 
@@ -488,13 +529,24 @@ const Train = () => {
                       </label>
                       <input
                         id="secondClassCount"
-                        onChange={(e) => onChange(e)}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                         name="secondClassCount"
                         type="text"
                         placeholder="Enter Second Class Seat Count"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={train.secondClassCount}
+                        className={
+                          "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                          (errors.secondClassCount && touched.secondClassCount
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.secondClassCount}
                       />
+                      <div className="text-red-500">
+                        {errors.secondClassCount &&
+                          touched.secondClassCount &&
+                          errors.secondClassCount}
+                      </div>
                     </div>
                     <div className="flex-col w-full">
                       <label
@@ -508,13 +560,24 @@ const Train = () => {
                       </label>
                       <input
                         id="thirdClassCount"
-                        onChange={(e) => onChange(e)}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                         name="thirdClassCount"
                         type="text"
                         placeholder="Enter Economy Class Seat Count"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={train.thirdClassCount}
+                        className={
+                          "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                          (errors.thirdClassCount && touched.thirdClassCount
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.thirdClassCount}
                       />
+                      <div className="text-red-500">
+                        {errors.thirdClassCount &&
+                          touched.thirdClassCount &&
+                          errors.thirdClassCount}
+                      </div>
                     </div>
                   </div>
                   <div className="flex mt-4 space-x-4 w-full ">
@@ -522,30 +585,25 @@ const Train = () => {
                       <label htmlFor="station" className="text-gray-500">
                         <div className="flex">
                           Select Station Train Pass{" "}
-                          <span className="text-red-500">*</span>
+                          <span className="text-red-500 mb-2">*</span>
                         </div>
                       </label>
-                      <FormControl component="fieldset">
-                        <FormGroup>
-                          {getustation.map((station) => (
-                            <FormControlLabel
-                              key={station.id}
-                              className=" text-black"
-                              control={
-                                <Checkbox
-                                  checked={selectedStations.includes(
-                                    station.id
-                                  )}
-                                  onChange={(e) =>
-                                    handleStationChange(e, station.id)
-                                  }
-                                />
-                              }
-                              label={station.value}
-                            />
-                          ))}
-                        </FormGroup>
-                      </FormControl>
+                      <Select
+                        isMulti={true}
+                        onBlur={handleBlur}
+                        placeholder="Train Stations"
+                        options={stations}
+                        onChange={handleStationChange}
+                        value={selectedStations}
+                        className={
+                          errors.station && touched.station
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
+                      />
+                      <div className="text-red-500">
+                        {errors.station && touched.station && errors.station}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -553,11 +611,13 @@ const Train = () => {
               <div className="bg-gray-100 p-2 flex justify-end">
                 <div className="space-x-4">
                   <button
-                    onClick={editMode === "add" ? createStation : updateStation}
+                    onClick={submit}
                     type="button"
-                    // disabled={errors.length !== 0 || loading === true}
+                    disabled={
+                      Object.entries(errors).length !== 0 || loading === true
+                    }
                     className={
-                      loading === true
+                      Object.entries(errors).length !== 0 || loading === true
                         ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
                         : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
                     }
