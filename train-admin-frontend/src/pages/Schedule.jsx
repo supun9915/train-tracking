@@ -10,9 +10,7 @@ import { Modal, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import * as Md from "react-icons/md";
 import * as Bi from "react-icons/bi";
-import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import ReactLoading from "react-loading";
-import Geocode from "react-geocode";
 
 import { AiOutlineReload } from "react-icons/ai";
 // import { useNavigate } from "react-router-dom";
@@ -28,16 +26,14 @@ const Schedule = () => {
   const [idDelete, setDeleteId] = useState();
   const [editMode, setEditMode] = useState("edit");
   const [openModal, setOpenModal] = useState(false);
-  const [station, setStation] = useState({
-    name: "",
-    address: "",
-    lat: 0,
-    lng: 0,
-    contact: "",
+  const [schedule, setSchedule] = useState({
+    depStationId: "",
+    arrStationId: "",
+    departureTime: "",
+    arrivalTime: "",
+    trainId: "",
   });
   const [loading, setLoading] = useState();
-  const [autocomplete, setAutocomplete] = useState(null);
-  const [adr, setAdr] = useState(true);
   const [errors, setErrors] = useState([]);
 
   const handleChangePage = (event, newPage) => {
@@ -88,14 +84,14 @@ const Schedule = () => {
 
   useEffect(() => {
     const newErrors = [];
-    if (station.name === "") {
-      newErrors.push({ label: "station.name", value: "Required" });
+    if (schedule.name === "") {
+      newErrors.push({ label: "schedule.name", value: "Required" });
     }
-    if (station.address === "") {
-      newErrors.push({ label: "station.address", value: "Required" });
+    if (schedule.address === "") {
+      newErrors.push({ label: "schedule.address", value: "Required" });
     }
-    if (station.contact === "") {
-      newErrors.push({ label: "station.contact", value: "Required" });
+    if (schedule.contact === "") {
+      newErrors.push({ label: "schedule.contact", value: "Required" });
     }
     setErrors([...newErrors]);
     loadAllScheduleData();
@@ -106,12 +102,12 @@ const Schedule = () => {
     setOpenModal(false);
     // setEnabledEdit(false);
     setLoading(false);
-    setStation({
-      name: "",
-      address: "",
-      lat: 0,
-      lng: 0,
-      contact: "",
+    setSchedule({
+      depStationId: "",
+      arrStationId: "",
+      departureTime: "",
+      arrivalTime: "",
+      trainId: "",
     });
     reload();
     setOpenModalDeleteConfirm(false);
@@ -144,139 +140,46 @@ const Schedule = () => {
 
   const handleOpenModal = (e, row) => {
     e.stopPropagation();
-    setStation(row);
+    setSchedule(row);
     setOpenModal(true);
   };
 
-  const [libraries] = useState(["places"]);
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_KEY,
-    componentRestrictions: { country: "ca" },
-    libraries,
-  });
-
-  // eslint-disable-next-line no-shadow
-  const onLoad = (autocomplete) => {
-    // console.log('autocomplete: ', autocomplete);
-    if (adr === true) {
-      setAutocomplete(autocomplete);
-    }
-  };
-
-  const onPlaceChanged = () => {
-    if (adr === true) {
-      setAutocomplete(autocomplete);
-
-      if (autocomplete !== null) {
-        setStation((state) => ({
-          ...state,
-          address: autocomplete?.getPlace()?.formatted_address,
-        }));
-      } else {
-        // console.log('Autocomplete is not loaded yet!');
-      }
-    }
-  };
-
-  const handleEnterKeypress = (e) => {
-    if (e.key === "Backspace") {
-      setAdr(false);
-      setStation((state) => ({
-        ...state,
-        address: "",
-      }));
-      autocomplete.set("place", null);
-    } else {
-      // console.log(station.address);
-      // console.log(autocomplete);
-    }
-
-    if (adr === false) {
-      if (e.key !== "Backspace") {
-        setAdr(true);
-      }
-    }
-  };
-
   const onChange = (e) => {
-    setStation((state) => ({
+    setSchedule((state) => ({
       ...state,
       [e.target.name]: e.target.value.trim(),
     }));
   };
 
-  const createStation = () => {
-    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_KEY);
-    Geocode.setLanguage("en");
-    Geocode.setLocationType("ROOFTOP");
-    setLoading(true);
-
-    Geocode.fromAddress(station.address).then(
-      async (response) => {
-        if (errors.length === 0) {
-          const { lat, lng } = response.results[0].geometry.location;
-
-          const res = await request("station/create", POST, {
-            ...station,
-            lat,
-            lng,
-          });
-          if (!res.error) {
-            toast.success("Create station successfully..!");
-            handleCloseModal();
-            setLoading(false);
-          } else {
-            toast.error(res.error.response.data);
-            setLoading(false);
-            // console.log(res);
-          }
-        } else {
-          toast.error("Required field cannot be empty");
-        }
-      },
-      (error) => {
-        toast.error("Plese enter valid address");
-        setLoading(false);
-
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
-    );
+  const createStation = async () => {
+    const res = await request("schedule/create", POST, {
+      ...schedule,
+    });
+    if (!res.error) {
+      toast.success("Create schedule successfully..!");
+      handleCloseModal();
+      setLoading(false);
+    } else {
+      toast.error(res.error.response.data);
+      setLoading(false);
+      // console.log(res);
+    }
   };
 
   const updateStation = async () => {
-    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_KEY);
-    Geocode.setLanguage("en");
-    Geocode.setLocationType("ROOFTOP");
-    setLoading(true);
-
-    Geocode.fromAddress(station.address).then(
-      async (response) => {
-        const { lat, lng } = response.results[0].geometry.location;
-        const res = await request(`station/update/${station.id}`, PUT, {
-          name: station.name,
-          address: station.address,
-          contact: station.contact,
-          lat,
-          lng,
-        });
-        if (!res.error) {
-          toast.success("Update station successfully..!");
-          handleCloseModal();
-          setLoading(false);
-        } else {
-          toast.error(res.error.response.data);
-          setLoading(false);
-        }
-      },
-      (error) => {
-        toast.error("Plese enter valid address");
-        setLoading(false);
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
-    );
+    const res = await request(`schedule/update/${schedule.id}`, PUT, {
+      name: schedule.name,
+      address: schedule.address,
+      contact: schedule.contact,
+    });
+    if (!res.error) {
+      toast.success("Update schedule successfully..!");
+      handleCloseModal();
+      setLoading(false);
+    } else {
+      toast.error(res.error.response.data);
+      setLoading(false);
+    }
   };
 
   return (
@@ -289,7 +192,7 @@ const Schedule = () => {
               type="button"
               onClick={(e) => {
                 setEditMode("add");
-                handleOpenModal(e, station);
+                handleOpenModal(e, schedule);
                 // setEnabledEdit(true);
               }}
               className="px-2 py-1 bg-[#00A05E] rounded-md shadow-md cursor-pointer"
@@ -458,82 +361,57 @@ const Schedule = () => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-          {isLoaded ? (
-            <>
-              <Modal
-                open={openModal}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  {loading && (
-                    <ReactLoading
-                      className="z-50 absolute right-[40%] top-1/2"
-                      type="bubbles"
-                      color="#30405D"
-                    />
-                  )}
-                  <div className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="text-lg font-bold">
-                        {editMode === "add" ? "Add" : "Edit"} Station
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleCloseModal()}
-                        disabled={loading === true}
-                        className="p-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200"
-                      >
-                        <Md.MdOutlineClose />
-                      </button>
-                    </div>
 
-                    <div className="  text-xs">
-                      {/* <h3></h3> */}
-                      <div className="flex mt-4 space-x-4 w-full">
-                        <div className="flex flex-col w-full">
-                          <label htmlFor="name" className="text-gray-500">
-                            <div className="flex">
-                              Station Name{" "}
-                              <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="name"
-                            onChange={(e) => onChange(e)}
-                            name="name"
-                            type="text"
-                            placeholder="Enter Name"
-                            className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                            value={station.name}
-                          />
+          <Modal
+            open={openModal}
+            onClose={handleCloseModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              {loading && (
+                <ReactLoading
+                  className="z-50 absolute right-[40%] top-1/2"
+                  type="bubbles"
+                  color="#30405D"
+                />
+              )}
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-lg font-bold">
+                    {editMode === "add" ? "Add" : "Edit"} Station
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCloseModal()}
+                    disabled={loading === true}
+                    className="p-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200"
+                  >
+                    <Md.MdOutlineClose />
+                  </button>
+                </div>
+
+                <div className="  text-xs">
+                  {/* <h3></h3> */}
+                  <div className="flex mt-4 space-x-4 w-full">
+                    <div className="flex flex-col w-full">
+                      <label htmlFor="depStationId" className="text-gray-500">
+                        <div className="flex">
+                          Station Name <span className="text-red-500">*</span>
                         </div>
-                        <Autocomplete
-                          onPlaceChanged={onPlaceChanged}
-                          onLoad={onLoad}
-                          className="w-full"
-                        >
-                          <div className="flex flex-col w-full">
-                            <label htmlFor="address" className="text-gray-500">
-                              <div className="flex mr-3">
-                                Address <span className="text-red-500">*</span>
-                              </div>
-                            </label>
-                            <input
-                              id="address"
-                              onChange={onPlaceChanged}
-                              name="address"
-                              type="text"
-                              onKeyDown={(e) => handleEnterKeypress(e)}
-                              placeholder="Enter Station Address"
-                              className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                              value={station.address}
-                            />
-                          </div>
-                        </Autocomplete>
-                      </div>
-                      {/* <div className="text-sm flex mt-4 font-bold ml-0">
+                      </label>
+                      <input
+                        id="depStationId"
+                        onChange={(e) => onChange(e)}
+                        name="depStationId"
+                        type="text"
+                        placeholder="Enter Name"
+                        className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
+                        value={schedule.depStationId}
+                      />
+                    </div>
+                  </div>
+                  {/* <div className="text-sm flex mt-4 font-bold ml-0">
                         <div
                           className={`text-input flex -mt-[0.2em] -ml-3 ${
                             editMode === "edit" ? "visible" : "hidden"
@@ -550,25 +428,24 @@ const Schedule = () => {
                         </label>
                       </div> */}
 
-                      <div className="flex mt-4 space-x-4 w-full ">
-                        <div className="flex-col w-full">
-                          <label htmlFor="contact" className="text-gray-500">
-                            <div className="flex">
-                              Contact Number{" "}
-                              <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="contact"
-                            onChange={(e) => onChange(e)}
-                            name="contact"
-                            type="text"
-                            placeholder="Enter Tracker Account Contact"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.contact?.trim()}
-                          />
+                  <div className="flex mt-4 space-x-4 w-full ">
+                    <div className="flex-col w-full">
+                      <label htmlFor="contact" className="text-gray-500">
+                        <div className="flex">
+                          Contact Number <span className="text-red-500">*</span>
                         </div>
-                        {/* <div className="flex-col w-full">
+                      </label>
+                      <input
+                        id="contact"
+                        onChange={(e) => onChange(e)}
+                        name="contact"
+                        type="text"
+                        placeholder="Enter Tracker Account Contact"
+                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
+                        value={schedule.contact?.trim()}
+                      />
+                    </div>
+                    {/* <div className="flex-col w-full">
                           <label htmlFor="password" className="text-gray-500">
                             <div className="flex pr-2">
                               Password <span className="text-red-500">*</span>
@@ -580,7 +457,7 @@ const Schedule = () => {
                             name="password"
                             placeholder="Enter Tracker Account Password"
                             className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            // value={station.password?.trim()}
+                            // value={schedule.password?.trim()}
                           />
                           <div
                             className={`absolute buttom pt-7 pr-2 right-8 ${
@@ -588,9 +465,9 @@ const Schedule = () => {
                             }`}
                           ></div>
                         </div> */}
-                      </div>
-                      {/* ttt */}
-                      {/* <div
+                  </div>
+                  {/* ttt */}
+                  {/* <div
                         className={`flex mt-4 space-x-4 w-full ${
                           editMode === "edit" && enabledEdit === false
                             ? "hidden"
@@ -610,7 +487,7 @@ const Schedule = () => {
                             type="text"
                             placeholder="Enter Tracker Account App Key"
                             className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.appkey?.trim()}
+                            value={schedule.appkey?.trim()}
                           />
                         </div>
                         <div className="flex-col w-full">
@@ -626,44 +503,39 @@ const Schedule = () => {
                             type="text"
                             placeholder="Enter Tracker Account App Secret"
                             className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.appSecret?.trim()}
+                            value={schedule.appSecret?.trim()}
                           />
                         </div>
                       </div> */}
-                    </div>
-                  </div>
-                  <div className="bg-gray-100 p-2 flex justify-end">
-                    <div className="space-x-4">
-                      <button
-                        onClick={
-                          editMode === "add" ? createStation : updateStation
-                        }
-                        type="button"
-                        disabled={errors.length !== 0 || loading === true}
-                        className={
-                          errors.length !== 0 || loading === true
-                            ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
-                            : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
-                        }
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={handleCloseModal}
-                        type="button"
-                        disabled={loading === true}
-                        className="bg-red-500 p-2 text-xs text-white rounded-md w-20 shadow-md"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </Box>
-              </Modal>
-            </>
-          ) : (
-            <></>
-          )}
+                </div>
+              </div>
+              <div className="bg-gray-100 p-2 flex justify-end">
+                <div className="space-x-4">
+                  <button
+                    onClick={editMode === "add" ? createStation : updateStation}
+                    type="button"
+                    disabled={errors.length !== 0 || loading === true}
+                    className={
+                      errors.length !== 0 || loading === true
+                        ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
+                        : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
+                    }
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={handleCloseModal}
+                    type="button"
+                    disabled={loading === true}
+                    className="bg-red-500 p-2 text-xs text-white rounded-md w-20 shadow-md"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </Box>
+          </Modal>
+
           <Modal
             open={openModalDeleteConfirm}
             onClose={handleCloseModal}
