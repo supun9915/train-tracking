@@ -75,6 +75,25 @@ public class TrainService implements ITrainService {
         updateTrain.setFirstClassCount(createTrain.getFirstClassCount());
         updateTrain.setSecondClassCount(createTrain.getSecondClassCount());
         updateTrain.setThirdClassCount(createTrain.getThirdClassCount());
+
+        for(TrainStation trainStation  : updateTrain.getTrainStations()){
+            trainStationRepository.deleteById(trainStation.getId());
+        }
+
+        Set<TrainStation> trainStations = new HashSet<>();
+        if (createTrain.getStation().size() > 0) {
+            int count = 0;
+            for (UUID uuid: createTrain.getStation()) {
+                TrainStation trainStation = new TrainStation();
+                Station station = stationRepository.findById(uuid).get();
+                trainStation.setStation(station);
+                trainStation.setStationOrder(count);
+                trainStations.add(trainStationRepository.save(trainStation));
+                count += 1;
+            }
+        }
+
+        updateTrain.setTrainStations(trainStations);
         updateTrain.setModifiedBy(user);
         updateTrain.setModifiedTime(OffsetDateTime.now());
         return TrainResponseConvertor(trainRepository.save(updateTrain));
