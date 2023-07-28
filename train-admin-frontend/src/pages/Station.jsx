@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,13 +9,12 @@ import TablePagination from "@mui/material/TablePagination";
 import { Modal, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Geocode from "react-geocode";
-
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AiOutlineReload } from "react-icons/ai";
 import ReactLoading from "react-loading";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
-
-// import { format } from "date-fns/esm";
 import * as Bi from "react-icons/bi";
 import * as Md from "react-icons/md";
 // import { Modal, Box } from "@mui/material";
@@ -34,28 +33,25 @@ const Station = () => {
   const [editMode, setEditMode] = useState("edit");
   // const [enabledEdit, setEnabledEdit] = useState(false);
   const [loading, setLoading] = useState();
-  const [station, setStation] = useState({
+  const station = {
     name: "",
     address: "",
-    lat: 0,
-    lng: 0,
     contact: "",
-  });
+  };
   const [autocomplete, setAutocomplete] = useState(null);
   const [adr, setAdr] = useState(true);
-  const [errors, setErrors] = useState([]);
+
+  const schema = Yup.object({
+    name: Yup.string().required(),
+    address: Yup.string().required(),
+    contact: Yup.number().required(),
+  });
 
   const handleCloseModal = () => {
     setOpenModal(false);
     // setEnabledEdit(false);
     setLoading(false);
-    setStation({
-      name: "",
-      address: "",
-      lat: 0,
-      lng: 0,
-      contact: "",
-    });
+    resetForm();
     reload();
     setOpenModalDeleteConfirm(false);
   };
@@ -91,22 +87,6 @@ const Station = () => {
       // console.log(res);
     } else navigate("/");
   };
-
-  useEffect(() => {
-    const newErrors = [];
-    if (station.name === "") {
-      newErrors.push({ label: "station.name", value: "Required" });
-    }
-    if (station.address === "") {
-      newErrors.push({ label: "station.address", value: "Required" });
-    }
-    if (station.contact === "") {
-      newErrors.push({ label: "station.contact", value: "Required" });
-    }
-    loadAllStationData();
-    setErrors([...newErrors]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [station]);
 
   const handleDeleteConfirmModel = (e, row) => {
     e.stopPropagation();
@@ -167,10 +147,14 @@ const Station = () => {
       setAutocomplete(autocomplete);
 
       if (autocomplete !== null) {
-        setStation((state) => ({
-          ...state,
+        setValues({
+          ...values,
           address: autocomplete?.getPlace()?.formatted_address,
-        }));
+        });
+        // setStation((state) => ({
+        //   ...state,
+        //   address: autocomplete?.getPlace()?.formatted_address,
+        // }));
       } else {
         console.log("Autocomplete is not loaded yet!");
       }
@@ -180,7 +164,7 @@ const Station = () => {
   const handleEnterKeypress = (e) => {
     if (e.key === "Backspace") {
       setAdr(false);
-      setStation((state) => ({
+      setValues((state) => ({
         ...state,
         address: "",
       }));
@@ -199,7 +183,7 @@ const Station = () => {
 
   const handleOpenModal = (e, row) => {
     e.stopPropagation();
-    setStation(row);
+    setValues(row);
     setOpenModal(true);
   };
 
@@ -216,26 +200,20 @@ const Station = () => {
     // }
   };
 
-  const onChange = (e) => {
-    setStation((state) => ({
-      ...state,
-      [e.target.name]: e.target.value.trim(),
-    }));
-  };
-
   const createStation = () => {
     Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_KEY);
     Geocode.setLanguage("en");
     Geocode.setLocationType("ROOFTOP");
-    setLoading(true);
+    // setLoading(true);
 
-    Geocode.fromAddress(station.address).then(
+    Geocode.fromAddress(values.address).then(
       async (response) => {
-        if (errors.length === 0) {
+        if (Object.entries(errors).length === 0) {
           const { lat, lng } = response.results[0].geometry.location;
+          console.log({ ...values, lat, lng });
 
           const res = await request("station/create", POST, {
-            ...station,
+            ...values,
             lat,
             lng,
           });
@@ -267,14 +245,12 @@ const Station = () => {
     Geocode.setLanguage("en");
     Geocode.setLocationType("ROOFTOP");
     setLoading(true);
-
-    Geocode.fromAddress(station.address).then(
+    console.log(values);
+    Geocode.fromAddress(values.address).then(
       async (response) => {
         const { lat, lng } = response.results[0].geometry.location;
-        const res = await request(`station/update/${station.id}`, PUT, {
-          name: station.name,
-          address: station.address,
-          contact: station.contact,
+        const res = await request(`station/update/${values.id}`, PUT, {
+          ...values,
           lat,
           lng,
         });
@@ -295,6 +271,32 @@ const Station = () => {
       }
     );
   };
+
+  const submit = () => {
+    if (editMode === "edit") {
+      updateStation();
+    } else {
+      createStation();
+    }
+  };
+
+  const {
+    resetForm,
+    setValues,
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+  } = useFormik({
+    initialValues: station,
+    validationSchema: schema,
+    onSubmit: submit,
+  });
+
+  useEffect(() => {
+    reload();
+  }, []);
 
   return (
     <div className="settings">
@@ -365,17 +367,6 @@ const Station = () => {
                     }}
                     align="center"
                   >
-                    Created Date
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                    align="center"
-                  >
                     Action
                   </TableCell>
                 </TableRow>
@@ -406,7 +397,7 @@ const Station = () => {
                         paddingY: ".5em",
                       }}
                     >
-                      Location
+                      {row.address}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -417,17 +408,6 @@ const Station = () => {
                       align="center"
                     >
                       {row.contact}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontSize: ".7em",
-                        color: "#d3d3dd3",
-                        paddingY: ".5em",
-                      }}
-                      align="center"
-                    >
-                      {/* {row.createdTime} */}
-                      {/* {format(row.createdTime * 1000, "yyyy-MM-dd hh:mm")} */}
                     </TableCell>
                     <TableCell align="center" sx={{ paddingY: ".5em" }}>
                       <div className="flex justify-center space-x-4">
@@ -508,7 +488,6 @@ const Station = () => {
                     </div>
 
                     <div className="  text-xs">
-                      {/* <h3></h3> */}
                       <div className="flex mt-4 space-x-4 w-full">
                         <div className="flex flex-col w-full">
                           <label htmlFor="name" className="text-gray-500">
@@ -519,13 +498,22 @@ const Station = () => {
                           </label>
                           <input
                             id="name"
-                            onChange={(e) => onChange(e)}
+                            onChange={handleChange}
                             name="name"
                             type="text"
                             placeholder="Enter Name"
-                            className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                            value={station.name}
+                            onBlur={handleBlur}
+                            className={
+                              "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
+                              (errors.name && touched.name
+                                ? "ring-1 ring-red-500"
+                                : "")
+                            }
+                            value={values.name}
                           />
+                          <div className="text-red-500">
+                            {errors.name && touched.name && errors.name}
+                          </div>
                         </div>
                         <Autocomplete
                           onPlaceChanged={onPlaceChanged}
@@ -541,32 +529,27 @@ const Station = () => {
                             <input
                               id="address"
                               onChange={onPlaceChanged}
+                              onBlur={handleBlur}
                               name="address"
                               type="text"
                               onKeyDown={(e) => handleEnterKeypress(e)}
                               placeholder="Enter Station Address"
-                              className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                              value={station.address}
+                              className={
+                                "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
+                                (errors.address && touched.address
+                                  ? "ring-1 ring-red-500"
+                                  : "")
+                              }
+                              value={values.address}
                             />
+                            <div className="text-red-500">
+                              {errors.address &&
+                                touched.address &&
+                                errors.address}
+                            </div>
                           </div>
                         </Autocomplete>
                       </div>
-                      {/* <div className="text-sm flex mt-4 font-bold ml-0">
-                        <div
-                          className={`text-input flex -mt-[0.2em] -ml-3 ${
-                            editMode === "edit" ? "visible" : "hidden"
-                          }`}
-                        >
-                          <Checkbox
-                            name="enableEdit"
-                            id="enableEdit"
-                            onChange={(e) => setEditEnabled(e)}
-                          />
-                        </div>
-                        <label htmlFor="enableEdit" className="pt-2 text-sm">
-                          {editMode === "edit" ? "Edit " : null} Tracker Account
-                        </label>
-                      </div> */}
 
                       <div className="flex mt-4 space-x-4 w-full ">
                         <div className="flex-col w-full">
@@ -578,88 +561,40 @@ const Station = () => {
                           </label>
                           <input
                             id="contact"
-                            onChange={(e) => onChange(e)}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                             name="contact"
                             type="text"
                             placeholder="Enter Tracker Account Contact"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.contact?.trim()}
+                            className={
+                              "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                              (errors.contact && touched.contact
+                                ? "ring-1 ring-red-500"
+                                : "")
+                            }
+                            value={values.contact}
                           />
+                          <div className="text-red-500">
+                            {errors.contact &&
+                              touched.contact &&
+                              errors.contact}
+                          </div>
                         </div>
-                        {/* <div className="flex-col w-full">
-                          <label htmlFor="password" className="text-gray-500">
-                            <div className="flex pr-2">
-                              Password <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="password"
-                            // onChange={(e) => onChange(e)}
-                            name="password"
-                            placeholder="Enter Tracker Account Password"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            // value={station.password?.trim()}
-                          />
-                          <div
-                            className={`absolute buttom pt-7 pr-2 right-8 ${
-                              editMode === "edit" ? "top-[17em]" : "top-[16em]"
-                            }`}
-                          ></div>
-                        </div> */}
                       </div>
-                      {/* ttt */}
-                      {/* <div
-                        className={`flex mt-4 space-x-4 w-full ${
-                          editMode === "edit" && enabledEdit === false
-                            ? "hidden"
-                            : "visible"
-                        }`}
-                      >
-                        <div className="flex-col w-full">
-                          <label htmlFor="appkey" className="text-gray-500">
-                            <div className="flex">
-                              App Key <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="appkey"
-                            onChange={(e) => onChange(e)}
-                            name="appkey"
-                            type="text"
-                            placeholder="Enter Tracker Account App Key"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.appkey?.trim()}
-                          />
-                        </div>
-                        <div className="flex-col w-full">
-                          <label htmlFor="appSecret" className="text-gray-500">
-                            <div className="flex">
-                              App Secret <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="appSecret"
-                            onChange={(e) => onChange(e)}
-                            name="appSecret"
-                            type="text"
-                            placeholder="Enter Tracker Account App Secret"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.appSecret?.trim()}
-                          />
-                        </div>
-                      </div> */}
                     </div>
                   </div>
                   <div className="bg-gray-100 p-2 flex justify-end">
                     <div className="space-x-4">
                       <button
-                        onClick={
-                          editMode === "add" ? createStation : updateStation
-                        }
+                        onClick={submit}
                         type="button"
-                        disabled={errors.length !== 0 || loading === true}
+                        disabled={
+                          Object.entries(errors).length !== 0 ||
+                          loading === true
+                        }
                         className={
-                          errors.length !== 0 || loading === true
+                          Object.entries(errors).length !== 0 ||
+                          loading === true
                             ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
                             : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
                         }
