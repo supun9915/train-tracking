@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+} from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -10,9 +16,7 @@ import { Modal, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import * as Md from "react-icons/md";
 import * as Bi from "react-icons/bi";
-import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import ReactLoading from "react-loading";
-import Geocode from "react-geocode";
 
 import { AiOutlineReload } from "react-icons/ai";
 // import { useNavigate } from "react-router-dom";
@@ -28,17 +32,17 @@ const Train = () => {
   const [idDelete, setDeleteId] = useState();
   const [editMode, setEditMode] = useState("edit");
   const [openModal, setOpenModal] = useState(false);
-  const [station, setStation] = useState({
+  const [train, setTrain] = useState({
     name: "",
-    address: "",
-    lat: 0,
-    lng: 0,
-    contact: "",
+    firstClassCount: "",
+    secondClassCount: 0,
+    thirdClassCount: 0,
+    station: [],
   });
   const [loading, setLoading] = useState();
-  const [autocomplete, setAutocomplete] = useState(null);
-  const [adr, setAdr] = useState(true);
   const [errors, setErrors] = useState([]);
+  const [getustation, setGetStations] = useState([]);
+  const [selectedStations, setSelectedStations] = useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -74,11 +78,30 @@ const Train = () => {
   };
 
   const loadAllTrainData = async () => {
-    const res = await request(`train/getAll`, GET);
+    const res = await request(`train/getutrain`, GET);
     if (!res.error) {
       setRows(res);
     }
     // else navigate("/page/unauthorized/access");
+  };
+
+  const loadAllStationData = async (row) => {
+    const res = await request(`station/getustation`, GET);
+    if (!res.error) {
+      const newStations = [];
+      res.forEach((item) => {
+        // console.log(item.name);
+        newStations.push({ id: item.id, value: item.name });
+      });
+      const newSelectedStation = [];
+      row.stations.forEach((item) => {
+        // console.log(newStations.find((e) => e.id === item.id).id);
+        newSelectedStation.push(newStations.find((e) => e.id === item.id).id);
+      });
+      setGetStations(newStations);
+      setSelectedStations(newSelectedStation);
+      // console.log(newSelectedStation);
+    }
   };
 
   const reload = () => {
@@ -88,14 +111,14 @@ const Train = () => {
 
   useEffect(() => {
     const newErrors = [];
-    if (station.name === "") {
-      newErrors.push({ label: "station.name", value: "Required" });
+    if (train.name === "") {
+      newErrors.push({ label: "train.name", value: "Required" });
     }
-    if (station.address === "") {
-      newErrors.push({ label: "station.address", value: "Required" });
+    if (train.address === "") {
+      newErrors.push({ label: "train.address", value: "Required" });
     }
-    if (station.contact === "") {
-      newErrors.push({ label: "station.contact", value: "Required" });
+    if (train.contact === "") {
+      newErrors.push({ label: "train.contact", value: "Required" });
     }
     setErrors([...newErrors]);
     loadAllTrainData();
@@ -104,14 +127,15 @@ const Train = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setSelectedStations([]);
     // setEnabledEdit(false);
     setLoading(false);
-    setStation({
+    setTrain({
       name: "",
-      address: "",
-      lat: 0,
-      lng: 0,
-      contact: "",
+      firstClassCount: "",
+      secondClassCount: 0,
+      thirdClassCount: 0,
+      station: [],
     });
     reload();
     setOpenModalDeleteConfirm(false);
@@ -143,139 +167,60 @@ const Train = () => {
   };
 
   const handleOpenModal = (e, row) => {
+    loadAllStationData(row);
     e.stopPropagation();
-    setStation(row);
+    setTrain(row);
     setOpenModal(true);
   };
 
-  const [libraries] = useState(["places"]);
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_KEY,
-    componentRestrictions: { country: "ca" },
-    libraries,
-  });
-
-  // eslint-disable-next-line no-shadow
-  const onLoad = (autocomplete) => {
-    // console.log('autocomplete: ', autocomplete);
-    if (adr === true) {
-      setAutocomplete(autocomplete);
-    }
-  };
-
-  const onPlaceChanged = () => {
-    if (adr === true) {
-      setAutocomplete(autocomplete);
-
-      if (autocomplete !== null) {
-        setStation((state) => ({
-          ...state,
-          address: autocomplete?.getPlace()?.formatted_address,
-        }));
-      } else {
-        // console.log('Autocomplete is not loaded yet!');
-      }
-    }
-  };
-
-  const handleEnterKeypress = (e) => {
-    if (e.key === "Backspace") {
-      setAdr(false);
-      setStation((state) => ({
-        ...state,
-        address: "",
-      }));
-      autocomplete.set("place", null);
-    } else {
-      // console.log(station.address);
-      // console.log(autocomplete);
-    }
-
-    if (adr === false) {
-      if (e.key !== "Backspace") {
-        setAdr(true);
-      }
-    }
-  };
-
   const onChange = (e) => {
-    setStation((state) => ({
+    setTrain((state) => ({
       ...state,
       [e.target.name]: e.target.value.trim(),
     }));
   };
 
-  const createStation = () => {
-    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_KEY);
-    Geocode.setLanguage("en");
-    Geocode.setLocationType("ROOFTOP");
-    setLoading(true);
-
-    Geocode.fromAddress(station.address).then(
-      async (response) => {
-        if (errors.length === 0) {
-          const { lat, lng } = response.results[0].geometry.location;
-
-          const res = await request("station/create", POST, {
-            ...station,
-            lat,
-            lng,
-          });
-          if (!res.error) {
-            toast.success("Create station successfully..!");
-            handleCloseModal();
-            setLoading(false);
-          } else {
-            toast.error(res.error.response.data);
-            setLoading(false);
-            // console.log(res);
-          }
-        } else {
-          toast.error("Required field cannot be empty");
-        }
-      },
-      (error) => {
-        toast.error("Plese enter valid address");
-        setLoading(false);
-
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
-    );
+  const createStation = async () => {
+    const res = await request("train/create", POST, {
+      ...train,
+      station: selectedStations,
+    });
+    if (!res.error) {
+      toast.success("Create train successfully..!");
+      handleCloseModal();
+      setLoading(false);
+    } else {
+      toast.error(res.error.response.data);
+      setLoading(false);
+      // console.log(res);
+    }
   };
 
   const updateStation = async () => {
-    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_KEY);
-    Geocode.setLanguage("en");
-    Geocode.setLocationType("ROOFTOP");
-    setLoading(true);
+    console.log(selectedStations);
+    const res = await request(`train/update/${train.id}`, PUT, {
+      name: train.name,
+      firstClassCount: train.firstClassCount,
+      secondClassCount: train.secondClassCount,
+      thirdClassCount: train.thirdClassCount,
+      station: selectedStations,
+    });
+    if (!res.error) {
+      toast.success("Update train successfully..!");
+      handleCloseModal();
+      setLoading(false);
+    } else {
+      toast.error(res.error.response.data);
+      setLoading(false);
+    }
+  };
 
-    Geocode.fromAddress(station.address).then(
-      async (response) => {
-        const { lat, lng } = response.results[0].geometry.location;
-        const res = await request(`station/update/${station.id}`, PUT, {
-          name: station.name,
-          address: station.address,
-          contact: station.contact,
-          lat,
-          lng,
-        });
-        if (!res.error) {
-          toast.success("Update station successfully..!");
-          handleCloseModal();
-          setLoading(false);
-        } else {
-          toast.error(res.error.response.data);
-          setLoading(false);
-        }
-      },
-      (error) => {
-        toast.error("Plese enter valid address");
-        setLoading(false);
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
+  const handleStationChange = (event, stationId) => {
+    const { checked } = event.target;
+    setSelectedStations((prevSelected) =>
+      checked
+        ? [...prevSelected, stationId]
+        : prevSelected.filter((id) => id !== stationId)
     );
   };
 
@@ -289,7 +234,7 @@ const Train = () => {
               type="button"
               onClick={(e) => {
                 setEditMode("add");
-                handleOpenModal(e, station);
+                handleOpenModal(e, train);
                 // setEnabledEdit(true);
               }}
               className="px-2 py-1 bg-[#00A05E] rounded-md shadow-md cursor-pointer"
@@ -326,29 +271,8 @@ const Train = () => {
                       paddingY: ".5em",
                     }}
                   >
-                    Class
+                    First Class Seat Count
                   </TableCell>
-                  {/* <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                  >
-                    Username
-                  </TableCell> */}
-                  {/* <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                    align="center"
-                  >
-                    Contact
-                  </TableCell> */}
                   <TableCell
                     sx={{
                       color: "#D1F1F9",
@@ -358,7 +282,18 @@ const Train = () => {
                     }}
                     align="center"
                   >
-                    Created Date
+                    Second Class Seat Count
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "#D1F1F9",
+                      fontSize: ".8em",
+                      fontWeight: 800,
+                      paddingY: ".5em",
+                    }}
+                    align="center"
+                  >
+                    Economy Class Seat Counts
                   </TableCell>
                   <TableCell
                     sx={{
@@ -398,17 +333,9 @@ const Train = () => {
                         color: "#d3d3dd3",
                         paddingY: ".5em",
                       }}
+                      align="center"
                     >
-                      {row.class}
-                    </TableCell>
-                    {/* <TableCell
-                      sx={{
-                        fontSize: ".7em",
-                        color: "#d3d3dd3",
-                        paddingY: ".5em",
-                      }}
-                    >
-                      {row.username}
+                      {row.firstClassCount}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -418,8 +345,8 @@ const Train = () => {
                       }}
                       align="center"
                     >
-                      {row.contact}
-                    </TableCell> */}
+                      {row.secondClassCount}
+                    </TableCell>
                     <TableCell
                       sx={{
                         fontSize: ".7em",
@@ -428,8 +355,7 @@ const Train = () => {
                       }}
                       align="center"
                     >
-                      {/* {row.createdTime} */}
-                      {/* {format(row.createdTime * 1000, "yyyy-MM-dd hh:mm")} */}
+                      {row.thirdClassCount}
                     </TableCell>
                     <TableCell align="center" sx={{ paddingY: ".5em" }}>
                       <div className="flex justify-center space-x-4">
@@ -477,212 +403,179 @@ const Train = () => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-          {isLoaded ? (
-            <>
-              <Modal
-                open={openModal}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  {loading && (
-                    <ReactLoading
-                      className="z-50 absolute right-[40%] top-1/2"
-                      type="bubbles"
-                      color="#30405D"
-                    />
-                  )}
-                  <div className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="text-lg font-bold">
-                        {editMode === "add" ? "Add" : "Edit"} Station
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleCloseModal()}
-                        disabled={loading === true}
-                        className="p-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200"
-                      >
-                        <Md.MdOutlineClose />
-                      </button>
-                    </div>
 
-                    <div className="  text-xs">
-                      {/* <h3></h3> */}
-                      <div className="flex mt-4 space-x-4 w-full">
-                        <div className="flex flex-col w-full">
-                          <label htmlFor="name" className="text-gray-500">
-                            <div className="flex">
-                              Station Name{" "}
-                              <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="name"
-                            onChange={(e) => onChange(e)}
-                            name="name"
-                            type="text"
-                            placeholder="Enter Name"
-                            className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                            value={station.name}
-                          />
+          <Modal
+            open={openModal}
+            onClose={handleCloseModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              {loading && (
+                <ReactLoading
+                  className="z-50 absolute right-[40%] top-1/2"
+                  type="bubbles"
+                  color="#30405D"
+                />
+              )}
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-lg font-bold">
+                    {editMode === "add" ? "Add" : "Edit"} Train
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCloseModal()}
+                    disabled={loading === true}
+                    className="p-2 bg-gray-100 rounded-md cursor-pointer hover:bg-gray-200"
+                  >
+                    <Md.MdOutlineClose />
+                  </button>
+                </div>
+
+                <div className="  text-xs">
+                  {/* <h3></h3> */}
+                  <div className="flex mt-4 space-x-4 w-full">
+                    <div className="flex flex-col w-full">
+                      <label htmlFor="name" className="text-gray-500">
+                        <div className="flex">
+                          Train Name <span className="text-red-500">*</span>
                         </div>
-                        <Autocomplete
-                          onPlaceChanged={onPlaceChanged}
-                          onLoad={onLoad}
-                          className="w-full"
-                        >
-                          <div className="flex flex-col w-full">
-                            <label htmlFor="address" className="text-gray-500">
-                              <div className="flex mr-3">
-                                Address <span className="text-red-500">*</span>
-                              </div>
-                            </label>
-                            <input
-                              id="address"
-                              onChange={onPlaceChanged}
-                              name="address"
-                              type="text"
-                              onKeyDown={(e) => handleEnterKeypress(e)}
-                              placeholder="Enter Station Address"
-                              className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                              value={station.address}
+                      </label>
+                      <input
+                        id="name"
+                        onChange={(e) => onChange(e)}
+                        name="name"
+                        type="text"
+                        placeholder="Enter Name"
+                        className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
+                        value={train.name}
+                      />
+                    </div>
+                    <div className="flex flex-col w-full">
+                      <label
+                        htmlFor="firstClassCount"
+                        className="text-gray-500"
+                      >
+                        <div className="flex">
+                          First Class Seat Count{" "}
+                          <span className="text-red-500">*</span>
+                        </div>
+                      </label>
+                      <input
+                        id="firstClassCount"
+                        onChange={(e) => onChange(e)}
+                        name="firstClassCount"
+                        type="text"
+                        placeholder="Enter First Class Seat Count"
+                        className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
+                        value={train.firstClassCount}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex mt-4 space-x-4 w-full ">
+                    <div className="flex-col w-full">
+                      <label
+                        htmlFor="secondClassCount"
+                        className="text-gray-500"
+                      >
+                        <div className="flex">
+                          Second Class Seat Count{" "}
+                          <span className="text-red-500">*</span>
+                        </div>
+                      </label>
+                      <input
+                        id="secondClassCount"
+                        onChange={(e) => onChange(e)}
+                        name="secondClassCount"
+                        type="text"
+                        placeholder="Enter Second Class Seat Count"
+                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
+                        value={train.secondClassCount}
+                      />
+                    </div>
+                    <div className="flex-col w-full">
+                      <label
+                        htmlFor="thirdClassCount"
+                        className="text-gray-500"
+                      >
+                        <div className="flex">
+                          Economy Class Seat Count{" "}
+                          <span className="text-red-500">*</span>
+                        </div>
+                      </label>
+                      <input
+                        id="thirdClassCount"
+                        onChange={(e) => onChange(e)}
+                        name="thirdClassCount"
+                        type="text"
+                        placeholder="Enter Economy Class Seat Count"
+                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
+                        value={train.thirdClassCount}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex mt-4 space-x-4 w-full ">
+                    <div className="flex-col w-full">
+                      <label htmlFor="station" className="text-gray-500">
+                        <div className="flex">
+                          Select Station Train Pass{" "}
+                          <span className="text-red-500">*</span>
+                        </div>
+                      </label>
+                      <FormControl component="fieldset">
+                        <FormGroup>
+                          {getustation.map((station) => (
+                            <FormControlLabel
+                              key={station.id}
+                              className=" text-black"
+                              control={
+                                <Checkbox
+                                  checked={selectedStations.includes(
+                                    station.id
+                                  )}
+                                  onChange={(e) =>
+                                    handleStationChange(e, station.id)
+                                  }
+                                />
+                              }
+                              label={station.value}
                             />
-                          </div>
-                        </Autocomplete>
-                      </div>
-                      {/* <div className="text-sm flex mt-4 font-bold ml-0">
-                        <div
-                          className={`text-input flex -mt-[0.2em] -ml-3 ${
-                            editMode === "edit" ? "visible" : "hidden"
-                          }`}
-                        >
-                          <Checkbox
-                            name="enableEdit"
-                            id="enableEdit"
-                            onChange={(e) => setEditEnabled(e)}
-                          />
-                        </div>
-                        <label htmlFor="enableEdit" className="pt-2 text-sm">
-                          {editMode === "edit" ? "Edit " : null} Tracker Account
-                        </label>
-                      </div> */}
+                          ))}
+                        </FormGroup>
+                      </FormControl>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-100 p-2 flex justify-end">
+                <div className="space-x-4">
+                  <button
+                    onClick={editMode === "add" ? createStation : updateStation}
+                    type="button"
+                    // disabled={errors.length !== 0 || loading === true}
+                    className={
+                      loading === true
+                        ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
+                        : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
+                    }
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={handleCloseModal}
+                    type="button"
+                    disabled={loading === true}
+                    className="bg-red-500 p-2 text-xs text-white rounded-md w-20 shadow-md"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </Box>
+          </Modal>
 
-                      <div className="flex mt-4 space-x-4 w-full ">
-                        <div className="flex-col w-full">
-                          <label htmlFor="contact" className="text-gray-500">
-                            <div className="flex">
-                              Contact Number{" "}
-                              <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="contact"
-                            onChange={(e) => onChange(e)}
-                            name="contact"
-                            type="text"
-                            placeholder="Enter Tracker Account Contact"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.contact?.trim()}
-                          />
-                        </div>
-                        {/* <div className="flex-col w-full">
-                          <label htmlFor="password" className="text-gray-500">
-                            <div className="flex pr-2">
-                              Password <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="password"
-                            // onChange={(e) => onChange(e)}
-                            name="password"
-                            placeholder="Enter Tracker Account Password"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            // value={station.password?.trim()}
-                          />
-                          <div
-                            className={`absolute buttom pt-7 pr-2 right-8 ${
-                              editMode === "edit" ? "top-[17em]" : "top-[16em]"
-                            }`}
-                          ></div>
-                        </div> */}
-                      </div>
-                      {/* ttt */}
-                      {/* <div
-                        className={`flex mt-4 space-x-4 w-full ${
-                          editMode === "edit" && enabledEdit === false
-                            ? "hidden"
-                            : "visible"
-                        }`}
-                      >
-                        <div className="flex-col w-full">
-                          <label htmlFor="appkey" className="text-gray-500">
-                            <div className="flex">
-                              App Key <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="appkey"
-                            onChange={(e) => onChange(e)}
-                            name="appkey"
-                            type="text"
-                            placeholder="Enter Tracker Account App Key"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.appkey?.trim()}
-                          />
-                        </div>
-                        <div className="flex-col w-full">
-                          <label htmlFor="appSecret" className="text-gray-500">
-                            <div className="flex">
-                              App Secret <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="appSecret"
-                            onChange={(e) => onChange(e)}
-                            name="appSecret"
-                            type="text"
-                            placeholder="Enter Tracker Account App Secret"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.appSecret?.trim()}
-                          />
-                        </div>
-                      </div> */}
-                    </div>
-                  </div>
-                  <div className="bg-gray-100 p-2 flex justify-end">
-                    <div className="space-x-4">
-                      <button
-                        onClick={
-                          editMode === "add" ? createStation : updateStation
-                        }
-                        type="button"
-                        disabled={errors.length !== 0 || loading === true}
-                        className={
-                          errors.length !== 0 || loading === true
-                            ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
-                            : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
-                        }
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={handleCloseModal}
-                        type="button"
-                        disabled={loading === true}
-                        className="bg-red-500 p-2 text-xs text-white rounded-md w-20 shadow-md"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </Box>
-              </Modal>
-            </>
-          ) : (
-            <></>
-          )}
           <Modal
             open={openModalDeleteConfirm}
             onClose={handleCloseModal}
