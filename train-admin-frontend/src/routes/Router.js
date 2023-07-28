@@ -11,7 +11,7 @@ import TrainRevenue from "../pages/TrainRevenue";
 import Passengers from "../pages/Passengers";
 import Users from "../pages/Users";
 import Train from "../pages/Train";
-import TClass from "../pages/TClass";
+// import TClass from "../pages/TClass";
 import Schedule from "../pages/Schedule";
 
 const Routers = () => {
@@ -24,7 +24,7 @@ const Routers = () => {
           <Route path="/bookings" element={<Bookings />} />
           <Route path="/station" element={<Station />} />
           <Route path="/train" element={<Train />} />
-          <Route path="/class" element={<TClass />} />
+          {/* <Route path="/class" element={<TClass />} /> */}
           <Route path="/schedule" element={<Schedule />} />
 
           <Route path="/passengers" element={<Passengers />} />
