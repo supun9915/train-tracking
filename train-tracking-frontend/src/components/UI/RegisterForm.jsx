@@ -6,12 +6,11 @@ import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
-  const phoneValidation = /^([\s\(\)\-]*\d[\s\(\)\-]*){8}$/;
   const userSchema = Yup.object({
     name: Yup.string().required(),
     email: Yup.string().required().email(),
     nic: Yup.string().required(),
-    contact: Yup.string().required(),
+    contact: Yup.number().required(),
     username: Yup.string().required(),
     password: Yup.string().required(),
   });
@@ -24,17 +23,6 @@ const Register = () => {
     username: "",
     password: "",
   });
-
-  const handleCloseModal = () => {
-    setValues({
-      name: "",
-      email: "",
-      nic: "",
-      contact: "",
-      username: "",
-      password: "",
-    });
-  };
 
   const createAccount = async () => {
     const res = await request("/passenger/create", POST, {
@@ -62,28 +50,6 @@ const Register = () => {
     validationSchema: userSchema,
     onSubmit: createAccount,
   });
-
-  // useEffect(() => {
-  //   // handleCloseModal();
-  //   const newErrors = [];
-  //   if (user.name === "") {
-  //     newErrors.push({ label: "user.name", value: "Required" });
-  //   }
-  //   if (user.email === "") {
-  //     newErrors.push({ label: "user.email", value: "Required" });
-  //   }
-  //   if (user.contact === "") {
-  //     newErrors.push({ label: "user.contact", value: "Required" });
-  //   }
-  //   if (user.password === "") {
-  //     newErrors.push({ label: "user.password", value: "Required" });
-  //   }
-  //   if (user.username === "") {
-  //     newErrors.push({ label: "user.username", value: "Required" });
-  //   }
-  //   setErrors([...newErrors]);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [user]);
 
   return (
     <div class="mb-4 mb-lg-0 w-100">
