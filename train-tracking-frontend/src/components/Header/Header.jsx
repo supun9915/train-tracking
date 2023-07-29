@@ -23,6 +23,7 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut, selectCurrentUser } from "../../redux/features/authSlice";
 import "../../styles/header.css";
+import { AccessAlarm, AccessTime } from "@mui/icons-material";
 
 const navLinks = [
   {
@@ -103,36 +104,31 @@ const Header = () => {
 
   const list = (anchor) => (
     <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
+      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 300 }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      <div className="w-100 bg-gray-400 text-white shadow-lg p-4 font-bold">
+        Notifications
+      </div>
+      <div className="p-2">
+        <List>
+          {
+            <ListItem className="bg-orange-400 rounded-lg" disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <AccessAlarm />
+                </ListItemIcon>
+                <ListItemText
+                  className="text-gray-100"
+                  primary={"Ruhunu Kumari train delay with 02h:00min"}
+                />
+              </ListItemButton>
+            </ListItem>
+          }
+        </List>
+      </div>
     </Box>
   );
 
