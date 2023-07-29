@@ -50,6 +50,11 @@ const navLinks = [
     display: "Train Management",
   },
   {
+    path: "/ticket",
+    icon: "ri-train-fill",
+    display: "Ticket Management",
+  },
+  {
     path: "/schedule",
     icon: "ri-train-fill",
     display: "Schedule Management",
