@@ -39,11 +39,11 @@ const navLinks = [
     icon: "ri-settings-2-line",
     display: "Delay Train Management",
   },
-  // {
-  //   path: "/class",
-  //   icon: "ri-settings-2-line",
-  //   display: "Class Management",
-  // },
+  {
+    path: "/ticket",
+    icon: "ri-settings-2-line",
+    display: "Ticket Management",
+  },
   {
     path: "/train",
     icon: "ri-train-fill",

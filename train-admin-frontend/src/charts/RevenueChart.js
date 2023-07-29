@@ -9,7 +9,12 @@ const revenueChart = () => {
     <ResponsiveContainer width="100%">
       <BarChart data={RevenueStatics}>
         <XAxis dataKey="name" stroke="#2884ff" />
-        <Bar dataKey="revenueStats" stroke="#2884ff" fill="#2884ff" barSize={30} />
+        <Bar
+          dataKey="revenueStats"
+          stroke="#2884ff"
+          fill="#2884ff"
+          barSize={30}
+        />
 
         <Tooltip wrapperClassName="tooltip__style" cursor={false} />
       </BarChart>
