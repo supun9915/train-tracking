@@ -17,6 +17,8 @@ import { AiOutlineReload } from "react-icons/ai";
 // import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { request, GET, POST, PATCH, PUT } from "../api/ApiAdapter";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 
 const Delay = () => {
   const [rows, setRows] = useState([]);
@@ -27,15 +29,20 @@ const Delay = () => {
   const [idDelete, setDeleteId] = useState();
   const [editMode, setEditMode] = useState("edit");
   const [openModal, setOpenModal] = useState(false);
-  const [schedule, setSchedule] = useState({
-    depStationId: "",
-    arrStationId: "",
-    departureTime: "",
-    arrivalTime: "",
+
+  const schedule = {
+    scheduleId: "",
     trainId: "",
+    delay: "",
+  };
+
+  const schema = Yup.object({
+    scheduleId: Yup.object().required(),
+    trainId: Yup.object().required(),
+    delay: Yup.number().min(1).max(1000).required(),
   });
+
   const [loading, setLoading] = useState();
-  const [errors, setErrors] = useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -91,17 +98,6 @@ const Delay = () => {
   };
 
   useEffect(() => {
-    const newErrors = [];
-    if (schedule.name === "") {
-      newErrors.push({ label: "schedule.name", value: "Required" });
-    }
-    if (schedule.address === "") {
-      newErrors.push({ label: "schedule.address", value: "Required" });
-    }
-    if (schedule.contact === "") {
-      newErrors.push({ label: "schedule.contact", value: "Required" });
-    }
-    setErrors([...newErrors]);
     loadAllScheduleData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -110,13 +106,7 @@ const Delay = () => {
     setOpenModal(false);
     // setEnabledEdit(false);
     setLoading(false);
-    setSchedule({
-      depStationId: "",
-      arrStationId: "",
-      departureTime: "",
-      arrivalTime: "",
-      trainId: "",
-    });
+    resetForm();
     reload();
     setOpenModalDeleteConfirm(false);
   };
@@ -187,15 +177,8 @@ const Delay = () => {
     loadAllStationArr();
     loadAllTrainData();
     e.stopPropagation();
-    setSchedule(row);
+    setValues(row);
     setOpenModal(true);
-  };
-
-  const onChange = (e) => {
-    setSchedule((state) => ({
-      ...state,
-      [e.target.name]: e.target.value.trim(),
-    }));
   };
 
   const createStation = async () => {
@@ -254,6 +237,20 @@ const Delay = () => {
       },
     }),
   };
+
+  const {
+    setTouched,
+    resetForm,
+    setValues,
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+  } = useFormik({
+    initialValues: schedule,
+    validationSchema: schema,
+  });
 
   return (
     <div className="settings">
@@ -453,7 +450,7 @@ const Delay = () => {
               <div className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="text-lg font-bold">
-                    {editMode === "add" ? "Add" : "Edit"} Schedule
+                    {editMode === "add" ? "Add" : "Edit"} Schedule Delay
                   </div>
                   <button
                     type="button"
@@ -476,13 +473,22 @@ const Delay = () => {
                       </label>
                       <Select
                         options={tras}
-                        // value={tra}
-                        // isMulti
-                        // onChange={(e) => {
-                        //   setTra(e);
-                        // }}
+                        onMenuOpen={() => {
+                          setTouched({ ...touched, trainId: true });
+                        }}
+                        onChange={(e) => {
+                          setValues({ ...values, trainId: e });
+                        }}
                         styles={customStyles}
+                        className={
+                          errors.trainId && touched.trainId
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
                       />
+                      <div className="text-red-500">
+                        {errors.trainId && touched.trainId && errors.trainId}
+                      </div>
                     </div>
                     <div className="flex flex-col w-full">
                       <label htmlFor="arrStationId" className="text-gray-500">
@@ -492,13 +498,24 @@ const Delay = () => {
                       </label>
                       <Select
                         options={arrs}
-                        // value={arr}
-                        // isMulti
-                        // onChange={(e) => {
-                        //   setArr(e);
-                        // }}
+                        onMenuOpen={() => {
+                          setTouched({ ...touched, scheduleId: true });
+                        }}
+                        onChange={(e) => {
+                          setValues({ ...values, scheduleId: e });
+                        }}
                         styles={customStyles}
+                        className={
+                          errors.scheduleId && touched.scheduleId
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
                       />
+                      <div className="text-red-500">
+                        {errors.scheduleId &&
+                          touched.scheduleId &&
+                          errors.scheduleId}
+                      </div>
                     </div>
                   </div>
                   {/* <div className="text-sm flex mt-4 font-bold ml-0">
@@ -527,14 +544,23 @@ const Delay = () => {
                         </div>
                       </label>
                       <input
-                        id="departureTime"
-                        onChange={(e) => onChange(e)}
-                        name="departureTime"
+                        id="delay"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        name="delay"
                         type="number"
-                        placeholder="Enter Tracker Account Contact"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={schedule.departureTime}
+                        placeholder="Enter delay time"
+                        className={
+                          "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                          (errors.delay && touched.delay
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.delay}
                       />
+                      <div className="text-red-500">
+                        {errors.delay && touched.delay && errors.delay}
+                      </div>
                     </div>
                   </div>
                   {/* <div className="flex mt-4 space-x-4 w-full ">
