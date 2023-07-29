@@ -2,20 +2,30 @@ import React, { useState } from "react";
 import { Modal, Box } from "@mui/material";
 
 import ReactLoading from "react-loading";
-
+import * as Yup from "yup";
+import { useFormik } from "formik";
 // import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Ticket = () => {
   const [schedule, setSchedule] = useState({
-    depStationId: "",
-    arrStationId: "",
-    departureTime: "",
-    arrivalTime: "",
-    trainId: "",
+    first: "",
+    second: "",
+    third: "",
   });
   const [loading, setLoading] = useState();
-  const [errors, setErrors] = useState([]);
+
+  const schema = Yup.object({
+    first: Yup.number().min(10).required(),
+    second: Yup.number().min(10).required(),
+    third: Yup.number().min(10).required(),
+  });
+
+  const user = {
+    first: "",
+    second: "",
+    third: "",
+  };
 
   const style = {
     position: "absolute",
@@ -29,6 +39,21 @@ const Ticket = () => {
     overflow: "hidden",
   };
 
+  const {
+    resetForm,
+    setValues,
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+  } = useFormik({
+    initialValues: user,
+    validationSchema: schema,
+  });
+
   return (
     <div className="settings">
       <div className="settings__wrapper">
@@ -40,34 +65,30 @@ const Ticket = () => {
                 <div className="flex-col w-full">
                   <label htmlFor="first" className=" text-slate-50">
                     <div className="flex">
-                      Fist Class Ticket Price{" "}
+                      First Class Ticket Price{" "}
                       <span className="text-red-500">*</span>
                     </div>
                   </label>
                   <input
                     id="first"
-                    // onChange={(e) => onChange(e)}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                     name="first"
                     type="number"
-                    placeholder="Enter Tracker Account Contact"
-                    className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                    value={850}
-                  />
-                </div>
-                <div className="flex flex-col w-full">
-                  <button
-                    // onClick={editMode === "add" ? createStation : updateStation}
-                    type="button"
-                    disabled={errors.length !== 0 || loading === true}
+                    placeholder="Enter First class ticket price"
                     className={
-                      errors.length !== 0 || loading === true
-                        ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
-                        : "bg-blue-500 mt-6 p-2 text-white text-xs w-20 rounded-md shadow-md"
+                      "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm w-full " +
+                      (errors.first && touched.first
+                        ? "ring-1 ring-red-500"
+                        : "")
                     }
-                  >
-                    Save
-                  </button>
+                    value={values.first}
+                  />
+                  <div className="text-red-500">
+                    {errors.first && touched.first && errors.first}
+                  </div>
                 </div>
+                <div className="flex flex-col w-full"></div>
               </div>
 
               <div className="flex mt-4 space-x-4 w-full pb-2">
@@ -80,28 +101,24 @@ const Ticket = () => {
                   </label>
                   <input
                     id="second"
-                    // onChange={(e) => onChange(e)}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                     name="second"
                     type="number"
-                    placeholder="Enter Tracker Account Contact"
-                    className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                    value={600}
-                  />
-                </div>
-                <div className="flex flex-col w-full">
-                  <button
-                    // onClick={editMode === "add" ? createStation : updateStation}
-                    type="button"
-                    disabled={errors.length !== 0 || loading === true}
+                    placeholder="Enter Second class ticket price"
                     className={
-                      errors.length !== 0 || loading === true
-                        ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
-                        : "bg-blue-500 mt-6 p-2 text-white text-xs w-20 rounded-md shadow-md"
+                      "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm w-full " +
+                      (errors.second && touched.second
+                        ? "ring-1 ring-red-500"
+                        : "")
                     }
-                  >
-                    Save
-                  </button>
+                    value={values.second}
+                  />
+                  <div className="text-red-500">
+                    {errors.second && touched.second && errors.second}
+                  </div>
                 </div>
+                <div className="flex flex-col w-full"></div>
               </div>
               <div className="flex mt-4 space-x-4 w-full">
                 <div className="flex-col w-full">
@@ -113,14 +130,26 @@ const Ticket = () => {
                   </label>
                   <input
                     id="third"
-                    // onChange={(e) => onChange(e)}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                     name="third"
                     type="number"
-                    placeholder="Enter Tracker Account Contact"
-                    className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                    value={450}
+                    placeholder="Enter economy class ticket price"
+                    className={
+                      "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm w-full " +
+                      (errors.third && touched.third
+                        ? "ring-1 ring-red-500"
+                        : "")
+                    }
+                    value={values.third}
                   />
+                  <div className="text-red-500">
+                    {errors.third && touched.third && errors.third}
+                  </div>
                 </div>
+                <div className="flex flex-col w-full"></div>
+              </div>
+              <div className="flex mt-4 space-x-4 w-full">
                 <div className="flex flex-col w-full">
                   <button
                     // onClick={editMode === "add" ? createStation : updateStation}
