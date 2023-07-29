@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 // import Select from "react-select";
 import { Form, FormGroup } from "reactstrap";
 import { request, GET, POST } from "../api/ApiAdapter";
+import PaymentMethod from "../components/UI/PaymentMethod";
 
 const TrainDetails = () => {
   const { slug, cla, star, ende, per, cou, shed } = useParams();
@@ -118,6 +119,10 @@ const TrainDetails = () => {
     }
   };
 
+  const onSucess = (orderId) => console.log("onSuccess", orderId);
+  const onDismissed = () => console.log("onDismissed");
+  const onError = (error) => console.log("onError", error);
+
   return (
     <Helmet title={slug}>
       <section>
@@ -142,6 +147,10 @@ const TrainDetails = () => {
                 </div>
 
                 <p className="section__description">{path.join(",")}</p>
+                <p className="mt-3">
+                  <span className="font-bold mr-2">Additional Services : </span>
+                  <span className="">Meals</span>
+                </p>
               </div>
             </Col>
 
@@ -189,66 +198,61 @@ const TrainDetails = () => {
             <Col lg="5" className="mt-5">
               <div className="payment__info mt-5">
                 <h5 className="mb-4 fw-bold">Payment Information</h5>
-                <form id="paymentForm">
-                  <div className="payment">
-                    <label
-                      htmlFor="visaCard"
-                      className="d-flex align-items-center gap-2"
-                    >
-                      <input
-                        type="radio"
-                        id="visaCard"
-                        name="paymentMethod"
-                        onClick={handleReserveButtonClick}
-                        value="visa"
-                      />
-                      Visa Card
-                    </label>
-                  </div>
+                <FormGroup className="booking__form w-100 ms-1 mb-4">
+                  <input
+                    type="text"
+                    value="Tharaka Dasunpriya"
+                    disabled
+                    placeholder="From Station"
+                  />
+                </FormGroup>
 
-                  <div className="payment mt-3 d-flex align-items-center justify-content-between">
-                    <label
-                      htmlFor="masterCard"
-                      className="d-flex align-items-center gap-2"
-                    >
-                      <input
-                        type="radio"
-                        id="masterCard"
-                        onClick={handleReserveButtonClick}
-                        name="paymentMethod"
-                        value="master"
-                      />
-                      Master Card
-                    </label>
-                    <img src={masterCard} alt="" />
-                  </div>
+                <FormGroup className="booking__form w-100 ms-1 mb-4">
+                  <input
+                    type="text"
+                    value="0775707306"
+                    disabled
+                    placeholder="From Station"
+                  />
+                </FormGroup>
 
-                  <div className="payment mt-3 d-flex align-items-center justify-content-between">
-                    <label
-                      htmlFor="paypal"
-                      className="d-flex align-items-center gap-2"
-                    >
-                      <input
-                        type="radio"
-                        id="paypal"
-                        onClick={handleReserveButtonClick}
-                        name="paymentMethod"
-                        value="paypal"
-                      />
-                      Paypal
-                    </label>
-                    <img src={paypal} alt="" />
-                  </div>
-                  <div className="payment text-end mt-5">
-                    <button
-                      id="reserveButton"
-                      type="button"
-                      onClick={reservation}
-                    >
-                      Reserve Now
-                    </button>
-                  </div>
-                </form>
+                <FormGroup className="booking__form w-100 ms-1 mb-4">
+                  <input
+                    type="text"
+                    value="tharaka@gmail.com"
+                    disabled
+                    placeholder="From Station"
+                  />
+                </FormGroup>
+
+                <FormGroup className="booking__form w-100 ms-1 mb-4">
+                  <input
+                    type="text"
+                    value="No 602, Moragala, Pilana, Wanchawala"
+                    disabled
+                    placeholder="From Station"
+                  />
+                </FormGroup>
+
+                <FormGroup className="booking__form w-100 ms-1 mb-4">
+                  <input type="text" placeholder="Promo Code" />
+                </FormGroup>
+
+                <PaymentMethod
+                  amount={Number(price)}
+                  items={`${startSt.label} to ${endSt.label}`}
+                  firstName="Pasindu"
+                  lastName="Eranga"
+                  email="mr.h.d.pasindueranga@gmail.com"
+                  phone="0775707306"
+                  address="No 602, Moragala, Pilana, Wanchawala"
+                  delivery_address=""
+                  delivery_city=""
+                  delivery_country=""
+                  onSucess={onSucess}
+                  onDismissed={onDismissed}
+                  onError={onError}
+                />
               </div>
             </Col>
           </Row>
