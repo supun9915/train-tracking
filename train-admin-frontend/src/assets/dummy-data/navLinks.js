@@ -30,6 +30,11 @@ const navLinks = [
     display: "Station Management",
   },
   {
+    path: "/promo",
+    icon: "ri-settings-2-line",
+    display: "Promo Management",
+  },
+  {
     path: "/locate",
     icon: "ri-settings-2-line",
     display: "Train Tracking",
