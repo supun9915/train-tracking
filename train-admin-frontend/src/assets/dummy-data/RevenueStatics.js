@@ -1,31 +1,51 @@
 const revenueStatics = [
   {
     name: "January",
-    revenueStats: 6000,
+    revenueStats: 0,
   },
   {
     name: "February",
-    revenueStats: 5000,
+    revenueStats: 0,
   },
   {
     name: "March",
-    revenueStats: 3000,
+    revenueStats: 0,
   },
   {
     name: "April",
-    revenueStats: 6000,
+    revenueStats: 0,
   },
   {
     name: "May",
-    revenueStats: 4000,
+    revenueStats: 0,
   },
   {
     name: "June",
-    revenueStats: 9000,
+    revenueStats: 0,
   },
   {
     name: "July",
-    revenueStats: 2000,
+    revenueStats: 5920,
+  },
+  {
+    name: "Auguest",
+    revenueStats: 0,
+  },
+  {
+    name: "September",
+    revenueStats: 0,
+  },
+  {
+    name: "October",
+    revenueStats: 0,
+  },
+  {
+    name: "November",
+    revenueStats: 0,
+  },
+  {
+    name: "December",
+    revenueStats: 0,
   },
 ];
 

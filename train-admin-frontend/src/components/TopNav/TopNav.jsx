@@ -9,10 +9,10 @@ const TopNav = () => {
     <div className="top__nav">
       <div className="top__nav-wrapper">
         <div className="search__box">
-          <input type="text" placeholder="search or type" />
+          {/* <input type="text" placeholder="search or type" />
           <span>
             <i class="ri-search-line"></i>
-          </span>
+          </span> */}
         </div>
         <div className="top__nav-right">
           <span className="notification">
