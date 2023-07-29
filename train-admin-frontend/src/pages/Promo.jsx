@@ -31,15 +31,17 @@ const Promo = () => {
   const [openModal, setOpenModal] = useState(false);
 
   const schedule = {
-    scheduleId: "",
-    trainId: "",
-    delay: "",
+    class: "",
+    promo: "",
+    rounds: "",
+    discount: "",
   };
 
   const schema = Yup.object({
-    scheduleId: Yup.object().required(),
-    trainId: Yup.object().required(),
-    delay: Yup.number().min(1).max(1000).required(),
+    class: Yup.object().required(),
+    promo: Yup.string().required(),
+    rounds: Yup.number().min(5).required(),
+    discount: Yup.number().min(1).max(100).required(),
   });
 
   const [loading, setLoading] = useState();
@@ -456,7 +458,7 @@ const Promo = () => {
               <div className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="text-lg font-bold">
-                    {editMode === "add" ? "Add" : "Edit"} Passenger
+                    {editMode === "add" ? "Add" : "Edit"} Promos
                   </div>
                   <button
                     type="button"
@@ -477,13 +479,25 @@ const Promo = () => {
                       </label>
                       <Select
                         options={options}
-                        value={options[0]}
+                        onBlur={handleBlur}
+                        value={values.class}
+                        onMenuOpen={() => {
+                          setTouched({ ...touched, class: true });
+                        }}
                         // isMulti
-                        // onChange={(e) => {
-                        //   setValues({ ...values, trainId: e });
-                        // }}
+                        onChange={(e) => {
+                          setValues({ ...values, class: e });
+                        }}
                         styles={customStyles}
+                        className={
+                          errors.class && touched.class
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
                       />
+                      <div className="text-red-500">
+                        {errors.class && touched.class && errors.class}
+                      </div>
                     </div>
                     <div className="flex-col w-full">
                       <label htmlFor="promo" className=" text-gray-500">
@@ -493,13 +507,22 @@ const Promo = () => {
                       </label>
                       <input
                         id="promo"
-                        // onChange={(e) => onChange(e)}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                         name="promo"
                         type="text"
-                        placeholder="Enter Tracker Account Contact"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={"T%fDT4d45ddsdfJ"}
+                        placeholder="Enter Promo Code"
+                        className={
+                          "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                          (errors.promo && touched.promo
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.promo}
                       />
+                      <div className="text-red-500">
+                        {errors.promo && touched.promo && errors.promo}
+                      </div>
                     </div>
                   </div>
 
@@ -513,13 +536,22 @@ const Promo = () => {
                       </label>
                       <input
                         id="rounds"
-                        // onChange={(e) => onChange(e)}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
                         name="rounds"
                         type="number"
-                        placeholder="Enter Tracker Account Contact"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={10}
+                        placeholder="Enter Rounds"
+                        className={
+                          "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                          (errors.rounds && touched.rounds
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.rounds}
                       />
+                      <div className="text-red-500">
+                        {errors.rounds && touched.rounds && errors.rounds}
+                      </div>
                     </div>
                     <div className="flex-col w-full">
                       <label htmlFor="dis" className=" text-gray-500">
@@ -528,14 +560,23 @@ const Promo = () => {
                         </div>
                       </label>
                       <input
-                        id="dis"
-                        // onChange={(e) => onChange(e)}
-                        name="dis"
+                        id="discount"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        name="discount"
                         type="text"
-                        placeholder="Enter Tracker Account Contact"
-                        className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                        value={"5"}
+                        placeholder="Enter Discount"
+                        className={
+                          "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
+                          (errors.discount && touched.discount
+                            ? "ring-1 ring-red-500"
+                            : "")
+                        }
+                        value={values.discount}
                       />
+                      <div className="text-red-500">
+                        {errors.discount && touched.discount && errors.discount}
+                      </div>
                     </div>
                   </div>
                   <div className="flex mt-4 space-x-4 w-full">
@@ -543,9 +584,15 @@ const Promo = () => {
                       <button
                         // onClick={editMode === "add" ? createStation : updateStation}
                         type="button"
-                        disabled={errors.length !== 0 || loading === true}
+                        disabled={
+                          Object.entries(errors).length !== 0 ||
+                          loading === true
+                        }
                         className={
-                          "bg-blue-500 mt-6 p-2 text-white text-xs w-20 rounded-md shadow-md"
+                          Object.entries(errors).length !== 0 ||
+                          loading === true
+                            ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
+                            : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
                         }
                       >
                         Save
@@ -567,7 +614,7 @@ const Promo = () => {
                 <div className="p-6">
                   <div className="flex mb-4 items-center justify-between">
                     <div className="text-lg font-bold">
-                      Do you want to delete this Passenger..!
+                      Do you want to delete this Promos..!
                     </div>
                     <button
                       type="button"
