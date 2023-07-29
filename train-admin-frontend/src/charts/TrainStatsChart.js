@@ -33,17 +33,17 @@ const TrainStatsChart = () => {
         <Tooltip wrapperClassName="tooltip__style" cursor={false} />
         <Area
           type="monotone"
-          dataKey="revenue"
-          stroke="#8884d8"
-          fillOpacity={1}
-          fill="url(#colorUv)"
-        />
-        <Area
-          type="monotone"
           dataKey="ticketSales"
           stroke="#82ca9d"
           fillOpacity={1}
           fill="url(#colorPv)"
+        />
+        <Area
+          type="monotone"
+          dataKey="revenue"
+          stroke="#8884d8"
+          fillOpacity={1}
+          fill="url(#colorUv)"
         />
       </AreaChart>
     </ResponsiveContainer>

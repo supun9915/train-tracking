@@ -1,38 +1,63 @@
 const trainStaticsData = [
   {
     name: "January",
-    revenue: 4000,
-    ticketSales: 2400,
+    revenue: 0,
+    ticketSales: 0,
   },
   {
     name: "February",
-    revenue: 3000,
-    ticketSales: 1398,
+    revenue: 0,
+    ticketSales: 0,
   },
   {
     name: "March",
-    revenue: 2000,
-    ticketSales: 9800,
+    revenue: 0,
+    ticketSales: 0,
   },
   {
     name: "April",
-    revenue: 2780,
-    ticketSales: 3908,
+    revenue: 0,
+    ticketSales: 0,
   },
   {
     name: "May",
-    revenue: 1890,
-    ticketSales: 4800,
+    revenue: 0,
+    ticketSales: 0,
   },
   {
     name: "June",
-    revenue: 2390,
-    ticketSales: 3800,
+    revenue: 0,
+    ticketSales: 0,
   },
   {
     name: "July",
-    revenue: 3490,
-    ticketSales: 4300,
+    revenue: 5920,
+    ticketSales: 6570,
+  },
+  {
+    name: "Auguest",
+    revenue: 0,
+    ticketSales: 0,
+  },
+  {
+    name: "September",
+    revenue: 0,
+    ticketSales: 0,
+  },
+  {
+    name: "October",
+    revenue: 0,
+    ticketSales: 0,
+  },
+  {
+    name: "November",
+    revenue: 0,
+    ticketSales: 0,
+  },
+  {
+    name: "December",
+    revenue: 0,
+    ticketSales: 0,
   },
 ];
 

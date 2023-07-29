@@ -21,15 +21,15 @@ const TrainItem = (props) => {
         <p>{category}</p>
       </div>
       <div className="train__img">
-        <img src={imgUrl} alt="" />
+        <img src={imgUrl} style={{ height: "200px" }} alt="" />
       </div>
 
       <div className="train__item-bottom">
-        <div className="train__bottom-left">
+        <div className="train__bottom-left text-white bg-blue-500 p-1 rounded-lg">
           <Button onClick={handleViewRevenue}>View Revenue</Button>{" "}
         </div>
 
-        <p className="train__rent">${ticketPrice}/d</p>
+        <p className="train__rent">LKR {ticketPrice}/M</p>
       </div>
     </div>
   );

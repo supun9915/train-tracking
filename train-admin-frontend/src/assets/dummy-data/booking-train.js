@@ -8,37 +8,16 @@ const bookingTrains = [
   {
     id: "01",
     trainName: "Rajarata Rajina",
-    category: "Abacd",
-    ticketPrice: 89,
+    // category: "Abacd",
+    ticketPrice: 2520,
     imgUrl: train01,
   },
   {
     id: "02",
-    trainName: "Rhunu Kuamari",
-    category: "Abacd",
-    ticketPrice: 89,
+    trainName: "Ruhunu Kumari",
+    // category: "Abacd",
+    ticketPrice: 3400,
     imgUrl: train02,
-  },
-  {
-    id: "03",
-    trainName: "Yal Devi",
-    category:"Abacd",
-    ticketPrice: 89,
-    imgUrl: train03,
-  },
-  {
-    id: "04",
-    trainName: "Ella Kumari",
-    category: "Abacd",
-    ticketPrice: 89,
-    imgUrl: train04,
-  },
-  {
-    id: "05",
-    trainName: "kandy kuamari",
-    category:"Abacd",
-    ticketPrice: 89,
-    imgUrl: train05,
   },
 ];
 

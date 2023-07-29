@@ -8,22 +8,22 @@ import TrainStatsChart from "../charts/TrainStatsChart";
 
 const trainObj = {
   title: "Total Trains",
-  totalNumber: 75,
+  totalNumber: 2,
 };
 
 const revenueObj = {
   title: "All Revenue",
-  totalNumber: 1697,
+  totalNumber: 5920,
 };
 
 const ticketObj = {
   title: "All Ticket Sales",
-  totalNumber: "85k",
+  totalNumber: "15",
 };
 
 const profitObj = {
-  title: "Profit",
-  totalNumber: 2167,
+  title: "Bookings",
+  totalNumber: 6,
 };
 
 const Dashboard = () => {
@@ -44,7 +44,7 @@ const Dashboard = () => {
           </div>
 
           <div className="stats">
-            <h3 className="stats__title">Ticket Statistics</h3>
+            <h3 className="stats__title">Train Statistics</h3>
             <TrainStatsChart />
           </div>
         </div>
