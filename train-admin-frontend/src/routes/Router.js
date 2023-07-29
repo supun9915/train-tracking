@@ -14,6 +14,7 @@ import Train from "../pages/Train";
 import Delay from "../pages/Delay";
 import Locate from "../pages/Locate";
 import Ticket from "../pages/Ticket";
+import Promo from "../pages/Promo";
 // import TClass from "../pages/TClass";
 import Schedule from "../pages/Schedule";
 
@@ -32,6 +33,7 @@ const Routers = () => {
           <Route path="/delay" element={<Delay />} />
           <Route path="/locate" element={<Locate />} />
           <Route path="/ticket" element={<Ticket />} />
+          <Route path="/promo" element={<Promo />} />
 
           <Route path="/passengers" element={<Passengers />} />
           <Route path="/users" element={<Users />} />
