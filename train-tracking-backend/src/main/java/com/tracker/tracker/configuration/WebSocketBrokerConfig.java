@@ -12,7 +12,7 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
-    config.enableSimpleBroker("all","specific");
+    config.enableSimpleBroker("all","specific", "chart");
     config.setApplicationDestinationPrefixes("app");
   }
 

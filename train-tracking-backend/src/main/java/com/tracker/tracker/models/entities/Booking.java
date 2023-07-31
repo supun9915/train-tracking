@@ -1,5 +1,6 @@
 package com.tracker.tracker.models.entities;
 
+import com.tracker.tracker.models.listener.BookingListener;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,6 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(BookingListener.class)
 public class Booking {
 
   @Id
@@ -48,7 +51,7 @@ public class Booking {
   private Payment payment;
   private Boolean status = false;
   private Boolean deleted =false;
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.ALL) 
   @JoinColumn(name = "schedule_id")
   private Schedule schedule;
   @JsonIgnore
