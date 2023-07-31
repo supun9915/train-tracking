@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IBookingService {
-    BookingResponse bookingCreate(BookingCreate bookingRequest, Principal principal);
+    BookingResponse  bookingCreate(BookingCreate bookingRequest, Principal principal);
 
     BookingResponse updateBooking(UUID id, BookingCreate bookingRequest, Principal principal);
 
