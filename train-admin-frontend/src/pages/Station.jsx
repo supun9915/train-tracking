@@ -85,7 +85,8 @@ const Station = () => {
     if (!res.error) {
       setRows(res);
       // console.log(res);
-    } else navigate("/");
+    }
+    // else navigate("/");
   };
 
   const handleDeleteConfirmModel = (e, row) => {
@@ -296,6 +297,7 @@ const Station = () => {
 
   useEffect(() => {
     reload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -501,7 +503,7 @@ const Station = () => {
                             onChange={handleChange}
                             name="name"
                             type="text"
-                            placeholder="Enter Name"
+                            placeholder="Enter Station Name"
                             onBlur={handleBlur}
                             className={
                               "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
@@ -564,8 +566,9 @@ const Station = () => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             name="contact"
+                            maxLength={"10"}
                             type="text"
-                            placeholder="Enter Tracker Account Contact"
+                            placeholder="Enter Contact Number"
                             className={
                               "border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1 " +
                               (errors.contact && touched.contact

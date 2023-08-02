@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public interface TrainRepository extends JpaRepository<Train, UUID> {
     Optional<Train> findByName(String name);
-
     List<Train> findByDeletedOrderByCreatedTimeDesc(Boolean deleted);
 
 }

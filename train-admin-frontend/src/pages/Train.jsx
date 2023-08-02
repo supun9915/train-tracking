@@ -35,13 +35,13 @@ const Train = () => {
   const [idDelete, setDeleteId] = useState();
   const [editMode, setEditMode] = useState("edit");
   const [openModal, setOpenModal] = useState(false);
-  const train = {
+  const [train, setTrain] = useState({
     name: "",
     firstClassCount: "",
     secondClassCount: "",
     thirdClassCount: "",
     station: [],
-  };
+  });
 
   const schema = Yup.object({
     name: Yup.string().required(),
@@ -91,6 +91,7 @@ const Train = () => {
   const loadAllTrainData = async () => {
     const res = await request(`train/getutrain`, GET);
     if (!res.error) {
+      console.log(res);
       setRows(res);
     }
     // else navigate("/page/unauthorized/access");
@@ -102,7 +103,7 @@ const Train = () => {
       const newStations = [];
       const options = [];
       res.forEach((item) => {
-        console.log(item.name);
+        // console.log(item.name);
         options.push({ label: item.name, value: item });
         newStations.push({ id: item.id, value: item.name });
       });
@@ -116,6 +117,8 @@ const Train = () => {
       setSelectedStations(newSelectedStation);
     }
   };
+
+  console.log(train);
 
   const reload = () => {
     setRows([]);
@@ -170,9 +173,13 @@ const Train = () => {
   };
 
   const createStation = async () => {
+    const newStationList = [];
+    newStationList.forEach((stat) => {
+      newStationList.push(stat.value.id);
+    });
     const res = await request("train/create", POST, {
       ...train,
-      station: selectedStations,
+      station: newStationList,
     });
     if (!res.error) {
       toast.success("Create train successfully..!");
@@ -186,7 +193,7 @@ const Train = () => {
   };
 
   const updateStation = async () => {
-    console.log(selectedStations);
+    // console.log(selectedStations);
     const res = await request(`train/update/${train.id}`, PUT, {
       name: train.name,
       firstClassCount: train.firstClassCount,
@@ -205,7 +212,7 @@ const Train = () => {
   };
 
   const handleStationChange = (stations) => {
-    console.log("stations", stations);
+    // console.log("stations", stations);
     setTouched({ ...touched, station: true });
     setSelectedStations(stations);
     if (stations.length === 0) {
@@ -227,6 +234,20 @@ const Train = () => {
     }
   };
 
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues({
+      ...values,
+      [name]: value,
+    });
+
+    // Update the train object
+    setTrain({
+      ...train,
+      [name]: value,
+    });
+  };
+
   const {
     setTouched,
     resetForm,
@@ -235,7 +256,7 @@ const Train = () => {
     errors,
     touched,
     handleBlur,
-    handleChange,
+    // handleChange,
   } = useFormik({
     initialValues: train,
     validationSchema: schema,
@@ -292,6 +313,7 @@ const Train = () => {
                       fontWeight: 800,
                       paddingY: ".5em",
                     }}
+                    align="center"
                   >
                     First Class Seat Count
                   </TableCell>

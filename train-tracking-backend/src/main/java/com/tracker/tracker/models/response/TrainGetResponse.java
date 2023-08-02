@@ -1,5 +1,6 @@
 package com.tracker.tracker.models.response;
 
+import com.tracker.tracker.models.entities.TrainStation;
 import com.tracker.tracker.models.json.IdWithName;
 import lombok.Data;
 
@@ -13,5 +14,5 @@ public class TrainGetResponse {
     private int firstClassCount;
     private int secondClassCount;
     private int thirdClassCount;
-    private Set<IdWithName> stations;
+    private Set<TrainStation> stations;
 }
