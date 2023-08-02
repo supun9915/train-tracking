@@ -142,14 +142,15 @@ public class TrainService implements ITrainService {
         trainGetResponse.setSecondClassCount(train.getSecondClassCount());
         trainGetResponse.setThirdClassCount(train.getThirdClassCount());
         trainGetResponse.setName(train.getName());
-        for (TrainStation trainStation: train.getTrainStations()) {
-            IdWithName idWithName =new IdWithName();
-            idWithName.setId(String.valueOf(trainStation.getStation().getId()));
-            idWithName.setName(trainStation.getStation().getName());
-            stations.add(idWithName);
-        }
-        trainGetResponse.setStations(stations);
-
+        trainGetResponse.setStations(train.getTrainStations());
+//        TrainStation trainStation = trainStationRepository.fi
+//        for (TrainStation trainStation: train.getTrainStations()) {
+//            IdWithName idWithName =new IdWithName();
+//            idWithName.setId(String.valueOf(trainStation.getStation().getId()));
+//            idWithName.setName(trainStation.getStation().getName());
+//            stations.add(idWithName);
+//        }
+//        trainGetResponse.setStations(stations);
         return trainGetResponse;
     }
 
