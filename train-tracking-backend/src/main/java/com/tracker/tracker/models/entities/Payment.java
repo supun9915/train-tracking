@@ -20,7 +20,7 @@ public class Payment {
   @Column(name = "id", nullable = false)
   private UUID id;
   private String method;
-  private String total;
+  private double total;
   private Boolean deleted =false;
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)

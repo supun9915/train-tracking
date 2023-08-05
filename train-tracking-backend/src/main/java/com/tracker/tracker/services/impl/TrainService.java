@@ -8,6 +8,7 @@ import com.tracker.tracker.models.entities.Train;
 import com.tracker.tracker.models.entities.TrainStation;
 import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.json.IdWithName;
+import com.tracker.tracker.models.json.UuidWithOrder;
 import com.tracker.tracker.models.request.CreateTrain;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.UserCreateRequest;
@@ -49,14 +50,12 @@ public class TrainService implements ITrainService {
 
         Set<TrainStation> trainStations = new HashSet<>();
         if (createTrain.getStation().size() > 0) {
-            int count = 0;
-            for (UUID uuid: createTrain.getStation()) {
+            for (UuidWithOrder uuidWithOrder: createTrain.getStation()) {
                 TrainStation trainStation = new TrainStation();
-                Station station = stationRepository.findById(uuid).get();
+                Station station = stationRepository.findById(uuidWithOrder.getId()).get();
                 trainStation.setStation(station);
-                trainStation.setStationOrder(count);
+                trainStation.setStationOrder(uuidWithOrder.getOrder());
                 trainStations.add(trainStationRepository.save(trainStation));
-                count += 1;
             }
         }
         newTrain.setTrainStations(trainStations);
@@ -82,14 +81,12 @@ public class TrainService implements ITrainService {
 
         Set<TrainStation> trainStations = new HashSet<>();
         if (createTrain.getStation().size() > 0) {
-            int count = 0;
-            for (UUID uuid: createTrain.getStation()) {
+            for (UuidWithOrder uuidWithOrder: createTrain.getStation()) {
                 TrainStation trainStation = new TrainStation();
-                Station station = stationRepository.findById(uuid).get();
+                Station station = stationRepository.findById(uuidWithOrder.getId()).get();
                 trainStation.setStation(station);
-                trainStation.setStationOrder(count);
+                trainStation.setStationOrder(uuidWithOrder.getOrder());
                 trainStations.add(trainStationRepository.save(trainStation));
-                count += 1;
             }
         }
 
@@ -135,7 +132,6 @@ public class TrainService implements ITrainService {
     }
 
     private TrainGetResponse trainGetResponsesConverter(Train train) {
-        Set<IdWithName> stations = new HashSet<>();
         TrainGetResponse trainGetResponse = new TrainGetResponse();
         trainGetResponse.setId(train.getId());
         trainGetResponse.setFirstClassCount(train.getFirstClassCount());
@@ -143,14 +139,6 @@ public class TrainService implements ITrainService {
         trainGetResponse.setThirdClassCount(train.getThirdClassCount());
         trainGetResponse.setName(train.getName());
         trainGetResponse.setStations(train.getTrainStations());
-//        TrainStation trainStation = trainStationRepository.fi
-//        for (TrainStation trainStation: train.getTrainStations()) {
-//            IdWithName idWithName =new IdWithName();
-//            idWithName.setId(String.valueOf(trainStation.getStation().getId()));
-//            idWithName.setName(trainStation.getStation().getName());
-//            stations.add(idWithName);
-//        }
-//        trainGetResponse.setStations(stations);
         return trainGetResponse;
     }
 

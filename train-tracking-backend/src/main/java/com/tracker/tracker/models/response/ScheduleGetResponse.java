@@ -13,7 +13,7 @@ public class ScheduleGetResponse {
     private UUID arrStationId;
     private OffsetDateTime departureTime;
     private OffsetDateTime arrivalTime;
-    private Time delay;
+    private int delay;
     private UUID locationId;
     private UUID trainId;
 }
