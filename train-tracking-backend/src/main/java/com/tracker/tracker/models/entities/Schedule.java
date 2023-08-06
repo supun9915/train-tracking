@@ -36,7 +36,7 @@ public class Schedule {
   private Station arrivalStation;
   private OffsetDateTime departureTime;
   private OffsetDateTime arrivalTime;
-  private Time delay;
+  private int delay;
   @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "station_id")
   private Station location;

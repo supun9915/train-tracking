@@ -51,9 +51,9 @@ const request = async (
   } catch (error) {
     // console.log(error.response.data.message);
     if (error.response) {
-      if (error.response.status === 401) {
+      if (error.response.status === 403) {
         localStorage.clear();
-        window.location.href = "/page/login";
+        window.location.href = "/";
         result = 0;
       } else if (
         error.response.status === 406 &&

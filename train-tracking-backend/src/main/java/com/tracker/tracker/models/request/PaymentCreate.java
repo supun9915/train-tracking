@@ -8,6 +8,6 @@ import java.util.UUID;
 public class PaymentCreate {
     private UUID id;
     private String method;
-    private String total;
+    private double total;
 
 }

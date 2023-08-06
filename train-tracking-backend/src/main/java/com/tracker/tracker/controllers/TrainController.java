@@ -76,4 +76,11 @@ public class TrainController {
         TrainResponse trainResponse = trainService.deleteTrain(deleteRequest, principal);
         return ResponseEntity.ok(trainResponse);
     }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @GetMapping("/count")
+    public ResponseEntity<?> trainCount() {
+        long trainCount = trainService.getCount();
+        return ResponseEntity.ok(trainCount);
+    }
 }

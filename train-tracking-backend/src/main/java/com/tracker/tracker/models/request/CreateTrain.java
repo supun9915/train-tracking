@@ -1,5 +1,6 @@
 package com.tracker.tracker.models.request;
 
+import com.tracker.tracker.models.json.UuidWithOrder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -22,6 +23,6 @@ public class CreateTrain {
     @NotNull
     private int thirdClassCount;
     @NotNull
-    private Set<UUID> station;
+    private Set<UuidWithOrder> station;
 
 }
