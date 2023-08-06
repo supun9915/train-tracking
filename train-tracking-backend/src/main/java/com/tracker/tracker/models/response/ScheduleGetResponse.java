@@ -15,8 +15,8 @@ public class ScheduleGetResponse {
     private String arrName;
     private OffsetDateTime departureTime;
     private OffsetDateTime arrivalTime;
-    private Time delay;
-    private String locationId;
+    private int delay;
+    private UUID locationId;
     private UUID trainId;
     private String trainName;
 }

@@ -115,28 +115,52 @@ public class ScheduleService implements IScheduleService {
         List<UUID> stations = new ArrayList<>();
         stations.add(findTrainRequest.getFromStation());
         stations.add(findTrainRequest.getToStation());
+
         List<Schedule> schedules = scheduleRepository
-            .findDistinctByTrain_TrainStations_Station_IdInAndDepartureTimeBetween(
+            .findDistinctByTrain_TrainStations_Station_IdInAndArrivalTimeBetween(
                 stations, findTrainRequest.getFromDate(), findTrainRequest.getToDate());
+
 
         List<Schedule> validSchedules = new ArrayList<>();
 
-        if(findTrainRequest.getTrain_class().equals("First")) {
-            for (Schedule schedule: schedules) {
-                if(schedule.getFirstClassAvailable() >= findTrainRequest.getPassengerCount()){
-                    validSchedules.add(schedule);
-                }
-            }
-        } else if (findTrainRequest.getTrain_class().equals("Second")) {
-            for (Schedule schedule: schedules) {
-                if(schedule.getSecondClassAvailable() >= findTrainRequest.getPassengerCount()){
-                    validSchedules.add(schedule);
-                }
-            }
-        } else if (findTrainRequest.getTrain_class().equals("Third")){
-            for (Schedule schedule: schedules) {
-                if(schedule.getThirdClassAvailable() >= findTrainRequest.getPassengerCount()){
-                    validSchedules.add(schedule);
+        for (Schedule schedule: schedules) {
+           List<TrainStation> fromTrainStation =
+               schedule.getTrain()
+                   .getTrainStations()
+                   .stream()
+                   .filter(ts -> ts.getStation().getId().equals(findTrainRequest.getFromStation()))
+                   .collect(Collectors.toList());
+
+            List<TrainStation> toTrainStation =
+                schedule.getTrain()
+                    .getTrainStations()
+                    .stream()
+                    .filter(ts -> ts.getStation().getId().equals(findTrainRequest.getToStation()))
+                    .collect(Collectors.toList());
+
+
+            if(fromTrainStation.size() > 0 && toTrainStation.size() > 0){
+                if(toTrainStation.get(0).getStationOrder() > fromTrainStation.get(0).getStationOrder()){
+                    switch (findTrainRequest.getTrain_class()) {
+                        case "First":
+                            if (schedule.getFirstClassAvailable()
+                                >= findTrainRequest.getPassengerCount()) {
+                                validSchedules.add(schedule);
+                            }
+                            break;
+                        case "Second":
+                            if (schedule.getSecondClassAvailable()
+                                >= findTrainRequest.getPassengerCount()) {
+                                validSchedules.add(schedule);
+                            }
+                            break;
+                        case "Third":
+                            if (schedule.getThirdClassAvailable()
+                                >= findTrainRequest.getPassengerCount()) {
+                                validSchedules.add(schedule);
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -167,7 +191,11 @@ public class ScheduleService implements IScheduleService {
         stationGetResponse.setArrName(schedule.getArrivalStation().getName());
         stationGetResponse.setDepName(schedule.getDepartureStation().getName());
         stationGetResponse.setTrainName(schedule.getTrain().getName());
-        stationGetResponse.setLocationId(schedule.getLocation()!= null? schedule.getLocation().getName():null);
+        if(schedule.getLocation() != null){
+            stationGetResponse.setLocationId(schedule.getLocation().getId());
+        } else {
+            stationGetResponse.setLocationId(null);
+        }
 
         return stationGetResponse;
     }

@@ -9,7 +9,7 @@ import java.util.UUID;
 public class BookingCreate {
     private UUID id;
     private String method;
-    private String total;
+    private double total;
     private UUID scheduleId;
     private ReservationRequest reservation;
     private UUID passengerId;

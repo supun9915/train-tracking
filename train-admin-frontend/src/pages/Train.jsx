@@ -97,7 +97,7 @@ const Train = () => {
     // else navigate("/page/unauthorized/access");
   };
 
-  const loadAllStationData = async (row) => {
+  const loadAllStationData = async () => {
     const res = await request(`station/getustation`, GET);
     if (!res.error) {
       const newStations = [];
@@ -108,13 +108,6 @@ const Train = () => {
         newStations.push({ id: item.id, value: item.name });
       });
       setStations(options);
-      const newSelectedStation = [];
-      if (row !== undefined) {
-        row.stations.forEach((item) => {
-          newSelectedStation.push({ label: item.name, value: item });
-        });
-      }
-      setSelectedStations(newSelectedStation);
     }
   };
 
@@ -133,7 +126,6 @@ const Train = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedStations([]);
-    // setEnabledEdit(false);
     setLoading(false);
     resetForm();
     reload();
@@ -166,19 +158,33 @@ const Train = () => {
   };
 
   const handleOpenModal = (e, row) => {
-    loadAllStationData(row);
     e.stopPropagation();
-    setValues(row);
+    loadAllStationData();
+    const newSelectedStation = [];
+    if (row?.stations?.length > 0) {
+      row.stations?.forEach((trainStation) => {
+        newSelectedStation.push({
+          label: trainStation.station.name,
+          value: trainStation.station,
+        });
+      });
+      setSelectedStations(newSelectedStation);
+    }
+
+    setValues({ ...row, station: newSelectedStation });
     setOpenModal(true);
   };
 
   const createStation = async () => {
     const newStationList = [];
-    newStationList.forEach((stat) => {
-      newStationList.push(stat.value.id);
+    selectedStations.forEach((stat, i) => {
+      newStationList.push({ id: stat.value.id, order: i });
     });
     const res = await request("train/create", POST, {
-      ...train,
+      name: values.name,
+      firstClassCount: values.firstClassCount,
+      secondClassCount: values.secondClassCount,
+      thirdClassCount: values.thirdClassCount,
       station: newStationList,
     });
     if (!res.error) {
@@ -193,13 +199,16 @@ const Train = () => {
   };
 
   const updateStation = async () => {
-    // console.log(selectedStations);
-    const res = await request(`train/update/${train.id}`, PUT, {
-      name: train.name,
-      firstClassCount: train.firstClassCount,
-      secondClassCount: train.secondClassCount,
-      thirdClassCount: train.thirdClassCount,
-      station: selectedStations,
+    const newStationList = [];
+    selectedStations.forEach((stat, i) => {
+      newStationList.push({ id: stat.value.id, order: i });
+    });
+    const res = await request(`train/update/${values.id}`, PUT, {
+      name: values.name,
+      firstClassCount: values.firstClassCount,
+      secondClassCount: values.secondClassCount,
+      thirdClassCount: values.thirdClassCount,
+      station: newStationList,
     });
     if (!res.error) {
       toast.success("Update train successfully..!");
@@ -264,6 +273,7 @@ const Train = () => {
   });
 
   useEffect(() => {
+    console.log(values);
     console.log(errors);
   }, [errors]);
 

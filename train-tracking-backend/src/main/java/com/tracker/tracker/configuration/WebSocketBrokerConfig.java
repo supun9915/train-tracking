@@ -12,8 +12,14 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
-    config.enableSimpleBroker("all","specific", "chart");
+    config.enableSimpleBroker(
+        "all",
+        "specific",
+        "chart",
+        "dashboard"
+    );
     config.setApplicationDestinationPrefixes("app");
+    config.setUserDestinationPrefix("/user");
   }
 
   @Override

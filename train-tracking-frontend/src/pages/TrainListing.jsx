@@ -14,8 +14,19 @@ const TrainListing = () => {
   const [trains, setTrains] = useState([]);
 
   const getFindTrains = async () => {
-    let fromD = date + "T00:00:00Z";
-    let toD = date + "T23:59:59Z";
+    console.log(date);
+    let fromD = new Date(date);
+    fromD.setHours(0);
+    fromD.setMinutes(0);
+    fromD.setSeconds(0);
+    fromD.setMilliseconds(0);
+    console.log(fromD);
+    let toD = new Date(fromD);
+    toD.setDate(toD.getDate() + 1);
+    toD.setMilliseconds(toD.getMilliseconds() - 1);
+    console.log(toD);
+    fromD = fromD.toISOString();
+    toD = toD.toISOString();
     const res = await request(`/schedule/find/train`, POST, {
       fromStation: st,
       toStation: end,

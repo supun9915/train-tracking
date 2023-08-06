@@ -1,4 +1,5 @@
 package com.tracker.tracker.models.entities;
+import com.tracker.tracker.listener.TrainListener;
 import java.time.OffsetDateTime;
 import java.util.*;
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(TrainListener.class)
 @Entity
 public class Train {
 

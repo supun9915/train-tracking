@@ -128,7 +128,8 @@ public class PassengerService implements IPassengerService {
     UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
     Users user = usersRepository.findById(userImpl.getId()).get();
     List<Booking> bookings =
-        bookingRepository.findByCreatedBy_IdAndSchedule_ArrivalTimeLessThan(user.getId(), OffsetDateTime.now());
+        bookingRepository.findByCreatedBy_IdAndSchedule_ArrivalTimeGreaterThan(user.getId(),
+            OffsetDateTime.now());
     return bookings;
   }
 
@@ -137,7 +138,8 @@ public class PassengerService implements IPassengerService {
     UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
     Users user = usersRepository.findById(userImpl.getId()).get();
     List<Booking> bookings =
-        bookingRepository.findByCreatedBy_IdAndSchedule_ArrivalTimeGreaterThan(user.getId(), OffsetDateTime.now());
+        bookingRepository.findByCreatedBy_IdAndSchedule_ArrivalTimeLessThan(user.getId(),
+            OffsetDateTime.now());
     return bookings;
   }
 

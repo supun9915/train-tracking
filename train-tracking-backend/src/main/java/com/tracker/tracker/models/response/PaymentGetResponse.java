@@ -8,5 +8,5 @@ import java.util.UUID;
 public class PaymentGetResponse {
     private UUID id;
     private String method;
-    private String total;
+    private double total;
 }
