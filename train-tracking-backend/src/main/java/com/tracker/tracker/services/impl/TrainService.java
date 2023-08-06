@@ -131,6 +131,11 @@ public class TrainService implements ITrainService {
         return TrainResponseConvertor(trainRepository.save(DeleTrain));
     }
 
+    @Override
+    public long getCount() {
+        return trainRepository.count();
+    }
+
     private TrainGetResponse trainGetResponsesConverter(Train train) {
         TrainGetResponse trainGetResponse = new TrainGetResponse();
         trainGetResponse.setId(train.getId());

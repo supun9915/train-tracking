@@ -1,32 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/dashboard.css";
 import Singlecard from "../components/reuseable/SingleCard";
-
+import { over } from "stompjs";
+import SockJS from "sockjs-client";
 import RevenueChart from "../charts/RevenueChart";
 // import RevenueStatsChart from "../charts/TrainStatsChart";
 import TrainStatsChart from "../charts/TrainStatsChart";
 
-const trainObj = {
-  title: "Total Trains",
-  totalNumber: 2,
-};
-
-const revenueObj = {
-  title: "All Revenue",
-  totalNumber: 5920,
-};
-
-const ticketObj = {
-  title: "All Ticket Sales",
-  totalNumber: "15",
-};
-
-const profitObj = {
-  title: "Bookings",
-  totalNumber: 6,
-};
-
+var stompClient = null;
 const Dashboard = () => {
+  const [trainObj, setTrainObj] = useState({
+    title: "Total Trains",
+    totalNumber: 0,
+  });
+
+  const [revenueObj, setRevenueObj] = useState({
+    title: "All Revenue",
+    totalNumber: 0,
+  });
+
+  const [ticketObj, setTicketObj] = useState({
+    title: "All Ticket Sales",
+    totalNumber: 0,
+  });
+
+  const [profitObj, setProfitObj] = useState({
+    title: "Bookings",
+    totalNumber: 0,
+  });
+
+  const connect = () => {
+    let Sock = new SockJS(`${process.env.REACT_APP_ENDPOINT}socket`);
+    stompClient = over(Sock);
+    stompClient.connect({}, onConnected, () => {
+      console.error("fail");
+    });
+  };
+
+  const onConnected = () => {
+    stompClient.subscribe("/dashboard/train/count", onTrainCount);
+  };
+
+  const onTrainCount = (payload) => {
+    console.log(payload);
+  };
+
+  useEffect(() => {
+    connect();
+  }, []);
+
   return (
     <div className="dashboard">
       <div className="dashboard__wrapper">

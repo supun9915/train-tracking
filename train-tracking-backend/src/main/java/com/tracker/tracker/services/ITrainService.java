@@ -20,4 +20,6 @@ public interface ITrainService {
     List<TrainGetResponse> getAllTrain();
 
     TrainResponse deleteTrain(DeleteRequest deleteRequest, Principal principal);
+
+    long getCount();
 }
