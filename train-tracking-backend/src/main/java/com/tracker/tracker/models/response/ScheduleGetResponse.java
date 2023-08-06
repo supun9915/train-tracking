@@ -10,10 +10,13 @@ import java.util.UUID;
 public class ScheduleGetResponse {
     private UUID id;
     private UUID depStationId;
+    private String depName;
     private UUID arrStationId;
+    private String arrName;
     private OffsetDateTime departureTime;
     private OffsetDateTime arrivalTime;
     private int delay;
     private UUID locationId;
     private UUID trainId;
+    private String trainName;
 }

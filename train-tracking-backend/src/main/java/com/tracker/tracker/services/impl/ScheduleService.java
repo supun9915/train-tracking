@@ -188,7 +188,9 @@ public class ScheduleService implements IScheduleService {
         stationGetResponse.setArrivalTime(schedule.getArrivalTime());
         stationGetResponse.setDelay(schedule.getDelay());
         stationGetResponse.setTrainId(schedule.getTrain().getId());
-
+        stationGetResponse.setArrName(schedule.getArrivalStation().getName());
+        stationGetResponse.setDepName(schedule.getDepartureStation().getName());
+        stationGetResponse.setTrainName(schedule.getTrain().getName());
         if(schedule.getLocation() != null){
             stationGetResponse.setLocationId(schedule.getLocation().getId());
         } else {

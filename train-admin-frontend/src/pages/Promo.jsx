@@ -50,13 +50,6 @@ const Promo = () => {
     setPage(newPage);
   };
 
-  const [deps, setDeps] = useState([]);
-  const [dep, setDep] = useState();
-  const [arrs, setArrs] = useState([]);
-  const [arr, setArr] = useState();
-  const [tras, setTras] = useState([]);
-  const [tra, setTra] = useState();
-
   const style = {
     position: "absolute",
     top: "50%",
@@ -87,8 +80,9 @@ const Promo = () => {
   };
 
   const loadAllScheduleData = async () => {
-    const res = await request(`schedule/getAll`, GET);
+    const res = await request(`promo/findPromo`, GET);
     if (!res.error) {
+      // console.log(res);
       setRows(res);
     }
     // else navigate("/page/unauthorized/access");
@@ -124,7 +118,7 @@ const Promo = () => {
   };
 
   const deleteAccount = async (id) => {
-    const res = await request(`schedule/delete`, PATCH, {
+    const res = await request(`promo/delete`, PATCH, {
       delete: true,
       id,
     });
@@ -138,46 +132,7 @@ const Promo = () => {
     }
   };
 
-  const loadAllStationDep = async () => {
-    const res = await request(`station/getustation`, GET);
-    if (!res.error) {
-      const newDep = [];
-      res.forEach((item) => {
-        newDep.push({ label: item.name, value: item });
-      });
-      setDeps(newDep);
-      // console.log(res);
-    }
-  };
-
-  const loadAllStationArr = async () => {
-    const res = await request(`station/getustation`, GET);
-    if (!res.error) {
-      const newArr = [];
-      res.forEach((item) => {
-        newArr.push({ label: item.name, value: item });
-      });
-      setArrs(newArr);
-      // console.log(res);
-    }
-  };
-
-  const loadAllTrainData = async () => {
-    const res = await request(`train/getutrain`, GET);
-    if (!res.error) {
-      const newTrains = [];
-      res.forEach((item) => {
-        newTrains.push({ label: item.name, value: item });
-      });
-      setTras(newTrains);
-    }
-    // else navigate("/page/unauthorized/access");
-  };
-
   const handleOpenModal = (e, row) => {
-    loadAllStationDep();
-    loadAllStationArr();
-    loadAllTrainData();
     e.stopPropagation();
     setValues(row);
     setOpenModal(true);
@@ -362,7 +317,7 @@ const Promo = () => {
                       }}
                       scope="row"
                     >
-                      {row.name}
+                      {row.code}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -371,17 +326,7 @@ const Promo = () => {
                         paddingY: ".5em",
                       }}
                     >
-                      {row.a}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontSize: ".7em",
-                        color: "#d3d3dd3",
-                        paddingY: ".5em",
-                      }}
-                      align="center"
-                    >
-                      {row.b}
+                      {row.clas}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -391,7 +336,17 @@ const Promo = () => {
                       }}
                       align="center"
                     >
-                      {/* {row.createdTime} */}
+                      {row.round}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: ".7em",
+                        color: "#d3d3dd3",
+                        paddingY: ".5em",
+                      }}
+                      align="center"
+                    >
+                      {row.discount}
                       {/* {format(row.createdTime * 1000, "yyyy-MM-dd hh:mm")} */}
                     </TableCell>
                     <TableCell align="center" sx={{ paddingY: ".5em" }}>
@@ -518,7 +473,7 @@ const Promo = () => {
                             ? "ring-1 ring-red-500"
                             : "")
                         }
-                        value={values.promo}
+                        value={values.code}
                       />
                       <div className="text-red-500">
                         {errors.promo && touched.promo && errors.promo}
@@ -547,7 +502,7 @@ const Promo = () => {
                             ? "ring-1 ring-red-500"
                             : "")
                         }
-                        value={values.rounds}
+                        value={values.round}
                       />
                       <div className="text-red-500">
                         {errors.rounds && touched.rounds && errors.rounds}
