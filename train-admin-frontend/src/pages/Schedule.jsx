@@ -88,7 +88,7 @@ const Schedule = () => {
   };
 
   const loadAllScheduleData = async () => {
-    const res = await request(`schedule/getAll`, GET);
+    const res = await request(`schedule/getschedule`, GET);
     if (!res.error) {
       setRows(res);
     }
@@ -145,7 +145,7 @@ const Schedule = () => {
       res.forEach((item) => {
         newDep.push({ label: item.name, value: item });
       });
-      setStations(newDep);
+      setDep(newDep);
       // console.log(res);
     }
   };
@@ -181,11 +181,18 @@ const Schedule = () => {
     e.stopPropagation();
     setValues(row);
     setOpenModal(true);
+    console.log(row);
   };
 
   const createStation = async () => {
+    const departureTime = values.departureTime + "z";
+    const arrivalTime = values.arrivalTime + "z";
     const res = await request("schedule/create", POST, {
-      ...schedule,
+      depStationId: values.depStationId.value.id,
+      arrStationId: values.arrStationId.value.id,
+      departureTime: departureTime,
+      arrivalTime: arrivalTime,
+      trainId: values.trainId.value.id,
     });
     if (!res.error) {
       toast.success("Create schedule successfully..!");
@@ -199,10 +206,14 @@ const Schedule = () => {
   };
 
   const updateStation = async () => {
+    const departureTime = values.departureTime + "z";
+    const arrivalTime = values.arrivalTime + "z";
     const res = await request(`schedule/update/${schedule.id}`, PUT, {
-      name: schedule.name,
-      address: schedule.address,
-      contact: schedule.contact,
+      depStationId: values.depStationId.value.id,
+      arrStationId: values.arrStationId.value.id,
+      departureTime: departureTime,
+      arrivalTime: arrivalTime,
+      trainId: values.trainId.value.id,
     });
     if (!res.error) {
       toast.success("Update schedule successfully..!");
@@ -263,6 +274,7 @@ const Schedule = () => {
     onSubmit: submit,
   });
 
+  // console.log(values);
   return (
     <div className="settings">
       <div className="settings__wrapper">
@@ -375,7 +387,7 @@ const Schedule = () => {
                       }}
                       scope="row"
                     >
-                      {row.name}
+                      {row.depName}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -384,7 +396,26 @@ const Schedule = () => {
                         paddingY: ".5em",
                       }}
                     >
-                      {row.a}
+                      {row.arrName}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: ".7em",
+                        color: "#d3d3dd3",
+                        paddingY: ".5em",
+                      }}
+                      scope="row"
+                    >
+                      {row.departureTime}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: ".7em",
+                        color: "#d3d3dd3",
+                        paddingY: ".5em",
+                      }}
+                    >
+                      {row.arrivalTime}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -394,18 +425,7 @@ const Schedule = () => {
                       }}
                       align="center"
                     >
-                      {row.b}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontSize: ".7em",
-                        color: "#d3d3dd3",
-                        paddingY: ".5em",
-                      }}
-                      align="center"
-                    >
-                      {/* {row.createdTime} */}
-                      {/* {format(row.createdTime * 1000, "yyyy-MM-dd hh:mm")} */}
+                      {row.trainName}
                     </TableCell>
                     <TableCell align="center" sx={{ paddingY: ".5em" }}>
                       <div className="flex justify-center space-x-4">
@@ -493,7 +513,7 @@ const Schedule = () => {
                           <span className="text-red-500">*</span>
                         </div>
                       </label>
-                      <Select
+                      {/* <Select
                         options={stations}
                         onBlur={handleBlur}
                         value={values.depStationId}
@@ -511,6 +531,24 @@ const Schedule = () => {
                         // isMulti
                         onChange={(e) => {
                           setValues({ ...values, e });
+                        }}
+                        styles={customStyles}
+                      /> */}
+                      <Select
+                        options={dep}
+                        className={
+                          errors.depStationId && touched.depStationId
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
+                        value={values.depStationId}
+                        onMenuOpen={() => {
+                          setTouched({ ...touched, depStationId: true });
+                        }}
+                        // value={arr}
+                        // isMulti
+                        onChange={(e) => {
+                          setValues({ ...values, depStationId: e });
                         }}
                         styles={customStyles}
                       />
@@ -702,11 +740,12 @@ const Schedule = () => {
                   <button
                     onClick={editMode === "add" ? createStation : updateStation}
                     type="button"
-                    disabled={errors.length !== 0 || loading === true}
+                    // disabled={errors.length !== 0}
                     className={
-                      errors.length !== 0 || loading === true
-                        ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
-                        : "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
+                      // errors.length !== 0
+                      //   ? "bg-gray-200 p-2 rounded-md text-white text-xs hover:bg-gray-200 w-20"
+                      //   :
+                      "bg-blue-500 p-2 text-white text-xs w-20 rounded-md shadow-md"
                     }
                   >
                     Save

@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@EntityListeners(BookingListener.class)
+//@EntityListeners(BookingListener.class)
 public class Booking {
 
   @Id

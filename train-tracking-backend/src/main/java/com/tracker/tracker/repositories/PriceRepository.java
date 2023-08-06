@@ -11,4 +11,5 @@ public interface PriceRepository extends JpaRepository<Price, UUID> {
   Price findByTrainClass(String trainClass);
 
 
+
 }
