@@ -40,6 +40,11 @@ const navLinks = [
     display: "Train Tracking",
   },
   {
+    path: "/locater",
+    icon: "ri-settings-2-line",
+    display: "Current Location Changer",
+  },
+  {
     path: "/delay",
     icon: "ri-settings-2-line",
     display: "Delay Train Management",
