@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="9bc43f06-35b8-4ed7-84fd-a99a74441a30" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/train-admin-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train-admin-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train-admin-frontend/src/assets/dummy-data/navLinks.js" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/src/assets/dummy-data/navLinks.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train-admin-frontend/src/auth/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/src/auth/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train-admin-frontend/src/components/Sidebar/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/src/components/Sidebar/sidebar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train-admin-frontend/src/pages/Passengers.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/src/pages/Passengers.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train-tracking-backend/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/train-tracking-backend/src/main/resources/application-dev.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train-tracking-frontend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/train-tracking-frontend/.env" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2TfbhsExPiMfSYvx2OWSL6NKHT4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9bc43f06-35b8-4ed7-84fd-a99a74441a30" name="Changes" comment="" />
+      <created>1691437207685</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1691437207685</updated>
+    </task>
+    <servers />
+  </component>
+</project>
