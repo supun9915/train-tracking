@@ -6,6 +6,9 @@ const PUT = "put";
 const DELETE = "delete";
 const PATCH = "patch";
 
+//
+// Handles all the API calls using axios
+//
 const request = async (
   url,
   type,

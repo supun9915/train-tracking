@@ -4,8 +4,10 @@ import com.tracker.tracker.models.entities.Booking;
 import com.tracker.tracker.models.entities.Passenger;
 import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.entities.Users;
+import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.request.PassengerCreate;
+import com.tracker.tracker.models.response.PassengerResponse;
 import com.tracker.tracker.repositories.PassengerRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.IPassengerService;
@@ -59,15 +61,18 @@ public class PassengerController {
 
   @PreAuthorize("hasAnyAuthority('Super Admin','Passenger')")
   @PutMapping("/update/{id}")
-  public ResponseEntity<?> updatePassenger(@PathVariable UUID id,
-      @Valid @RequestBody PassengerCreate createPassenger,
-      Principal principal) {
+  public ResponseEntity<?> updatePassenger(
+          @PathVariable UUID id,
+          @Valid @RequestBody PassengerCreate createPassenger,
+          Principal principal
+  ) {
     Passenger passenger = passengerRepository.getById(id);
     Users user = userRepository.getById(passenger.getUser().getId());
 
     if (!user.getUsername().equals(createPassenger.getUsername()) && userRepository.findByUsername(createPassenger.getUsername()).isPresent()) {
       return new ResponseEntity<>("Username already exits.", HttpStatus.BAD_REQUEST);
-    } else {
+    }
+    else {
       return ResponseEntity.ok(passengerService.passengerUpdate(id, createPassenger, principal));
     }
   }
@@ -85,4 +90,14 @@ public class PassengerController {
     List<Booking> scheduleResponses = passengerService.completedActivities(principal);
     return ResponseEntity.ok(scheduleResponses);
   }
+
+  // REMOVE-THIS
+  @PreAuthorize("hasAnyAuthority('Passenger','Super Admin')")
+  @PutMapping("/delete")
+  public ResponseEntity<?> deletePassenger(@RequestBody DeleteRequest deleteRequest, Principal principal) {
+    PassengerResponse passengerResponse = passengerService.passengerDelete(deleteRequest, principal);
+    return ResponseEntity.ok(passengerResponse);
+  }
+  // ----------------------------------------------------------------------------------
+
 }
