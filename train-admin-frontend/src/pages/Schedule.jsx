@@ -51,12 +51,9 @@ const Schedule = () => {
     setPage(newPage);
   };
 
-  const [stations, setStations] = useState([]);
   const [dep, setDep] = useState();
   const [arrs, setArrs] = useState([]);
-  const [arr, setArr] = useState();
   const [tras, setTras] = useState([]);
-  const [tra, setTra] = useState();
 
   const style = {
     position: "absolute",

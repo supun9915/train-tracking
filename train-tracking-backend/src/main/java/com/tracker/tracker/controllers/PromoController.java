@@ -1,5 +1,6 @@
 package com.tracker.tracker.controllers;
 
+import com.tracker.tracker.models.entities.Promotion;
 import com.tracker.tracker.models.entities.Train;
 import com.tracker.tracker.models.request.CreateTrain;
 import com.tracker.tracker.models.request.DeleteRequest;
@@ -43,32 +44,32 @@ public class PromoController {
     @PostMapping("/create")
     public ResponseEntity<?> createPromo(@Valid @RequestBody PromoGetResponse createPromo,
                                          Principal principal) {
-        if (promoRepository.findByCode(createPromo.getCode())) {
+        if (promoRepository.findByCode(createPromo.getCode())!=null) {
             return new ResponseEntity<>("Promo Code already exits.", HttpStatus.BAD_REQUEST);
         } else {
             return ResponseEntity.ok(promoService.createPromo(createPromo, principal));
         }
     }
 
-//    @PreAuthorize("hasAnyAuthority('Super Admin')")
-//    @PutMapping("/update/{id}")
-//    public ResponseEntity<?> updatePromo(@PathVariable UUID id,
-//                                         @Valid @RequestBody CreateTrain createPromo,
-//                                         Principal principal) {
-//        Train train =trainRepository.findById(id).get();
-//        if (train.getName().equals(createPromo.getName())){
-//            TrainResponse savedTrain = trainService.updateTrain(id,createPromo,
-//                    principal);
-//            return ResponseEntity.ok(savedTrain);
-//        }else {
-//            if (trainRepository.findByName(createPromo.getName()).isPresent()) {
-//                return new ResponseEntity<>("Train name already exits.", HttpStatus.BAD_REQUEST);
-//            } else {
-//                TrainResponse savedTrain = trainService.updateTrain(id, createPromo,
-//                        principal);
-//                return ResponseEntity.ok(savedTrain);
-//            }
-//        }
-//    }
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updatePromo(@PathVariable UUID id,
+                                         @Valid @RequestBody PromoGetResponse createPromo,
+                                         Principal principal) {
+        Promotion promotion = promoRepository.getById(id);
+        if (promotion.getCode().equals(createPromo.getCode())){
+            PromoGetResponse savedPromo = promoService.updatePromo(id,createPromo,
+                    principal);
+            return ResponseEntity.ok(savedPromo);
+        }else {
+            if (promoRepository.findByCode(createPromo.getCode())!=null) {
+                return new ResponseEntity<>("Train name already exits.", HttpStatus.BAD_REQUEST);
+            } else {
+                PromoGetResponse savedPromo = promoService.updatePromo(id, createPromo,
+                        principal);
+                return ResponseEntity.ok(savedPromo);
+            }
+        }
+    }
 
 }

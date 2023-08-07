@@ -139,11 +139,14 @@ const Promo = () => {
   };
 
   const createStation = async () => {
-    const res = await request("schedule/create", POST, {
-      ...schedule,
+    const res = await request("promo/create", POST, {
+      clas: values.class.value,
+      code: values.promo,
+      round: values.rounds,
+      discount: values.discount,
     });
     if (!res.error) {
-      toast.success("Create schedule successfully..!");
+      toast.success("Create Promos successfully..!");
       handleCloseModal();
       setLoading(false);
     } else {
@@ -154,13 +157,14 @@ const Promo = () => {
   };
 
   const updateStation = async () => {
-    const res = await request(`schedule/update/${schedule.id}`, PUT, {
-      name: schedule.name,
-      address: schedule.address,
-      contact: schedule.contact,
+    const res = await request(`promo/update/${values.id}`, PUT, {
+      clas: values.class.value,
+      code: values.promo,
+      round: values.rounds,
+      discount: values.discount,
     });
     if (!res.error) {
-      toast.success("Update schedule successfully..!");
+      toast.success("Update Promo successfully..!");
       handleCloseModal();
       setLoading(false);
     } else {
@@ -210,10 +214,12 @@ const Promo = () => {
   });
 
   const options = [
-    { value: "First Class", label: "First Class" },
-    { value: "Second Class", label: "Second Class" },
-    { value: "Economy Class", label: "Economy Class" },
+    { value: "First", label: "First Class" },
+    { value: "Second", label: "Second Class" },
+    { value: "Economy", label: "Economy Class" },
   ];
+
+  console.log(values);
 
   return (
     <div className="settings">
@@ -537,7 +543,9 @@ const Promo = () => {
                   <div className="flex mt-4 space-x-4 w-full">
                     <div className="flex flex-col w-full">
                       <button
-                        // onClick={editMode === "add" ? createStation : updateStation}
+                        onClick={
+                          editMode === "add" ? createStation : updateStation
+                        }
                         type="button"
                         disabled={
                           Object.entries(errors).length !== 0 ||

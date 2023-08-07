@@ -20,13 +20,17 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const login = async () => {
-    console.log("login");
+    // console.log("login");
     const result = await request("auth/login", POST, input);
 
     if (!result.error) {
       localStorage.setItem("token", result.token.toString());
       dispatch(setCredentials(result));
-      navigate("/dashboard");
+      if (result.roles.map((item) => item).includes("Super Admin")) {
+        navigate("/dashboard");
+      } else if (result.roles.map((item) => item).includes("Station Master")) {
+        navigate("/locate");
+      }
     } else {
       toast.error(result.error.response.data);
       if (result.error.response.status === 406) {
@@ -36,6 +40,8 @@ const Login = () => {
       }
     }
   };
+
+  console.log(localStorage.getItem("role"));
 
   const onChange = (e) => {
     setInput((state) => ({ ...state, [e.target.name]: e.target.value }));
