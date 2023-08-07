@@ -29,11 +29,17 @@ const Users = () => {
   const [editMode, setEditMode] = useState("edit");
   const [openModal, setOpenModal] = useState(false);
   const [station, setStation] = useState({
+    // name: "",
+    // address: "",
+    // lat: 0,
+    // lng: 0,
+    // contact: "",
+
     name: "",
-    address: "",
-    lat: 0,
-    lng: 0,
-    contact: "",
+    email: "",
+    username: "",
+    password: "",
+    roleIds: ""
   });
   const [loading, setLoading] = useState();
   const [autocomplete, setAutocomplete] = useState(null);
@@ -74,9 +80,10 @@ const Users = () => {
   };
 
   const loadAllUserData = async () => {
-    const res = await request(`user/getAll`, GET);
+    const res = await request(`user/getuser`, GET);
     if (!res.error) {
       setRows(res);
+      console.log(res)
     }
     // else navigate("/page/unauthorized/access");
   };
@@ -87,19 +94,7 @@ const Users = () => {
   };
 
   useEffect(() => {
-    const newErrors = [];
-    if (station.name === "") {
-      newErrors.push({ label: "station.name", value: "Required" });
-    }
-    if (station.address === "") {
-      newErrors.push({ label: "station.address", value: "Required" });
-    }
-    if (station.contact === "") {
-      newErrors.push({ label: "station.contact", value: "Required" });
-    }
-    setErrors([...newErrors]);
     loadAllUserData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseModal = () => {
@@ -107,11 +102,17 @@ const Users = () => {
     // setEnabledEdit(false);
     setLoading(false);
     setStation({
+      // name: "",
+      // address: "",
+      // lat: 0,
+      // lng: 0,
+      // contact: "",
+
       name: "",
-      address: "",
-      lat: 0,
-      lng: 0,
-      contact: "",
+      email: "",
+      username: "",
+      password: "",
+      roleIds: ""
     });
     reload();
     setOpenModalDeleteConfirm(false);
@@ -200,83 +201,94 @@ const Users = () => {
   };
 
   const onChange = (e) => {
+    console.log(e.target.name)
+    console.log(e.target.value)
     setStation((state) => ({
       ...state,
-      [e.target.name]: e.target.value.trim(),
+      // [e.target.name]: e.target.value.trim(),
+      [e.target.name]: setStateValue(e),
     }));
   };
 
-  const createStation = () => {
-    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_KEY);
-    Geocode.setLanguage("en");
-    Geocode.setLocationType("ROOFTOP");
+  const setStateValue = (e) => {
+    if (e.target.name === "roleIds") {
+      return new Array(e.target.value.trim())
+    }
+    return e.target.value.trim()
+  };
+
+  const createUser = async () => {
+    console.log(station)
+
     setLoading(true);
+    const res = await request("user/create", POST, {
+      ...station,
+    });
+    if (!res.error) {
+      toast.success("Create user successfully..!");
+      handleCloseModal();
+      setLoading(false);
+    } else {
+      toast.error(res.error.response.data);
+      setLoading(false);
+      console.log(res);
+    }
 
-    Geocode.fromAddress(station.address).then(
-      async (response) => {
-        if (errors.length === 0) {
-          const { lat, lng } = response.results[0].geometry.location;
+    // Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_KEY);
+    // Geocode.setLanguage("en");
+    // Geocode.setLocationType("ROOFTOP");
+    // setLoading(true);
 
-          const res = await request("station/create", POST, {
-            ...station,
-            lat,
-            lng,
-          });
-          if (!res.error) {
-            toast.success("Create station successfully..!");
-            handleCloseModal();
-            setLoading(false);
-          } else {
-            toast.error(res.error.response.data);
-            setLoading(false);
-            // console.log(res);
-          }
-        } else {
-          toast.error("Required field cannot be empty");
-        }
-      },
-      (error) => {
-        toast.error("Plese enter valid address");
-        setLoading(false);
+    // Geocode.fromAddress(station.address).then(
+    //   async (response) => {
+    //     if (errors.length === 0) {
+    //       const { lat, lng } = response.results[0].geometry.location;
 
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
-    );
+    //       const res = await request("station/create", POST, {
+    //         ...station,
+    //         lat,
+    //         lng,
+    //       });
+    //       if (!res.error) {
+    //         toast.success("Create station successfully..!");
+    //         handleCloseModal();
+    //         setLoading(false);
+    //       } else {
+    //         toast.error(res.error.response.data);
+    //         setLoading(false);
+    //         // console.log(res);
+    //       }
+    //     } else {
+    //       toast.error("Required field cannot be empty");
+    //     }
+    //   },
+    //   (error) => {
+    //     toast.error("Plese enter valid address");
+    //     setLoading(false);
+
+    //     // eslint-disable-next-line no-console
+    //     console.error(error);
+    //   }
+    // );
+
   };
 
   const updateStation = async () => {
-    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_KEY);
-    Geocode.setLanguage("en");
-    Geocode.setLocationType("ROOFTOP");
-    setLoading(true);
-
-    Geocode.fromAddress(station.address).then(
-      async (response) => {
-        const { lat, lng } = response.results[0].geometry.location;
-        const res = await request(`station/update/${station.id}`, PUT, {
-          name: station.name,
-          address: station.address,
-          contact: station.contact,
-          lat,
-          lng,
-        });
-        if (!res.error) {
-          toast.success("Update station successfully..!");
-          handleCloseModal();
-          setLoading(false);
-        } else {
-          toast.error(res.error.response.data);
-          setLoading(false);
-        }
-      },
-      (error) => {
-        toast.error("Plese enter valid address");
-        setLoading(false);
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
-    );
+    console.log(station)
+    const res = await request(`user/update/${station.id}`, PUT, {
+      ...station, 
+      roleIds: station.roleIds.map(role => role.id)
+    });
+    if (!res.error) {
+      toast.success("Update user successfully..!");
+      handleCloseModal();
+      setLoading(false);
+      reload();
+    } else {
+      toast.error(res.error.response.data);
+      setLoading(false);
+      console.log(res)
+    }
   };
 
   return (
@@ -316,6 +328,26 @@ const Users = () => {
                       paddingY: ".5em",
                     }}
                   >
+                    Full Name
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "#D1F1F9",
+                      fontSize: ".8em",
+                      fontWeight: 800,
+                      paddingY: ".5em",
+                    }}
+                  >
+                    Email Address
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "#D1F1F9",
+                      fontSize: ".8em",
+                      fontWeight: 800,
+                      paddingY: ".5em",
+                    }}
+                  >
                     User Name
                   </TableCell>
                   <TableCell
@@ -326,39 +358,7 @@ const Users = () => {
                       paddingY: ".5em",
                     }}
                   >
-                    email
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                  >
-                    Username
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                    align="center"
-                  >
-                    Contact
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "#D1F1F9",
-                      fontSize: ".8em",
-                      fontWeight: 800,
-                      paddingY: ".5em",
-                    }}
-                    align="center"
-                  >
-                    Created Date
+                    User Role
                   </TableCell>
                   <TableCell
                     sx={{
@@ -373,6 +373,7 @@ const Users = () => {
                   </TableCell>
                 </TableRow>
               </TableHead>
+
               <TableBody sx={{ backgroundColor: "#EDF3FB" }}>
                 {rows.map((row) => (
                   <TableRow
@@ -418,9 +419,10 @@ const Users = () => {
                       }}
                       align="center"
                     >
-                      {row.contact}
+                      {row.roleIds[0].name}
                     </TableCell>
-                    <TableCell
+
+                    {/* <TableCell
                       sx={{
                         fontSize: ".7em",
                         color: "#d3d3dd3",
@@ -428,9 +430,8 @@ const Users = () => {
                       }}
                       align="center"
                     >
-                      {/* {row.createdTime} */}
-                      {/* {format(row.createdTime * 1000, "yyyy-MM-dd hh:mm")} */}
-                    </TableCell>
+                    </TableCell> */}
+
                     <TableCell align="center" sx={{ paddingY: ".5em" }}>
                       <div className="flex justify-center space-x-4">
                         <button
@@ -456,6 +457,7 @@ const Users = () => {
                         </button>
                       </div>
                     </TableCell>
+                    
                   </TableRow>
                 ))}
               </TableBody>
@@ -496,7 +498,7 @@ const Users = () => {
                   <div className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="text-lg font-bold">
-                        {editMode === "add" ? "Add" : "Edit"} Station
+                        {editMode === "add" ? "Add" : "Edit"} User
                       </div>
                       <button
                         type="button"
@@ -508,154 +510,146 @@ const Users = () => {
                       </button>
                     </div>
 
+                    {/* ----------------------------------------------- */}
+
                     <div className="  text-xs">
-                      {/* <h3></h3> */}
                       <div className="flex mt-4 space-x-4 w-full">
-                        <div className="flex flex-col w-full">
+
+                       <div className="flex flex-col w-full">
                           <label htmlFor="name" className="text-gray-500">
                             <div className="flex">
-                              Station Name{" "}
-                              <span className="text-red-500">*</span>
+                              Full Name <span className="text-red-500">*</span>
                             </div>
                           </label>
                           <input
                             id="name"
-                            onChange={(e) => onChange(e)}
                             name="name"
                             type="text"
-                            placeholder="Enter Name"
-                            className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
+                            onChange={(e) => onChange(e)}
+                            placeholder="Enter Full Name"
+                            className={
+                              "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
+                              (errors.name
+                                ? "ring-1 ring-red-500"
+                                : "")
+                            }
                             value={station.name}
                           />
-                        </div>
-                        <Autocomplete
-                          onPlaceChanged={onPlaceChanged}
-                          onLoad={onLoad}
-                          className="w-full"
-                        >
-                          <div className="flex flex-col w-full">
-                            <label htmlFor="address" className="text-gray-500">
-                              <div className="flex mr-3">
-                                Address <span className="text-red-500">*</span>
-                              </div>
-                            </label>
-                            <input
-                              id="address"
-                              onChange={onPlaceChanged}
-                              name="address"
-                              type="text"
-                              onKeyDown={(e) => handleEnterKeypress(e)}
-                              placeholder="Enter Station Address"
-                              className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
-                              value={station.address}
-                            />
+                          <div className="text-red-500">
+                            {errors.name}
                           </div>
-                        </Autocomplete>
-                      </div>
-                      {/* <div className="text-sm flex mt-4 font-bold ml-0">
-                        <div
-                          className={`text-input flex -mt-[0.2em] -ml-3 ${
-                            editMode === "edit" ? "visible" : "hidden"
-                          }`}
-                        >
-                          <Checkbox
-                            name="enableEdit"
-                            id="enableEdit"
-                            onChange={(e) => setEditEnabled(e)}
-                          />
                         </div>
-                        <label htmlFor="enableEdit" className="pt-2 text-sm">
-                          {editMode === "edit" ? "Edit " : null} Tracker Account
-                        </label>
-                      </div> */}
 
-                      <div className="flex mt-4 space-x-4 w-full ">
-                        <div className="flex-col w-full">
-                          <label htmlFor="contact" className="text-gray-500">
+                        <div className="flex flex-col w-full">
+                          <label htmlFor="name" className="text-gray-500">
                             <div className="flex">
-                              Contact Number{" "}
+                              Email Address {" "}
                               <span className="text-red-500">*</span>
                             </div>
                           </label>
                           <input
-                            id="contact"
+                            id="email"
                             onChange={(e) => onChange(e)}
-                            name="contact"
-                            type="text"
-                            placeholder="Enter Tracker Account Contact"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.contact?.trim()}
+                            name="email"
+                            type="email"
+                            placeholder="Enter Email Address"
+                            className={
+                              "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
+                              (errors.email
+                                ? "ring-1 ring-red-500"
+                                : "")
+                            }
+                            value={station.email}
                           />
                         </div>
-                        {/* <div className="flex-col w-full">
-                          <label htmlFor="password" className="text-gray-500">
-                            <div className="flex pr-2">
+                      </div>
+                  
+                      {/* --------------------------------------------------- */}
+
+                      <div className="flex mt-4 space-x-4 w-full ">
+                        <div className="flex flex-col w-full">
+                          <label htmlFor="name" className="text-gray-500">
+                            <div className="flex">
+                              Username{" "}
+                              <span className="text-red-500">*</span>
+                            </div>
+                          </label>
+                          <input
+                            id="username"
+                            onChange={(e) => onChange(e)}
+                            name="username"
+                            type="text"
+                            placeholder="Enter username"
+                            className="border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm"
+                            value={station.username}
+                          />
+                        </div>
+
+                        <div className="flex flex-col w-full">
+                          <label htmlFor="address" className="text-gray-500">
+                            <div className="flex mr-3">
                               Password <span className="text-red-500">*</span>
                             </div>
                           </label>
                           <input
                             id="password"
-                            // onChange={(e) => onChange(e)}
                             name="password"
-                            placeholder="Enter Tracker Account Password"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            // value={station.password?.trim()}
+                            type="password"
+                            onChange={(e) => onChange(e)}
+                            placeholder="Enter Password"
+                            className={
+                              "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
+                              (errors.password
+                                ? "ring-1 ring-red-500"
+                                : "")
+                            }
+                            value={station.password}
                           />
-                          <div
-                            className={`absolute buttom pt-7 pr-2 right-8 ${
-                              editMode === "edit" ? "top-[17em]" : "top-[16em]"
-                            }`}
-                          ></div>
-                        </div> */}
+                          <div className="text-red-500">
+                            {errors.password}
+                          </div>
+                        </div>
                       </div>
-                      {/* ttt */}
-                      {/* <div
-                        className={`flex mt-4 space-x-4 w-full ${
-                          editMode === "edit" && enabledEdit === false
-                            ? "hidden"
-                            : "visible"
-                        }`}
-                      >
-                        <div className="flex-col w-full">
-                          <label htmlFor="appkey" className="text-gray-500">
+
+                      {/* --------------------------------------------------- */}
+
+                      <div className="flex mt-4 space-x-4 w-full ">
+                        <div className="flex flex-col w-full">
+                          <label htmlFor="name" className="text-gray-500">
                             <div className="flex">
-                              App Key <span className="text-red-500">*</span>
+                              User Role <span className="text-red-500">*</span>
                             </div>
                           </label>
-                          <input
-                            id="appkey"
-                            onChange={(e) => onChange(e)}
-                            name="appkey"
-                            type="text"
-                            placeholder="Enter Tracker Account App Key"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.appkey?.trim()}
-                          />
+                          <select
+                          id="roleSelect"
+                          //!
+                          //! Fix this....
+                          //!
+                          value={station.roleIds}
+                          onChange={(e) => onChange(e)}
+                          name="roleIds"
+                          className={
+                            "border-2 p-2 mt-1 text-gray-600 rounded-md shadow-sm " +
+                            (errors.roleIds
+                              ? "ring-1 ring-red-500"
+                              : "")
+                          }
+                          >
+                            <option value="04007fb2-2b88-4f40-b1a9-5e5f88f205ea">Super Admin</option>
+                            <option value="04007fb2-2b88-4f40-b1a9-5e5f88f205ec">Station master</option>
+                          </select>
+                          <div className="text-red-500">
+                            {errors.roleIds}
+                          </div>
                         </div>
-                        <div className="flex-col w-full">
-                          <label htmlFor="appSecret" className="text-gray-500">
-                            <div className="flex">
-                              App Secret <span className="text-red-500">*</span>
-                            </div>
-                          </label>
-                          <input
-                            id="appSecret"
-                            onChange={(e) => onChange(e)}
-                            name="appSecret"
-                            type="text"
-                            placeholder="Enter Tracker Account App Secret"
-                            className="border-2 p-2 text-gray-600 rounded-md shadow-sm w-full mt-1"
-                            value={station.appSecret?.trim()}
-                          />
-                        </div>
-                      </div> */}
-                    </div>
+                      </div>
+                    </div>                     
                   </div>
                   <div className="bg-gray-100 p-2 flex justify-end">
                     <div className="space-x-4">
                       <button
                         onClick={
-                          editMode === "add" ? createStation : updateStation
+                          editMode === "add" ? createUser : updateStation
                         }
                         type="button"
                         disabled={errors.length !== 0 || loading === true}
