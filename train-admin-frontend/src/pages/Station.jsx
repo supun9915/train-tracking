@@ -107,7 +107,7 @@ const Station = () => {
     loadAllStationData();
   };
 
-  const deleteAccount = async (id) => {
+  const deleteStation = async (id) => {
     const res = await request(`station/delete`, PATCH, {
       delete: true,
       id,
@@ -123,7 +123,7 @@ const Station = () => {
   };
 
   const onDelete = () => {
-    deleteAccount(idDelete);
+    deleteStation(idDelete);
   };
 
   const handleChangePage = (event, newPage) => {

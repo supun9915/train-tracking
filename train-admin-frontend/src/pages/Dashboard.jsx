@@ -46,7 +46,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    connect();
+    // connect();
   }, []);
 
   return (

@@ -2,14 +2,11 @@ package com.tracker.tracker.services.impl;
 
 import com.tracker.tracker.auth.UserDetailServiceImpl;
 import com.tracker.tracker.auth.UserDetailsImpl;
-import com.tracker.tracker.models.entities.Booking;
-import com.tracker.tracker.models.entities.Passenger;
-import com.tracker.tracker.models.entities.Schedule;
+import com.tracker.tracker.models.entities.*;
+import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.response.PassengerGetResponse;
 import com.tracker.tracker.repositories.BookingRepository;
 import com.tracker.tracker.repositories.PassengerRepository;
-import com.tracker.tracker.models.entities.Role;
-import com.tracker.tracker.models.entities.Users;
 import com.tracker.tracker.models.request.PassengerCreate;
 import com.tracker.tracker.models.response.PassengerResponse;
 import com.tracker.tracker.repositories.RoleRepository;
@@ -107,7 +104,7 @@ public class PassengerService implements IPassengerService {
   @Override
   public List<PassengerGetResponse> getAllPassenger() {
     List<PassengerGetResponse> passengerGetResponses = new ArrayList<>();
-    List<Passenger> passengers = passengerRepository.findAll();
+    List<Passenger> passengers = passengerRepository.findByDeleted(false);
 
     for (Passenger passenger:passengers) {
       PassengerGetResponse passengerGetResponse = new PassengerGetResponse();
@@ -142,6 +139,22 @@ public class PassengerService implements IPassengerService {
             OffsetDateTime.now());
     return bookings;
   }
+
+  // REMOVE-THIS
+  @Override
+  public PassengerResponse passengerDelete(DeleteRequest deleteRequest, Principal principal) {
+    UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
+    Users user = usersRepository.findById(userImpl.getId()).get();
+
+    Passenger deletePassenger =
+            passengerRepository.findById(UUID.fromString(deleteRequest.getId())).get();
+    deletePassenger.setDeleted(deleteRequest.getDelete());
+    deletePassenger.setModifiedBy(user);
+    deletePassenger.setModifiedTime(OffsetDateTime.now());
+
+    return PassengerResponseConvertor(passengerRepository.save(deletePassenger));
+  }
+  // --------------------------------------------------------------------------------------
 
   private PassengerResponse PassengerResponseConvertor(Passenger passenger) {
     PassengerResponse response = new PassengerResponse();
