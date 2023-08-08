@@ -2,13 +2,10 @@ package com.tracker.tracker.services;
 
 import com.tracker.tracker.models.entities.Booking;
 import com.tracker.tracker.models.entities.Passenger;
-import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.request.DeleteRequest;
-import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.request.PassengerCreate;
 import com.tracker.tracker.models.response.PassengerGetResponse;
 import com.tracker.tracker.models.response.PassengerResponse;
-import com.tracker.tracker.models.response.StationResponse;
 
 import java.security.Principal;
 import java.util.List;
@@ -30,7 +27,7 @@ public interface IPassengerService {
   // REMOVE-THIS
   PassengerResponse passengerDelete(DeleteRequest deleteRequest, Principal principal);
 
-  double checkPromo(String promo, double price);
+  double checkPromo(String promo, double price, UUID userId);
 
   Passenger getPassengerByUserId(UUID id);
   // ----------------------------------------------------------------------------------

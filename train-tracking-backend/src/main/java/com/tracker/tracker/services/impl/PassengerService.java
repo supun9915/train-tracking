@@ -13,7 +13,6 @@ import com.tracker.tracker.repositories.PromoRepository;
 import com.tracker.tracker.repositories.RoleRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.IPassengerService;
-import java.awt.print.Book;
 import java.security.Principal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -158,23 +157,25 @@ public class PassengerService implements IPassengerService {
   }
 
   @Override
-  public double checkPromo(String promo, double price) {
+  public double checkPromo(String promo, double price, UUID userId) {
     if(price == 0){
       return 0;
     }
 
-    if(passengerRepository.existsByPromotions_Code(promo)){
-      return 0;
+    if(passengerRepository.existsByPromotions_CodeAndId(promo, userId)){
+      return price;
     }
 
+    Passenger passenger = passengerRepository.getById(userId);
     Promotion promotion = promoRepository.findByCode(promo);
     if(promotion != null){
       double discount = (promotion.getDiscount() / 100) * price;
-
+      passenger.getPromotions().add(promotion);
+      passengerRepository.save(passenger);
       return price - discount;
     }
 
-    return 0;
+    return price;
   }
 
   @Override
