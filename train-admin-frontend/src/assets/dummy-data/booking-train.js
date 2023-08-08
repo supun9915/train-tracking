@@ -19,6 +19,12 @@ const bookingTrains = [
     ticketPrice: 3400,
     imgUrl: train02,
   },
+  {
+    id: "03",
+    trainName: "Sunrise Express",
+    ticketPrice: 5600,
+    imgUrl: train01,
+  },
 ];
 
 export default bookingTrains;
