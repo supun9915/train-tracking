@@ -103,9 +103,10 @@ public class PassengerController {
   // ----------------------------------------------------------------------------------
 
   @PreAuthorize("hasAnyAuthority('Passenger','Super Admin')")
-  @GetMapping("/check/promo/{promo}/{price}")
-  public ResponseEntity<?> checkPromo(@PathVariable String promo, @PathVariable double price) {
-    double newPrice = passengerService.checkPromo(promo, price);
+  @GetMapping("/check/promo/{userId}/{promo}/{price}")
+  public ResponseEntity<?> checkPromo(@PathVariable UUID userId, @PathVariable String promo,
+      @PathVariable double price) {
+    double newPrice = passengerService.checkPromo(promo, price, userId);
     return ResponseEntity.ok(newPrice);
   }
 
