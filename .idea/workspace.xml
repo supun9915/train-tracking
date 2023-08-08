@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9bc43f06-35b8-4ed7-84fd-a99a74441a30" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/train-admin-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train-admin-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train-admin-frontend/src/assets/dummy-data/navLinks.js" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/src/assets/dummy-data/navLinks.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train-admin-frontend/src/auth/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/src/auth/Login.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train-admin-frontend/src/components/Sidebar/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/src/components/Sidebar/sidebar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train-admin-frontend/src/pages/Passengers.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/train-admin-frontend/src/pages/Passengers.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train-tracking-backend/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/train-tracking-backend/src/main/resources/application-dev.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train-tracking-frontend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/train-tracking-frontend/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,12 +17,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

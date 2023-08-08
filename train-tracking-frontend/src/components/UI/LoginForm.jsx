@@ -40,13 +40,13 @@ const LoginForm = () => {
   };
 
   return (
-    <div class="mb-4 mb-lg-0 w-100">
-      <div class="card">
-        <div class="card-body py-5 px-md-5">
-          <h1 className="mb-4">Welcome Back!!!</h1>
-          <form action="">
+    <div class="mb-4 mb-lg-0 w-100 ">
+      <div className="card" style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}>
+        <div className="grid place-items-center mt-52 ">
+          <h1 className="mb-5 text-white">Welcome Back!!!</h1>
+          <form action="" className="w-[20em] h-[30em]">
             <div class="mb-3">
-              <label for="exampleInputEmail1" class="form-label">
+              <label for="exampleInputEmail1" class="form-label text-white">
                 Username
               </label>
               <input
@@ -59,7 +59,7 @@ const LoginForm = () => {
               />
             </div>
             <div class="mb-3">
-              <label for="exampleInputPassword1" class="form-label">
+              <label for="exampleInputPassword1" class="form-label text-white">
                 Password
               </label>
               <input
@@ -72,7 +72,7 @@ const LoginForm = () => {
             </div>
             <button
               type="button"
-              class="btn w-100 btn-primary"
+              class="btn w-48 ml-16 btn-primary mt-10"
               onClick={() => login()}
             >
               Submit
