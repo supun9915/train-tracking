@@ -1,6 +1,7 @@
 package com.tracker.tracker.services;
 
 import com.tracker.tracker.models.entities.Booking;
+import com.tracker.tracker.models.entities.Passenger;
 import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.FindTrainRequest;
@@ -28,6 +29,10 @@ public interface IPassengerService {
 
   // REMOVE-THIS
   PassengerResponse passengerDelete(DeleteRequest deleteRequest, Principal principal);
+
+  double checkPromo(String promo, double price);
+
+  Passenger getPassengerByUserId(UUID id);
   // ----------------------------------------------------------------------------------
 
 }

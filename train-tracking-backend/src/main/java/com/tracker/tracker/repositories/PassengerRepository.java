@@ -12,5 +12,6 @@ public interface PassengerRepository extends JpaRepository<Passenger, UUID> {
 
   List<Passenger> findByDeleted(Boolean deleted);
 
+  boolean existsByPromotions_Code(String code);
 
 }

@@ -9,6 +9,7 @@ import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.request.PassengerCreate;
 import com.tracker.tracker.models.response.PassengerResponse;
 import com.tracker.tracker.repositories.PassengerRepository;
+import com.tracker.tracker.repositories.PromoRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.IPassengerService;
 import java.security.Principal;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/passenger")
 public class PassengerController {
   private final UserRepository userRepository;
+  private final PromoRepository promoRepository;
   private final IPassengerService passengerService;
   private final PassengerRepository passengerRepository;
 
@@ -99,5 +101,19 @@ public class PassengerController {
     return ResponseEntity.ok(passengerResponse);
   }
   // ----------------------------------------------------------------------------------
+
+  @PreAuthorize("hasAnyAuthority('Passenger','Super Admin')")
+  @GetMapping("/check/promo/{promo}/{price}")
+  public ResponseEntity<?> checkPromo(@PathVariable String promo, @PathVariable double price) {
+    double newPrice = passengerService.checkPromo(promo, price);
+    return ResponseEntity.ok(newPrice);
+  }
+
+  @PreAuthorize("hasAnyAuthority('Passenger','Super Admin')")
+  @GetMapping("/by/user/{id}")
+  public ResponseEntity<?> getPassengerByUserId(@PathVariable UUID id) {
+    Passenger passenger = passengerService.getPassengerByUserId(id);
+    return ResponseEntity.ok(passenger);
+  }
 
 }

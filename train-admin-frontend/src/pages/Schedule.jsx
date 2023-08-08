@@ -182,8 +182,8 @@ const Schedule = () => {
   };
 
   const createStation = async () => {
-    const departureTime = values.departureTime + "z";
-    const arrivalTime = values.arrivalTime + "z";
+    const departureTime = new Date(values.departureTime).toISOString();
+    const arrivalTime = new Date(values.arrivalTime).toISOString();
     const res = await request("schedule/create", POST, {
       depStationId: values.depStationId.value.id,
       arrStationId: values.arrStationId.value.id,
@@ -203,8 +203,8 @@ const Schedule = () => {
   };
 
   const updateStation = async () => {
-    const departureTime = values.departureTime + "z";
-    const arrivalTime = values.arrivalTime + "z";
+    const departureTime = new Date(values.departureTime).toISOString();
+    const arrivalTime = new Date(values.arrivalTime).toISOString();
     const res = await request(`schedule/update/${schedule.id}`, PUT, {
       depStationId: values.depStationId.value.id,
       arrStationId: values.arrStationId.value.id,
