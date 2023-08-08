@@ -1,5 +1,6 @@
 package com.tracker.tracker.services;
 
+import com.tracker.tracker.models.json.RevenueStatic;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.PaymentCreate;
 import com.tracker.tracker.models.response.PaymentGetResponse;
@@ -19,4 +20,8 @@ public interface IPaymentService {
     List<PaymentGetResponse> getAllPayment();
 
     PaymentResponse deletePayment(DeleteRequest deleteRequest, Principal principal);
+
+    Double getTotalRevenue();
+
+    List<RevenueStatic> getRevenueChart();
 }

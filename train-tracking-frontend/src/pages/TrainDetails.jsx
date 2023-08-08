@@ -119,7 +119,7 @@ const TrainDetails = () => {
     }
   };
 
-  const onSucess = (orderId) => console.log("onSuccess", orderId);
+  const onSucess = (orderId) => console.log("onSuccess", reservation);
   const onDismissed = () => console.log("onDismissed");
   const onError = (error) => console.log("onError", error);
 

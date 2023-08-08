@@ -1,9 +1,12 @@
 package com.tracker.tracker.controllers;
 
+import com.tracker.tracker.models.json.RevenueStatic;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.PaymentCreate;
 import com.tracker.tracker.models.response.PaymentResponse;
 import com.tracker.tracker.services.IPaymentService;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,5 +53,19 @@ public class PaymentController {
     public ResponseEntity<?> deletePayment(@RequestBody DeleteRequest deleteRequest, Principal principal) {
         PaymentResponse paymentResponse = paymentService.deletePayment(deleteRequest, principal);
         return ResponseEntity.ok(paymentResponse);
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @GetMapping("/total")
+    public ResponseEntity<?> getAllRevenue() {
+        Double totalRevenue = paymentService.getTotalRevenue();
+      return ResponseEntity.ok(Objects.requireNonNullElse(totalRevenue, 0));
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @GetMapping("/chart/revenue/all")
+    public ResponseEntity<?> getRevenueChart() {
+        List<RevenueStatic> revenueChart = paymentService.getRevenueChart();
+        return ResponseEntity.ok(revenueChart);
     }
 }
