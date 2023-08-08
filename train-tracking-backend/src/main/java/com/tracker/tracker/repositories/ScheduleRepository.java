@@ -21,4 +21,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
         OffsetDateTime departureTimeEnd);
 
     List<Schedule> findDistinctByTrain_TrainStations_Station_IdIn(Collection<UUID> ids);
+
+    List<Schedule> findByTrain_IdAndDeletedOrderByDepartureStation_CreatedTimeDesc(UUID id, Boolean deleted);
+
 }

@@ -56,12 +56,24 @@ public class PromoService implements IPromoService {
 
     @Override
     public PromoGetResponse createPromo(PromoGetResponse createPromo, Principal principal) {
-        PromoGetResponse promoGetResponse =new PromoGetResponse();
-        promoGetResponse.setClas(createPromo.getClas());
-        promoGetResponse.setCode(createPromo.getCode());
-        promoGetResponse.setRound(createPromo.getRound());
-        promoGetResponse.setDiscount(createPromo.getDiscount());
-        return promoGetResponse;
+        Promotion promoResponse = new Promotion();
+        promoResponse.setClas(createPromo.getClas());
+        promoResponse.setCode(createPromo.getCode());
+        promoResponse.setRound(createPromo.getRound());
+        promoResponse.setDiscount(Double.parseDouble(createPromo.getDiscount()));
+        promoResponse = promoRepository.save(promoResponse);
+        return DeleteeResponseConvertor(promoResponse);
+    }
+
+    @Override
+    public PromoGetResponse updatePromo(UUID id, PromoGetResponse createPromo, Principal principal) {
+        Promotion promoResponse = promoRepository.getById(id);
+        promoResponse.setClas(createPromo.getClas());
+        promoResponse.setCode(createPromo.getCode());
+        promoResponse.setRound(createPromo.getRound());
+        promoResponse.setDiscount(Double.parseDouble(createPromo.getDiscount()));
+        promoResponse = promoRepository.save(promoResponse);
+        return DeleteeResponseConvertor(promoResponse);
     }
 
     private PromoGetResponse DeleteeResponseConvertor(Promotion save) {
@@ -71,12 +83,12 @@ public class PromoService implements IPromoService {
     }
 
     private PromoGetResponse promoGetResponsesConverter(Promotion promotion) {
-        PromoGetResponse promoGetResponse = new PromoGetResponse();
-        promoGetResponse.setId(promotion.getId());
-        promoGetResponse.setClas(promotion.getClas());
-        promoGetResponse.setCode(promotion.getCode());
-        promoGetResponse.setRound(promotion.getRound());
-        promoGetResponse.setDiscount(String.valueOf(promotion.getDiscount()));
-        return promoGetResponse;
+        PromoGetResponse promoGet = new PromoGetResponse();
+        promoGet.setId(promotion.getId());
+        promoGet.setClas(promotion.getClas());
+        promoGet.setCode(promotion.getCode());
+        promoGet.setRound(promotion.getRound());
+        promoGet.setDiscount(String.valueOf(promotion.getDiscount()));
+        return promoGet;
     }
 }

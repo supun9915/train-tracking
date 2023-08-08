@@ -48,6 +48,32 @@ public class ScheduleController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('Super Admin', 'Passenger')")
+    @GetMapping("/getschedule/{id}")
+    public ResponseEntity<?> getAllScheduleByTrain(@PathVariable UUID id){
+        return ResponseEntity.ok(scheduleService.getScheduleByTrain(id));
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @PostMapping("/create/delay/{id}/{time}")
+    public ResponseEntity<?> createDelaySchedule(@PathVariable UUID id,@PathVariable int time,
+                                            Principal principal) {
+        return ResponseEntity.ok(scheduleService.updateDelay(id,time, principal));
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin', 'Passenger')")
+    @GetMapping("/getschstation/{id}")
+    public ResponseEntity<?> getAllStationByTrain(@PathVariable UUID id){
+        return ResponseEntity.ok(scheduleService.getStationByTrain(id));
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @PostMapping("/create/locate/{id}/{loc}")
+    public ResponseEntity<?> updateLocateSchedule(@PathVariable UUID id,@PathVariable UUID loc,
+                                                 Principal principal) {
+        return ResponseEntity.ok(scheduleService.updatelocations(id,loc, principal));
+    }
+
     @PreAuthorize("hasAnyAuthority('Super Admin')")
     @PatchMapping("/delete")
     public ResponseEntity<?> deleteSchedule(@RequestBody DeleteRequest deleteRequest, Principal principal) {
