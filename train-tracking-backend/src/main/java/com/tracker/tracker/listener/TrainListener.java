@@ -18,6 +18,7 @@ public class TrainListener {
     @PostRemove
     @PostUpdate
     public void onChange(final Train train){
-      simpMessagingTemplate.convertAndSend("/dashboard/train/count", train);
+        System.out.println("update train with ws");
+      simpMessagingTemplate.convertAndSend("/dashboard/train/change", train);
     }
 }

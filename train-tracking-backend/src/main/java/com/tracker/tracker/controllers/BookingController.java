@@ -1,10 +1,13 @@
 package com.tracker.tracker.controllers;
 
+import com.tracker.tracker.models.json.TrainStatics;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.BookingCreate;
 import com.tracker.tracker.models.response.BookingResponse;
 import com.tracker.tracker.services.IBookingService;
 import com.tracker.tracker.services.IBookingService;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,5 +54,19 @@ public class BookingController {
     public ResponseEntity<?> deleteBooking(@RequestBody DeleteRequest deleteRequest, Principal principal) {
         BookingResponse bookingResponse = bookingService.deleteBooking(deleteRequest, principal);
         return ResponseEntity.ok(bookingResponse);
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @GetMapping("/count")
+    public ResponseEntity<?> bookingCount() {
+        Long bookingCount = bookingService.bookingCount();
+        return ResponseEntity.ok(Objects.requireNonNullElse(bookingCount,0));
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @GetMapping("/chart/train/statics")
+    public ResponseEntity<?> getTrainStatics() {
+        List<TrainStatics> trainStatics = bookingService.getTrainStatics();
+        return ResponseEntity.ok(trainStatics);
     }
 }

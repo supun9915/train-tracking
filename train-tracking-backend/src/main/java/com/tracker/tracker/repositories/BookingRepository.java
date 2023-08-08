@@ -20,6 +20,9 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
     List<Booking> findByCreatedBy_IdAndSchedule_ArrivalTimeLessThan(UUID id,
         OffsetDateTime arrivalTime);
 
+    List<Booking> findBySchedule_Train_IdAndCreatedTimeBetween(UUID id,
+        OffsetDateTime createdTimeStart, OffsetDateTime createdTimeEnd);
+
 
 
 }
