@@ -1,8 +1,8 @@
 const trackingData = [
   {
     name: "January",
-    km: 0,
-    revenue: 0,
+    km: 20,
+    revenue: 100,
   },
   {
     name: "February",

@@ -19,12 +19,11 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.UUID;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
-@RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", maxAge=3600)
+@RestController
 @RequestMapping("/train")
 public class TrainController {
-
     private final TrainRepository trainRepository;
     private final ITrainService trainService;
 
@@ -82,5 +81,11 @@ public class TrainController {
     public ResponseEntity<?> trainCount() {
         long trainCount = trainService.getCount();
         return ResponseEntity.ok(trainCount);
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @GetMapping("/get/chart/name/{trainName}")
+    public ResponseEntity<?> getTrainChartByName(@PathVariable String trainName) {
+        return ResponseEntity.ok(trainService.getTrainStatisticsChart(trainName));
     }
 }

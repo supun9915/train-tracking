@@ -1,20 +1,46 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/train-revenue.css";
 import { useParams } from "react-router-dom";
 import TrackingChart from "../charts/TrackingChart";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-// import trainStaticsData from "../assets/dummy-data/trainStatics";
+import trainStaticsData from "../assets/dummy-data/trainStatics";
 import bookingTrains from "../assets/dummy-data/booking-train";
+import { request, GET, POST, PATCH, PUT } from "../api/ApiAdapter";
 
 const TrainRevenue = () => {
   const { slug } = useParams();
+  const [ revenueData, setRevenueData ] = useState({});
+  const [ chartData, setChartData ] = useState([]);
   const singleTrainItem = bookingTrains.find((item) => item.trainName === slug);
 
-  const percentage = 55;
-  const percentage02 = 45;
+  //! For testing purposes
+  const loadTrainRevenueData = async () => {
+    const res = await request(`revenue/get/name/${slug}`, GET);
+    if (!res.error) {
+      setRevenueData(res)
+    }
+    else {
+      console.log(res)
+    }
+  };
+
+  //! For testing purposes
+  const loadChartData = async () => {
+    const res = await request(`train/get/chart/name/${slug}`, GET);
+    if (!res.error) {
+      setChartData(res)
+    }
+    else {
+      console.log(res)
+    }
+  };
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [singleTrainItem]);
+    loadTrainRevenueData();
+    loadChartData();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="sell__train">
@@ -28,7 +54,7 @@ const TrainRevenue = () => {
 
           <div className="tracking__history">
             <h3>Revenue Statistic</h3>
-            <TrackingChart />
+            <TrackingChart data={chartData}/>
           </div>
         </div>
 
@@ -36,26 +62,26 @@ const TrainRevenue = () => {
           <div className="offer__top">
             <h2 className="sell__train-title">Offers</h2>
           </div>
-
           <div className="offer__list">
+
+            {/* FIRST CLASS */}
             <div className="offer__item">
               <div className="box__01">
                 <h3 className="client__name">First Class</h3>
                 <h6 className="avg__price">
-                  LKR 1700 <span>Total Income</span>
+                  LKR {revenueData?.firstClassRevenueResponse?.total} <span>Total Income</span>
                 </h6>
 
-                <h6 className="market__price">Selling average is 67.5%</h6>
+                <h6 className="market__price">Selling average is LKR {revenueData?.firstClassRevenueResponse?.averageSellingRate}</h6>
                 <span className="arrow__key">
                   <i class="ri-arrow-right-line"></i>
                 </span>
               </div>
-
               <div className="circle__wrapper">
                 <div className="box__02">
                   <CircularProgressbar
-                    value={67.5}
-                    text={`67.5%`}
+                    value={revenueData?.firstClassRevenueResponse?.revenueProportion}
+                    text={`${revenueData?.firstClassRevenueResponse?.revenueProportion}%`}
                     styles={buildStyles({
                       pathColor: "#01d293",
                       textColor: "#fff",
@@ -66,49 +92,39 @@ const TrainRevenue = () => {
                 </div>
                 <h4>Ticket Revenue</h4>
               </div>
-
               <div className="box__03">
                 <span className="model__spend-icon">
                   <i class="ri-train-line"></i>
                 </span>
-                <h6 className="spend__amount">2</h6>
-                <p className="spend__title">Ticket Sales</p>
+                <h6 className="spend__amount">{revenueData?.firstClassRevenueResponse?.ticketsSold}</h6>
+                <p className="spend__title">Tickets sold</p>
               </div>
-
               <div className="box__04">
                 <span className="model__spend-icon">
                   <i class="ri-share-forward-line"></i>
                 </span>
-                <h6 className="spend__amount">2</h6>
-                <p className="spend__title">Ticket Booking</p>
-              </div>
-
-              <div className="box__05">
-                <span className="model__spend-icon">
-                  <i class="ri-money-dollar-circle-line"></i>
-                </span>
-                <h6 className="spend__amount">LKR 200</h6>
-                <p className="spend__title">Discounts</p>
+                <h6 className="spend__amount">{revenueData?.firstClassRevenueResponse?.ticketsBooked}</h6>
+                <p className="spend__title">Tickets Booked</p>
               </div>
             </div>
+
+            {/* SECOND CLASS */}
             <div className="offer__item">
               <div className="box__01">
-                <h3 className="client__name">Secon Class</h3>
+                <h3 className="client__name">Second Class</h3>
                 <h6 className="avg__price">
-                  $16,605 <span>average price</span>
+                  LKR {revenueData?.secondClassRevenueResponse?.total} <span>average price</span>
                 </h6>
-
-                <h6 className="market__price">Selling average is LKR 16,244</h6>
+                <h6 className="market__price">Selling average is LKR {revenueData?.secondClassRevenueResponse?.averageSellingRate}</h6>
                 <span className="arrow__key">
                   <i class="ri-arrow-right-line"></i>
                 </span>
               </div>
-
               <div className="circle__wrapper">
                 <div className="box__02">
                   <CircularProgressbar
-                    value={percentage}
-                    text={`${percentage}%`}
+                    value={revenueData?.secondClassRevenueResponse?.revenueProportion}
+                    text={`${revenueData?.secondClassRevenueResponse?.revenueProportion}%`}
                     styles={buildStyles({
                       pathColor: "#01d293",
                       textColor: "#fff",
@@ -119,49 +135,39 @@ const TrainRevenue = () => {
                 </div>
                 <h4>Ticket Revenue</h4>
               </div>
-
               <div className="box__03">
                 <span className="model__spend-icon">
                   <i class="ri-train-line"></i>
                 </span>
-                <h6 className="spend__amount">$1174</h6>
-                <p className="spend__title">ticket values</p>
+                <h6 className="spend__amount">{revenueData?.secondClassRevenueResponse?.ticketsSold}</h6>
+                <p className="spend__title">Tickets sold</p>
               </div>
-
               <div className="box__04">
                 <span className="model__spend-icon">
                   <i class="ri-share-forward-line"></i>
                 </span>
-                <h6 className="spend__amount">$1174</h6>
-                <p className="spend__title">ticket values</p>
-              </div>
-
-              <div className="box__05">
-                <span className="model__spend-icon">
-                  <i class="ri-money-dollar-circle-line"></i>
-                </span>
-                <h6 className="spend__amount">$811</h6>
-                <p className="spend__title">ticket values</p>
+                <h6 className="spend__amount">{revenueData?.secondClassRevenueResponse?.ticketsBooked}</h6>
+                <p className="spend__title">Tickets Booked</p>
               </div>
             </div>
+
+            {/* THIRD CLASS */}
             <div className="offer__item">
               <div className="box__01">
-                <h3 className="client__name">Ticket Revenue</h3>
+                <h3 className="client__name">Third Class</h3>
                 <h6 className="avg__price">
-                  $11,605 <span>average price</span>
+                  LKR {revenueData?.thirdClassRevenueResponse?.total} <span>average price</span>
                 </h6>
-
-                <h6 className="market__price">Average Sell is LKR11,244</h6>
+                <h6 className="market__price">Selling average is LKR {revenueData?.thirdClassRevenueResponse?.averageSellingRate}</h6>
                 <span className="arrow__key">
                   <i class="ri-arrow-right-line"></i>
                 </span>
               </div>
-
               <div className="circle__wrapper">
                 <div className="box__02">
                   <CircularProgressbar
-                    value={percentage02}
-                    text={`${percentage02}%`}
+                    value={revenueData?.thirdClassRevenueResponse?.revenueProportion}
+                    text={`${revenueData?.thirdClassRevenueResponse?.revenueProportion}%`}
                     styles={buildStyles({
                       pathColor: "#01d293",
                       textColor: "#fff",
@@ -172,29 +178,19 @@ const TrainRevenue = () => {
                 </div>
                 <h4>ticket values</h4>
               </div>
-
               <div className="box__03">
                 <span className="model__spend-icon">
                   <i class="ri-train-line"></i>
                 </span>
-                <h6 className="spend__amount">$1174</h6>
-                <p className="spend__title">ticket values</p>
+                <h6 className="spend__amount">{revenueData?.thirdClassRevenueResponse?.ticketsSold}</h6>
+                <p className="spend__title">Tickets sold</p>
               </div>
-
               <div className="box__04">
                 <span className="model__spend-icon">
                   <i class="ri-share-forward-line"></i>
                 </span>
-                <h6 className="spend__amount">$1174</h6>
-                <p className="spend__title">ticket values</p>
-              </div>
-
-              <div className="box__05">
-                <span className="model__spend-icon">
-                  <i class="ri-money-dollar-circle-line"></i>
-                </span>
-                <h6 className="spend__amount">$811</h6>
-                <p className="spend__title">ticket values</p>
+                <h6 className="spend__amount">{revenueData?.thirdClassRevenueResponse?.ticketsBooked}</h6>
+                <p className="spend__title">Tickets Booked</p>
               </div>
             </div>
           </div>

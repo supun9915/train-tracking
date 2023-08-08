@@ -1,5 +1,6 @@
 package com.tracker.tracker.services;
 
+import com.tracker.tracker.models.json.TrainChartStatistic;
 import com.tracker.tracker.models.request.CreateTrain;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.response.TrainGetResponse;
@@ -22,4 +23,6 @@ public interface ITrainService {
     TrainResponse deleteTrain(DeleteRequest deleteRequest, Principal principal);
 
     long getCount();
+
+    List<TrainChartStatistic> getTrainStatisticsChart(String trainName);
 }
