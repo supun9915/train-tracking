@@ -9,6 +9,7 @@ import com.tracker.tracker.repositories.BookingRepository;
 import com.tracker.tracker.repositories.PassengerRepository;
 import com.tracker.tracker.models.request.PassengerCreate;
 import com.tracker.tracker.models.response.PassengerResponse;
+import com.tracker.tracker.repositories.PromoRepository;
 import com.tracker.tracker.repositories.RoleRepository;
 import com.tracker.tracker.repositories.UserRepository;
 import com.tracker.tracker.services.IPassengerService;
@@ -34,6 +35,7 @@ public class PassengerService implements IPassengerService {
   private final UserService userService;
   private final PassengerRepository passengerRepository;
   private final BookingRepository bookingRepository;
+  private final PromoRepository promoRepository;
 
   @Autowired
   PasswordEncoder passwordEncoder;
@@ -153,6 +155,32 @@ public class PassengerService implements IPassengerService {
     deletePassenger.setModifiedTime(OffsetDateTime.now());
 
     return PassengerResponseConvertor(passengerRepository.save(deletePassenger));
+  }
+
+  @Override
+  public double checkPromo(String promo, double price) {
+    if(price == 0){
+      return 0;
+    }
+
+    if(passengerRepository.existsByPromotions_Code(promo)){
+      return 0;
+    }
+
+    Promotion promotion = promoRepository.findByCode(promo);
+    if(promotion != null){
+      double discount = (promotion.getDiscount() / 100) * price;
+
+      return price - discount;
+    }
+
+    return 0;
+  }
+
+  @Override
+  public Passenger getPassengerByUserId(UUID id) {
+    Passenger passenger = passengerRepository.findByUser_Id(id);
+    return passenger;
   }
   // --------------------------------------------------------------------------------------
 

@@ -9,7 +9,8 @@ import paypal from "../assets/all-images/paypal.jpg";
 import "../styles/booking-form.css";
 import "../styles/payment-method.css";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { logOut, selectCurrentUser } from "../redux/features/authSlice";
 // import Select from "react-select";
 import { Form, FormGroup } from "reactstrap";
 import { request, GET, POST } from "../api/ApiAdapter";
@@ -18,7 +19,7 @@ import PaymentMethod from "../components/UI/PaymentMethod";
 const TrainDetails = () => {
   const { slug, cla, star, ende, per, cou, shed } = useParams();
   const navigate = useNavigate();
-
+  const authUser = useSelector(selectCurrentUser);
   const [startSt, setStartSt] = useState({
     label: "",
     value: "",
@@ -65,6 +66,20 @@ const TrainDetails = () => {
     }
   };
 
+  const getPassenger = async () => {
+    const res = await request(`/passenger/by/user/`, POST, {
+      trainClass: cla,
+      schedule: shed,
+      fromStation: star,
+      toStation: ende,
+      passengerCount: per,
+    });
+    if (!res.error) {
+      setPrice(res);
+      // console.log(res);
+    }
+  };
+
   const getpath = async (shed) => {
     const res = await request(`/schedule/route/${shed}`, POST);
     if (!res.error) {
@@ -78,6 +93,7 @@ const TrainDetails = () => {
     getStStations(star);
     getEndStations(ende);
     getPrice(cla, shed, star, ende, per);
+    console.log(authUser);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
