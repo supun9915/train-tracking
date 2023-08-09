@@ -9,6 +9,7 @@ import TablePagination from "@mui/material/TablePagination";
 import { Modal, Box } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import * as Md from "react-icons/md";
+import Select from "react-select";
 import * as Bi from "react-icons/bi";
 import ReactLoading from "react-loading";
 
@@ -19,7 +20,7 @@ import { request, GET, POST, PATCH } from "../api/ApiAdapter";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
-const Delay = () => {
+const UpdateLocate = () => {
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -28,6 +29,7 @@ const Delay = () => {
   const [idDelete, setDeleteId] = useState();
   const [editMode, setEditMode] = useState("edit");
   const [openModal, setOpenModal] = useState(false);
+  const [lo, setLo] = useState();
 
   const schedule = {
     scheduleId: "",
@@ -81,8 +83,36 @@ const Delay = () => {
   const loadAllScheduleData = async () => {
     const res = await request(`schedule/getschedule`, GET);
     if (!res.error) {
-      // console.log(res);
+      //   console.log(res);
       setRows(res);
+    }
+    // else navigate("/page/unauthorized/access");
+  };
+
+  const {
+    setTouched,
+    resetForm,
+    setValues,
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+  } = useFormik({
+    initialValues: schedule,
+    validationSchema: schema,
+  });
+
+  const loadAllStationTrain = async (e) => {
+    const res = await request(`schedule/getschstation/${e}`, GET);
+    if (!res.error) {
+      console.log(res);
+      const newDep = [];
+      res.forEach((item) => {
+        newDep.push({ label: item.name, value: item });
+      });
+      setLo(newDep);
+      //   setRows(res);
     }
     // else navigate("/page/unauthorized/access");
   };
@@ -134,6 +164,7 @@ const Delay = () => {
   const handleOpenModal = (e, row) => {
     // loadAllStationDep();
     // loadAllStationArr();
+    loadAllStationTrain(row.trainId);
     e.stopPropagation();
     setValues(row);
     setOpenModal(true);
@@ -141,7 +172,7 @@ const Delay = () => {
 
   const createStation = async () => {
     const res = await request(
-      `schedule/create/delay/${values.id}/${values.delay}`,
+      `schedule/create/locate/${values.id}/${values.trainId.value.id}`,
       POST
     );
     if (!res.error) {
@@ -155,26 +186,38 @@ const Delay = () => {
     }
   };
 
-  const {
-    setTouched,
-    resetForm,
-    setValues,
-    values,
-    errors,
-    touched,
-    handleBlur,
-    handleChange,
-  } = useFormik({
-    initialValues: schedule,
-    validationSchema: schema,
-  });
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      cursor: "pointer",
+      minHeight: "37px",
+      height: "37px",
+      backgroundColor: "",
+      boxShadow: state.isFocused ? null : null,
+      // borderColor: state.isFocused ? '#30405D' : null,
+      borderColor: "#E5E7EB",
+      borderWidth: "medium",
+      borderRadius: "0.6em",
+      "&:hover": {
+        borderColor: state.isFocused ? "#30405D" : null,
+      },
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      cursor: "pointer",
+      backgroundColor: state.isSelected ? "#30405D" : "#EDF3FB",
+      "&:hover": {
+        backgroundColor: !state.isSelected ? "#dbe2e9" : null,
+      },
+    }),
+  };
 
-  // console.log(values);
+  //   console.log(values);
 
   return (
     <div className="settings">
       <div className="settings__wrapper">
-        <h2 className="settings__title">Delay</h2>
+        <h2 className="settings__title">Update Current Schedule Location</h2>
         <div>
           <div className="w-full mb-2 flex justify-end space-x-2">
             {/* <button
@@ -218,7 +261,17 @@ const Delay = () => {
                       paddingY: ".5em",
                     }}
                   >
-                    Delayed Time
+                    Start Location
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "#D1F1F9",
+                      fontSize: ".8em",
+                      fontWeight: 800,
+                      paddingY: ".5em",
+                    }}
+                  >
+                    Destination
                   </TableCell>
                   <TableCell
                     sx={{
@@ -229,7 +282,7 @@ const Delay = () => {
                     }}
                     align="center"
                   >
-                    Location
+                    Last Monitored Location
                   </TableCell>
                   <TableCell
                     sx={{
@@ -282,7 +335,16 @@ const Delay = () => {
                         paddingY: ".5em",
                       }}
                     >
-                      {row.delay} min
+                      {row.arrName}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: ".7em",
+                        color: "#d3d3dd3",
+                        paddingY: ".5em",
+                      }}
+                    >
+                      {row.depName}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -369,7 +431,7 @@ const Delay = () => {
               <div className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="text-lg font-bold">
-                    {editMode === "add" ? "Add" : "Edit"} Schedule Delay
+                    {editMode === "add" ? "Add" : "Edit"} Update Location
                   </div>
                   <button
                     type="button"
@@ -411,13 +473,28 @@ const Delay = () => {
                       </div>
                     </div>
                     <div className="flex-col w-full">
-                      <label htmlFor="departureTime" className="text-gray-500">
+                      <label htmlFor="loca" className="text-gray-500">
                         <div className="flex">
-                          Delay Time(minutes){" "}
+                          Monitored Location{" "}
                           <span className="text-red-500">*</span>
                         </div>
                       </label>
-                      <input
+                      <Select
+                        options={lo}
+                        onMenuOpen={() => {
+                          setTouched({ ...touched, scheduleId: true });
+                        }}
+                        onChange={(e) => {
+                          setValues({ ...values, trainId: e });
+                        }}
+                        styles={customStyles}
+                        className={
+                          errors.scheduleId && touched.scheduleId
+                            ? "ring-1 ring-red-500"
+                            : ""
+                        }
+                      />
+                      {/* <input
                         id="delay"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -431,7 +508,7 @@ const Delay = () => {
                             : "")
                         }
                         value={values.delay}
-                      />
+                      /> */}
                       <div className="text-red-500">
                         {errors.delay && touched.delay && errors.delay}
                       </div>
@@ -621,4 +698,4 @@ const Delay = () => {
     </div>
   );
 };
-export default Delay;
+export default UpdateLocate;

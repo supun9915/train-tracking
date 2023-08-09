@@ -9,6 +9,7 @@ import com.tracker.tracker.repositories.ReservationRepository;
 import com.tracker.tracker.repositories.ReservationRepository;
 import com.tracker.tracker.services.IReservationService;
 import com.tracker.tracker.services.IReservationService;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,5 +58,13 @@ public class ReservationController {
     public ResponseEntity<?> deleteReservation(@RequestBody DeleteRequest deleteRequest, Principal principal) {
         ReservationResponse reservationResponse = reservationService.deleteReservation(deleteRequest, principal);
         return ResponseEntity.ok(reservationResponse);
+    }
+
+    @PreAuthorize("hasAnyAuthority('Super Admin')")
+    @GetMapping("/ticket/sales/count")
+    public ResponseEntity<?> ticketSalesCount() {
+        Integer ticketSalesCount = reservationService.ticketSalesCount();
+
+        return ResponseEntity.ok(Objects.requireNonNullElse(ticketSalesCount,0));
     }
 }

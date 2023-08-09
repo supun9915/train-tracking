@@ -14,6 +14,7 @@ import * as Md from "react-icons/md";
 import * as Bi from "react-icons/bi";
 import Select from "react-select";
 import ReactLoading from "react-loading";
+import { format } from "date-fns";
 
 import { AiOutlineReload } from "react-icons/ai";
 // import { useNavigate } from "react-router-dom";
@@ -51,12 +52,9 @@ const Schedule = () => {
     setPage(newPage);
   };
 
-  const [stations, setStations] = useState([]);
   const [dep, setDep] = useState();
   const [arrs, setArrs] = useState([]);
-  const [arr, setArr] = useState();
   const [tras, setTras] = useState([]);
-  const [tra, setTra] = useState();
 
   const style = {
     position: "absolute",
@@ -185,8 +183,8 @@ const Schedule = () => {
   };
 
   const createStation = async () => {
-    const departureTime = values.departureTime + "z";
-    const arrivalTime = values.arrivalTime + "z";
+    const departureTime = new Date(values.departureTime).toISOString();
+    const arrivalTime = new Date(values.arrivalTime).toISOString();
     const res = await request("schedule/create", POST, {
       depStationId: values.depStationId.value.id,
       arrStationId: values.arrStationId.value.id,
@@ -206,8 +204,8 @@ const Schedule = () => {
   };
 
   const updateStation = async () => {
-    const departureTime = values.departureTime + "z";
-    const arrivalTime = values.arrivalTime + "z";
+    const departureTime = new Date(values.departureTime).toISOString();
+    const arrivalTime = new Date(values.arrivalTime).toISOString();
     const res = await request(`schedule/update/${schedule.id}`, PUT, {
       depStationId: values.depStationId.value.id,
       arrStationId: values.arrStationId.value.id,
@@ -406,7 +404,8 @@ const Schedule = () => {
                       }}
                       scope="row"
                     >
-                      {row.departureTime}
+                      {/* {row.departureTime} */}
+                      {format(new Date(row.departureTime), "yyyy-MM-dd HH:mm")}
                     </TableCell>
                     <TableCell
                       sx={{
@@ -415,7 +414,8 @@ const Schedule = () => {
                         paddingY: ".5em",
                       }}
                     >
-                      {row.arrivalTime}
+                      {/* {row.arrivalTime} */}
+                      {format(new Date(row.arrivalTime), "yyyy-MM-dd HH:mm")}
                     </TableCell>
                     <TableCell
                       sx={{

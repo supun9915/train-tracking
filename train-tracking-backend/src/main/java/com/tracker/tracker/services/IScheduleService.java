@@ -6,6 +6,7 @@ import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.response.ScheduleGetResponse;
 import com.tracker.tracker.models.response.ScheduleResponse;
+import com.tracker.tracker.models.response.StationGetResponse;
 
 import java.security.Principal;
 import java.util.List;
@@ -25,4 +26,12 @@ public interface IScheduleService {
   List<Schedule> findTrain(FindTrainRequest findTrainRequest, Principal principal);
 
     List<String> getScheduleStations(UUID id, Principal principal);
+
+    List<ScheduleGetResponse> getScheduleByTrain(UUID id);
+
+    ScheduleResponse updateDelay(UUID id, int time, Principal principal);
+
+    List<StationGetResponse> getStationByTrain(UUID id);
+
+    ScheduleResponse updatelocations(UUID id, UUID loc, Principal principal);
 }

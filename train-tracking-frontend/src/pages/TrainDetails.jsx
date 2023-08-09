@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col, Button } from "reactstrap";
 import Helmet from "../components/Helmet/Helmet";
 import { useParams } from "react-router-dom";
 // import BookingForm from "../components/UI/BookingForm";
@@ -9,7 +9,8 @@ import paypal from "../assets/all-images/paypal.jpg";
 import "../styles/booking-form.css";
 import "../styles/payment-method.css";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { logOut, selectCurrentUser } from "../redux/features/authSlice";
 // import Select from "react-select";
 import { Form, FormGroup } from "reactstrap";
 import { request, GET, POST } from "../api/ApiAdapter";
@@ -17,8 +18,10 @@ import PaymentMethod from "../components/UI/PaymentMethod";
 
 const TrainDetails = () => {
   const { slug, cla, star, ende, per, cou, shed } = useParams();
+  const [passenger, setPassenger] = useState({});
   const navigate = useNavigate();
-
+  const authUser = useSelector(selectCurrentUser);
+  const [promoCode, setPromoCode] = useState("");
   const [startSt, setStartSt] = useState({
     label: "",
     value: "",
@@ -65,6 +68,14 @@ const TrainDetails = () => {
     }
   };
 
+  const getPassenger = async () => {
+    const res = await request(`/passenger/by/user/${authUser.id}`);
+    if (!res.error) {
+      setPassenger(res);
+      // console.log(res);
+    }
+  };
+
   const getpath = async (shed) => {
     const res = await request(`/schedule/route/${shed}`, POST);
     if (!res.error) {
@@ -78,25 +89,17 @@ const TrainDetails = () => {
     getStStations(star);
     getEndStations(ende);
     getPrice(cla, shed, star, ende, per);
+    getPassenger();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleReserveButtonClick = (event) => {
-    event.preventDefault();
-
-    const paymentForm = document.getElementById("paymentForm");
-    const selectedPaymentMethod = paymentForm.querySelector(
-      'input[name="paymentMethod"]:checked'
+  const checkPromo = async () => {
+    const res = await request(
+      `/passenger/check/promo/${passenger.id}/${promoCode}/${price}`
     );
-
-    if (selectedPaymentMethod) {
-      const selectedValue = selectedPaymentMethod.value;
-      console.log("Selected Payment Method:", selectedValue);
-      setMethod(selectedValue);
-      // Do further processing with the selectedValue
-    } else {
-      console.log("Please select a payment method.");
-      // Handle the case where no payment method is selected
+    if (!res.error) {
+      setPrice(res);
+      setPromoCode("");
     }
   };
 
@@ -109,7 +112,7 @@ const TrainDetails = () => {
         trainClass: cla,
         seatNumber: per,
       },
-      passengerId: "4c38a0db-9c57-40ba-878c-3652a769444a",
+      passengerId: passenger.id,
       travelFromID: star,
       travelToId: ende,
     });
@@ -119,7 +122,7 @@ const TrainDetails = () => {
     }
   };
 
-  const onSucess = (orderId) => console.log("onSuccess", orderId);
+  const onSucess = (orderId) => reservation();
   const onDismissed = () => console.log("onDismissed");
   const onError = (error) => console.log("onError", error);
 
@@ -201,50 +204,53 @@ const TrainDetails = () => {
                 <FormGroup className="booking__form w-100 ms-1 mb-4">
                   <input
                     type="text"
-                    value="Tharaka Dasunpriya"
+                    value={passenger?.user?.name}
                     disabled
-                    placeholder="From Station"
+                    placeholder="Name"
                   />
                 </FormGroup>
 
                 <FormGroup className="booking__form w-100 ms-1 mb-4">
                   <input
                     type="text"
-                    value="0775707306"
+                    value={passenger?.contact}
                     disabled
-                    placeholder="From Station"
+                    placeholder="Contact Number"
                   />
                 </FormGroup>
 
                 <FormGroup className="booking__form w-100 ms-1 mb-4">
                   <input
                     type="text"
-                    value="tharaka@gmail.com"
+                    value={passenger?.user?.email}
                     disabled
-                    placeholder="From Station"
+                    placeholder="Email Address"
                   />
                 </FormGroup>
 
-                <FormGroup className="booking__form w-100 ms-1 mb-4">
+                <FormGroup className="flex gap-4 booking__form w-100 ms-1 mb-4">
                   <input
                     type="text"
-                    value="No 602, Moragala, Pilana, Wanchawala"
-                    disabled
-                    placeholder="From Station"
+                    placeholder="Promo Code"
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    value={promoCode}
                   />
-                </FormGroup>
-
-                <FormGroup className="booking__form w-100 ms-1 mb-4">
-                  <input type="text" placeholder="Promo Code" />
+                  <button
+                    type="button"
+                    style={{ background: "orange", padding: "1.2em" }}
+                    onClick={checkPromo}
+                  >
+                    USE
+                  </button>
                 </FormGroup>
 
                 <PaymentMethod
                   amount={Number(price)}
                   items={`${startSt.label} to ${endSt.label}`}
-                  firstName="Pasindu"
-                  lastName="Eranga"
-                  email="mr.h.d.pasindueranga@gmail.com"
-                  phone="0775707306"
+                  firstName={passenger?.user?.name?.split(" ")[0]}
+                  lastName={passenger?.user?.name?.split(" ")[1]}
+                  email={passenger?.user?.email}
+                  phone={passenger?.contact}
                   address="No 602, Moragala, Pilana, Wanchawala"
                   delivery_address=""
                   delivery_city=""

@@ -1,5 +1,6 @@
 package com.tracker.tracker.services;
 
+import com.tracker.tracker.models.json.TrainStatics;
 import com.tracker.tracker.models.request.BookingCreate;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.response.BookingGetResponse;
@@ -19,4 +20,8 @@ public interface IBookingService {
     List<BookingGetResponse> getAllBooking();
 
     BookingResponse deleteBooking(DeleteRequest deleteRequest, Principal principal);
+
+    Long bookingCount();
+
+  List<TrainStatics> getTrainStatics();
 }

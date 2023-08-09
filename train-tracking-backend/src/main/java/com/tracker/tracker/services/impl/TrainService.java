@@ -7,8 +7,7 @@ import com.tracker.tracker.models.entities.Station;
 import com.tracker.tracker.models.entities.Train;
 import com.tracker.tracker.models.entities.TrainStation;
 import com.tracker.tracker.models.entities.Users;
-import com.tracker.tracker.models.json.IdWithName;
-import com.tracker.tracker.models.json.UuidWithOrder;
+import com.tracker.tracker.models.json.*;
 import com.tracker.tracker.models.request.CreateTrain;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.UserCreateRequest;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -152,5 +152,28 @@ public class TrainService implements ITrainService {
         trainResponse.setId(train.getId());
         trainResponse.setName(train.getName());
         return trainResponse;
+    }
+
+    public List<TrainChartStatistic> getTrainStatisticsChart(String trainName) {
+        int year = OffsetDateTime.now().getYear();
+        OffsetDateTime firstDate = OffsetDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime lastDate = OffsetDateTime.of(year, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.UTC);
+
+        //TODO: fetch data from the database
+        List<TrainChartStatistic> chartStatics = new ArrayList<>();
+        chartStatics.add(new TrainChartStatistic("Jan", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Feb", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Mar", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Apr", 0, 0));
+        chartStatics.add(new TrainChartStatistic("May", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Jun", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Jul", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Aug", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Sep", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Oct", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Nov", 0, 0));
+        chartStatics.add(new TrainChartStatistic("Dec", 0, 0));
+
+        return chartStatics;
     }
 }

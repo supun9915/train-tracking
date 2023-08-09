@@ -19,4 +19,6 @@ public interface IReservationService {
     List<ReservationGetResponse> getAllReservation();
 
     ReservationResponse deleteReservation(DeleteRequest deleteRequest, Principal principal);
+
+    Integer ticketSalesCount();
 }

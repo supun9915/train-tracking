@@ -87,6 +87,11 @@ public class ReservationService implements IReservationService {
         return ReservationResponseConvertor(reservationRepository.save(DeleReservation));
     }
 
+    @Override
+    public Integer ticketSalesCount() {
+        return reservationRepository.ticketSalesCount();
+    }
+
     private ReservationGetResponse reservationGetResponsesConverter(Reservation reservation) {
         ReservationGetResponse stationGetResponse = new ReservationGetResponse();
         stationGetResponse.setId(reservation.getId());

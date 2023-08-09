@@ -1,9 +1,11 @@
 package com.tracker.tracker.models.entities;
+import com.tracker.tracker.listener.BookingListener;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@EntityListeners(BookingListener.class)
 @NoArgsConstructor
 @Entity
 public class Booking {
@@ -44,9 +47,12 @@ public class Booking {
   private Payment payment;
   private Boolean status = false;
   private Boolean deleted =false;
-  @OneToOne(cascade = CascadeType.ALL) 
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "schedule_id")
   private Schedule schedule;
+//  @OneToOne(cascade = CascadeType.ALL)
+//  @JoinColumn(name = "schedule_id")
+//  private Schedule schedule;
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;

@@ -46,6 +46,7 @@ const Passengers = () => {
     username: "",
     password: "",
   };
+
   const [loading, setLoading] = useState();
 
   const handleChangePage = (event, newPage) => {
@@ -90,6 +91,7 @@ const Passengers = () => {
     setPage(0);
   };
 
+
   const loadAllPassengerData = async () => {
     const res = await request(`passenger/get`, GET);
     if (!res.error) {
@@ -119,14 +121,13 @@ const Passengers = () => {
   };
 
   const deleteAccount = async (id) => {
-    const res = await request(`passenger/delete`, PATCH, {
+    const res = await request(`passenger/delete`, PUT, {
       delete: true,
       id,
     });
     if (!res.error) {
       toast.success("Delete passenger successfully..!");
       setOpenModalDeleteConfirm(false);
-
       reload();
     } else {
       toast.error("Unable to delete passenger...!");
@@ -151,18 +152,18 @@ const Passengers = () => {
     } else {
       toast.error(res.error.response.data);
       setLoading(false);
-      // console.log(res);
     }
   };
 
   const updateStation = async () => {
-    const res = await request(`station/update/${values.id}`, PUT, {
-      values,
+    const res = await request(`passenger/update/${values.id}`, PUT, {
+      ...values,
     });
     if (!res.error) {
-      toast.success("Update station successfully..!");
+      toast.success("Update passenger successfully..!");
       handleCloseModal();
       setLoading(false);
+      reload();
     } else {
       toast.error(res.error.response.data);
       setLoading(false);

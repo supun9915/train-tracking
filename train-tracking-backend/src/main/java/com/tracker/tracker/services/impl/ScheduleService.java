@@ -12,9 +12,12 @@ import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.FindTrainRequest;
 import com.tracker.tracker.models.response.ScheduleGetResponse;
 import com.tracker.tracker.models.response.ScheduleResponse;
+import com.tracker.tracker.models.response.StationGetResponse;
 import com.tracker.tracker.repositories.*;
 import com.tracker.tracker.repositories.ScheduleRepository;
 import com.tracker.tracker.services.IScheduleService;
+
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -179,6 +182,59 @@ public class ScheduleService implements IScheduleService {
         return stations;
     }
 
+    @Override
+    public List<ScheduleGetResponse> getScheduleByTrain(UUID id) {
+        List<ScheduleGetResponse> stationGetResponses = new ArrayList<>();
+
+        for (Schedule train :
+                scheduleRepository.findByTrain_IdAndDeletedOrderByDepartureStation_CreatedTimeDesc(id,false)) {
+            stationGetResponses.add(stationGetResponsesConverter(train));
+        }
+        return stationGetResponses;
+    }
+
+    @Override
+    public ScheduleResponse updateDelay(UUID id, int time, Principal principal) {
+        UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
+        Users user = usersRepository.findById(userImpl.getId()).get();
+        Schedule schedule = scheduleRepository.getById(id);
+        schedule.setDelay(time);
+        schedule.setModifiedTime(OffsetDateTime.now());
+        schedule.setModifiedBy(user);
+        return ScheduleResponseConvertor(scheduleRepository.save(schedule));
+    }
+
+    @Override
+    public List<StationGetResponse> getStationByTrain(UUID id) {
+        List<StationGetResponse> stationGetResponses = new ArrayList<>();
+        Train trains = trainRepository.getById(id);
+        Set<TrainStation> stationList = trains.getTrainStations();
+        for (TrainStation train :
+                stationList) {
+            stationGetResponses.add(stationGetResponsesConverterByTrain(train));
+        }
+        return stationGetResponses;
+    }
+
+    @Override
+    public ScheduleResponse updatelocations(UUID id, UUID loc, Principal principal) {
+        UserDetailsImpl userImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(principal.getName());
+        Users user = usersRepository.findById(userImpl.getId()).get();
+        Schedule schedule = scheduleRepository.getById(id);
+        Station station = stationRepository.getById(loc);
+        schedule.setLocation(station);
+        schedule.setModifiedTime(OffsetDateTime.now());
+        schedule.setModifiedBy(user);
+        return ScheduleResponseConvertor(scheduleRepository.save(schedule));
+    }
+
+    private StationGetResponse stationGetResponsesConverterByTrain(TrainStation train) {
+        StationGetResponse stationGetResponse = new StationGetResponse();
+        stationGetResponse.setId(train.getStation().getId());
+        stationGetResponse.setName(train.getStation().getName());
+        return (stationGetResponse);
+    }
+
     private ScheduleGetResponse stationGetResponsesConverter(Schedule schedule) {
         ScheduleGetResponse stationGetResponse = new ScheduleGetResponse();
         stationGetResponse.setId(schedule.getId());
@@ -193,8 +249,10 @@ public class ScheduleService implements IScheduleService {
         stationGetResponse.setTrainName(schedule.getTrain().getName());
         if(schedule.getLocation() != null){
             stationGetResponse.setLocationId(schedule.getLocation().getId());
+            stationGetResponse.setLocation(schedule.getLocation().getName());
         } else {
             stationGetResponse.setLocationId(null);
+            stationGetResponse.setLocation("N/A");
         }
 
         return stationGetResponse;

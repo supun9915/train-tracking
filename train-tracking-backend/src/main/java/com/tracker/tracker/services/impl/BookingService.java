@@ -8,7 +8,9 @@ import com.tracker.tracker.models.entities.Payment;
 import com.tracker.tracker.models.entities.Reservation;
 import com.tracker.tracker.models.entities.Schedule;
 import com.tracker.tracker.models.entities.Station;
+import com.tracker.tracker.models.entities.Train;
 import com.tracker.tracker.models.entities.Users;
+import com.tracker.tracker.models.json.TrainStatics;
 import com.tracker.tracker.models.request.DeleteRequest;
 import com.tracker.tracker.models.request.BookingCreate;
 import com.tracker.tracker.models.response.BookingGetResponse;
@@ -16,6 +18,7 @@ import com.tracker.tracker.models.response.BookingResponse;
 import com.tracker.tracker.repositories.*;
 import com.tracker.tracker.repositories.BookingRepository;
 import com.tracker.tracker.services.IBookingService;
+import java.time.ZoneOffset;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,7 @@ public class BookingService implements IBookingService {
     private final PaymentRepository paymentRepository;
     private final PassengerRepository passengerRepository;
     private final StationRepository stationRepository;
+    private final TrainRepository trainRepository;
 
     @Override
     public BookingResponse bookingCreate(BookingCreate bookingRequest, Principal principal) {
@@ -132,10 +136,86 @@ public class BookingService implements IBookingService {
         return BookingResponseConvertor(bookingRepository.save(DeleBooking));
     }
 
+    @Override
+    public Long bookingCount() {
+        return bookingRepository.count();
+    }
+
+    @Override
+    public List<TrainStatics> getTrainStatics() {
+        int year = OffsetDateTime.now().getYear();
+        OffsetDateTime firstDate = OffsetDateTime.of(year, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+        OffsetDateTime lastDate = OffsetDateTime.of(year, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.UTC);
+
+        List<Train> trains = trainRepository.findAll();
+
+        List<TrainStatics> trainStatics = new ArrayList<>();
+
+        for (Train train: trains) {
+            List<Booking> bookings =
+                bookingRepository.findBySchedule_Train_IdAndCreatedTimeBetween(train.getId(),
+                    firstDate, lastDate);
+
+            TrainStatics trainStatic = new TrainStatics();
+            trainStatic.setLabel(train.getName());
+
+            List<Double> data = new ArrayList<>();
+            for (int i = 0; i < 12; i++) {
+                data.add(0.0);
+            }
+
+            for (Booking booking:bookings) {
+                switch (booking.getPayment().getCreatedTime().getMonth()){
+                    case JANUARY:
+                        data.set(0, data.get(0) + booking.getPayment().getTotal());
+                        break;
+                    case FEBRUARY:
+                        data.set(1, data.get(1) + booking.getPayment().getTotal());
+                        break;
+                    case MARCH:
+                        data.set(2, data.get(2) + booking.getPayment().getTotal());
+                        break;
+                    case APRIL:
+                        data.set(3, data.get(3) + booking.getPayment().getTotal());
+                        break;
+                    case MAY:
+                        data.set(4, data.get(4) + booking.getPayment().getTotal());
+                        break;
+                    case JUNE:
+                        data.set(5, data.get(5) + booking.getPayment().getTotal());
+                        break;
+                    case JULY:
+                        data.set(6, data.get(6) + booking.getPayment().getTotal());
+                        break;
+                    case AUGUST:
+                        data.set(7, data.get(7) + booking.getPayment().getTotal());
+                        break;
+                    case SEPTEMBER:
+                        data.set(8, data.get(8) + booking.getPayment().getTotal());
+                        break;
+                    case OCTOBER:
+                        data.set(9, data.get(9) + booking.getPayment().getTotal());
+                        break;
+                    case NOVEMBER:
+                        data.set(10, data.get(10) + booking.getPayment().getTotal());
+                        break;
+                    case DECEMBER:
+                        data.set(11, data.get(11) + booking.getPayment().getTotal());
+                        break;
+                }
+            }
+
+            trainStatic.setData(data);
+            trainStatics.add(trainStatic);
+        }
+
+        return trainStatics;
+    }
+
     private BookingGetResponse bookingGetResponsesConverter(Booking booking) {
         BookingGetResponse bookingGetResponse = new BookingGetResponse();
         bookingGetResponse.setId(booking.getId());
-        
+
 
         return bookingGetResponse;
     }

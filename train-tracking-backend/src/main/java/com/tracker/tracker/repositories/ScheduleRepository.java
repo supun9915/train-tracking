@@ -3,7 +3,10 @@ package com.tracker.tracker.repositories;
 import com.tracker.tracker.models.entities.Schedule;
 import java.time.OffsetDateTime;
 import java.util.Collection;
+
+import com.tracker.tracker.models.entities.Train;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,4 +24,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
         OffsetDateTime departureTimeEnd);
 
     List<Schedule> findDistinctByTrain_TrainStations_Station_IdIn(Collection<UUID> ids);
+
+    List<Schedule> findByTrain_IdAndDeletedOrderByDepartureStation_CreatedTimeDesc(UUID id, Boolean deleted);
+
+    List<Schedule> findAllByTrain(Train train);
+
 }

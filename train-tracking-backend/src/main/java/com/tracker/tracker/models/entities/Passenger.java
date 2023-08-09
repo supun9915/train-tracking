@@ -1,6 +1,10 @@
 package com.tracker.tracker.models.entities;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.persistence.*;
 
@@ -22,7 +26,13 @@ public class Passenger {
   private String nic;
   private String contact;
   private Boolean deleted =false;
-
+  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+  @JoinTable(
+      name = "passenger_promotion",
+      joinColumns = @JoinColumn(name = "passenger_id"),
+      inverseJoinColumns = @JoinColumn(name = "promotion_id")
+  )
+  private List<Promotion> promotions = new ArrayList<>();
   @JsonIgnore
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Users createdBy;

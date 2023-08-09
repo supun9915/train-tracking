@@ -1,13 +1,9 @@
-import React from "react";
-
 import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip } from "recharts";
 
-import RevenueStatics from "../assets/dummy-data/RevenueStatics";
-
-const revenueChart = () => {
+const revenueChart = ({ data }) => {
   return (
     <ResponsiveContainer width="100%">
-      <BarChart data={RevenueStatics}>
+      <BarChart data={data}>
         <XAxis dataKey="name" stroke="#2884ff" />
         <Bar
           dataKey="revenueStats"
